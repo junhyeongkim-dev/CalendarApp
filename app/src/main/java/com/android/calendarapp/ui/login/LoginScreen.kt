@@ -111,7 +111,7 @@ private fun ObserveNavigateEffect(
             when(loginNavigateEffect) {
                 LoginNavigateEffect.GoMain -> {
                     navController.navigate(NavMembers.CALENDAR.name) {
-                        popUpTo(NavMembers.LOGIN.name) {
+                        popUpTo(navController.currentDestination?.route!!) {
 
                             inclusive = true
                         }

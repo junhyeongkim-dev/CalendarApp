@@ -10,13 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.android.calendarapp.ui.calendar.component.week.WeekItem
 import com.android.calendarapp.ui.calendar.data.DayItemData
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 
 @Composable
 fun MonthItem(
-    monthData: List<List<DayItemData>>
+    monthData: List<List<DayItemData>>,
+    selectedDay: LiveData<String>,
+    dayItemOnclick: (String) -> Unit
 ) {
     val height = 80.dp
 
@@ -28,7 +32,9 @@ fun MonthItem(
             WeekItem(
                 weekData = weekData,
                 weekIndex = index,
-                height = height
+                height = height,
+                selectedDay,
+                dayItemOnclick
             )
 
             Spacer(
@@ -59,6 +65,6 @@ fun MonthItemPreview() {
     }
 
     CalendarAppTheme {
-        MonthItem(monthData)
+        MonthItem(monthData, MutableLiveData("18"), {})
     }
 }

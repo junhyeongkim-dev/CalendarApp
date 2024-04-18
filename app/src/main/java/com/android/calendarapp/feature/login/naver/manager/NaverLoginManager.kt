@@ -26,7 +26,7 @@ class NaverLoginManager @Inject constructor(
         }
     }
 
-    fun setLoginResponse(naverLoginResponse: NaverLoginResponse<Map<String, Any>>) {
+    override fun setLoginResponse(naverLoginResponse: NaverLoginResponse<Map<String, Any>>) {
         this.naverLoginResponse = naverLoginResponse
     }
 
@@ -50,8 +50,26 @@ class NaverLoginManager @Inject constructor(
         )
     }
 
+    override suspend fun refreshToken() {
+        naverLoginSDK.refreshAccessToken(
+            object : OAuthLoginCallback {
+                override fun onSuccess() {
+                    getUserProfile()
+                }
+
+                override fun onFailure(httpStatus: Int, message: String) {
+                    onFail()
+                }
+
+                override fun onError(errorCode: Int, message: String) {
+                    onFailure(errorCode, message)
+                }
+            }
+        )
+    }
+
     // 사용자 프로필 정보 호출
-    override fun getUserProfile() {
+    private fun getUserProfile() {
         naverLoginSDK.getLoginUserProfile(
             object : NidProfileCallback<NidProfileMap> {
                 override fun onSuccess(result: NidProfileMap) {

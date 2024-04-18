@@ -1,5 +1,6 @@
 package com.android.calendarapp.ui.calendar.output
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.LiveData
 import com.android.calendarapp.ui.calendar.data.DayItemData
 import kotlinx.coroutines.flow.StateFlow
@@ -7,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface ICalendarViewModelOutput {
 
     // 월별 일자 데이터 리스트
+
     val calendarData: Map<Int, List<List<DayItemData>>>
 
     // 에러가 난 페이지 리스트
@@ -17,6 +19,10 @@ interface ICalendarViewModelOutput {
 
     // 달력 헤더
     val headerLiveData: LiveData<String>
+
+    // 현재 선택된 일자
+    @Stable
+    val selectedDay: LiveData<String>
 }
 
 // 초기 데이터 저장 완료 Effect

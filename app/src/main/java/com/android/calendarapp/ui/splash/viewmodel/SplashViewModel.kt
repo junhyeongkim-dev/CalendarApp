@@ -2,6 +2,7 @@ package com.android.calendarapp.ui.splash.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.android.calendarapp.feature.login.data.LoginFailResponseData
+import com.android.calendarapp.feature.login.naver.manager.INaverLoginManager
 import com.android.calendarapp.feature.login.naver.manager.NaverLoginManager
 import com.android.calendarapp.feature.login.naver.response.NaverLoginResponse
 import com.android.calendarapp.library.security.preperence.helper.ISharedPreferencesHelper
@@ -19,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val preferencesHelper: ISharedPreferencesHelper,
-    private val naverLoginManager: NaverLoginManager
+    private val naverLoginManager: INaverLoginManager
 ) : BaseViewModel(preferencesHelper), ISplashViewModelInput, ISplashViewModelOutput {
 
     private val _loginState: MutableSharedFlow<LoginStateEffect> = MutableSharedFlow(replay = 0)
@@ -47,7 +48,7 @@ class SplashViewModel @Inject constructor(
                     }
                 )
 
-                naverLoginManager.getUserProfile()
+                naverLoginManager.refreshToken()
             }else {
                 viewModelScope.launch {
                     _loginState.emit(

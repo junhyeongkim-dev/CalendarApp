@@ -13,6 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.android.calendarapp.ui.calendar.component.day.DayItem
 import com.android.calendarapp.ui.calendar.data.DayItemData
 
@@ -20,7 +22,9 @@ import com.android.calendarapp.ui.calendar.data.DayItemData
 fun WeekItem(
     weekData: List<DayItemData>,
     weekIndex: Int,
-    height: Dp
+    height: Dp,
+    selectedDay: LiveData<String>,
+    dayItemOnclick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier.height(height)
@@ -37,7 +41,7 @@ fun WeekItem(
                 )
             }
 
-            DayItem(dayData, height)
+            DayItem(dayData, height, selectedDay, dayItemOnclick)
 
             if(index != weekData.lastIndex) {
                 Spacer(
@@ -80,8 +84,8 @@ fun WeekItemPreview() {
     }
 
     Column {
-        WeekItem(dayItemList, 0, 80.dp)
-        WeekItem(borderDayItemList, 0, 80.dp)
+        WeekItem(dayItemList, 0, 80.dp, MutableLiveData("18"), {})
+        WeekItem(borderDayItemList, 0, 80.dp, MutableLiveData("18"), {})
     }
 
 

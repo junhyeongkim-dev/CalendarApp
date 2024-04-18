@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.android.calendarapp.ui.common.navigator.CalendarNavigator
+import com.android.calendarapp.ui.common.navigator.AppNavigator
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,7 +17,7 @@ class SplashActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CalendarAppTheme {
-                CalendarNavigator()
+                AppNavigator()
             }
         }
     }

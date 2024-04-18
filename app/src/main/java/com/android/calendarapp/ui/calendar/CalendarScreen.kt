@@ -105,7 +105,13 @@ fun MainScreen(
 
                         CalendarError(viewModel.calendarErrorData[page] ?: "")
                     }else {
-                        MonthItem(monthData = viewModel.calendarData[page] ?: listOf())
+                        MonthItem(
+                            monthData = viewModel.calendarData[page] ?: listOf(),
+                            selectedDay = viewModel.selectedDay,
+                            dayItemOnclick = { day ->
+                                viewModel.clickDayItem(day)
+                            }
+                        )
                     }
                 }
             }
@@ -118,20 +124,20 @@ fun MainScreen(
 @Composable
 fun Init(viewModel: CalendarViewModel) {
     LaunchedEffect(key1 = true) {
-        coroutineScope {
 
-            // 이번달 월별 일자 데이터 요청
-            viewModel.getMonthData(DEFAULT_PAGE, DEFAULT_PAGE)
+        viewModel.init()
 
-            for (count in 1..3) {
-                // 전, 후로 3개월치 월별 일자 데이터를 조회하여 저장
+        // 이번달 월별 일자 데이터 요청
+        viewModel.getMonthData(DEFAULT_PAGE, DEFAULT_PAGE)
 
-                // 현재보다 이전 월 데이터 조회
-                viewModel.getMonthData(DEFAULT_PAGE, changePage(DEFAULT_PAGE-count, 0))
+        for (count in 1..3) {
+            // 전, 후로 3개월치 월별 일자 데이터를 조회하여 저장
 
-                // 현재보다 이후 월 데이터 조회
-                viewModel.getMonthData(DEFAULT_PAGE, changePage( DEFAULT_PAGE+count, 0))
-            }
+            // 현재보다 이전 월 데이터 조회
+            viewModel.getMonthData(DEFAULT_PAGE, changePage(DEFAULT_PAGE-count, 0))
+
+            // 현재보다 이후 월 데이터 조회
+            viewModel.getMonthData(DEFAULT_PAGE, changePage( DEFAULT_PAGE+count, 0))
         }
     }
 }
