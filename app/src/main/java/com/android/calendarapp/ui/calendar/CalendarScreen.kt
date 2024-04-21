@@ -230,6 +230,23 @@ private fun CategoryDropDown(
         expanded = dropDownState,
         onDismissRequest = onChangeDropDownState
     ) {
+        DropdownMenuItem(
+            modifier = Modifier
+                .padding(
+                    vertical = dimensionResource(id = R.dimen.dimen_category_dropdown_item_margin).value.dp
+                ),
+            text = {
+                Text(
+                    text = "없음",
+                    fontSize = dimensionResource(id = R.dimen.dimen_category_dropdown_item_text).value.sp,
+                    color = Color.Gray
+                )
+            }, onClick = {
+                onChangeDropDownState.invoke()
+                onChangeSelectedCategory("")
+            }
+        )
+
         categoryItems.forEach { categoryModel ->
             DropdownMenuItem(
                 modifier = Modifier

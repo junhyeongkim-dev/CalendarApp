@@ -156,7 +156,8 @@ class CalendarViewModel @Inject constructor(
     }
 
     override fun onChangeCategory(category: String) {
-        _selectedCategory.value = category
+        if(category.isEmpty()) _selectedCategory.value = ResourceUtil.getString(applicationContext, R.string.category_default_text)
+        else _selectedCategory.value = category
     }
 
     override fun onClickAddCategory() {
