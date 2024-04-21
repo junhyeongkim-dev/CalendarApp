@@ -12,7 +12,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.android.calendarapp.R
-import com.android.calendarapp.feature.login.type.LoginType
+import com.android.calendarapp.library.login.type.LoginType
 import com.android.calendarapp.ui.common.component.BaseFullScreen
 import com.android.calendarapp.ui.common.navigator.type.NavMembers
 import com.android.calendarapp.ui.login.component.button.GuestButton
@@ -34,7 +33,6 @@ import com.android.calendarapp.ui.login.output.LoginNavigateEffect
 import com.android.calendarapp.ui.login.viewmodel.LoginViewModel
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 import com.android.calendarapp.util.ResourceUtil.Companion.getString
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -48,7 +46,9 @@ fun LoginScreen(
     BaseFullScreen(
         title = stringResource(id = R.string.app_bar_sign_in_title_name),
         isShowBackBtn = false,
-        dialogState = viewModel.dialogState,
+        isShowBottomLine = true,
+        dialogState = viewModel.defaultDialogState,
+        onBackPress = { viewModel.onDismissDefaultDialog() },
         snackBarHostState = snackBarHostState
     ) { paddingValues ->
         Row(

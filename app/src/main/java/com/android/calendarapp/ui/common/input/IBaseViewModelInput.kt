@@ -5,5 +5,7 @@ import com.android.calendarapp.ui.common.output.DialogState
 interface IBaseViewModelInput {
 
     fun isLogin(): Boolean
-    fun changeDialogUiState(dialogState: DialogState)
+    fun onDismissDefaultDialog()
+
+    fun showDialogDefault(dialogState: DialogState)
 }

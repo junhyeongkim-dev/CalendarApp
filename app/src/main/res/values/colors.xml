@@ -10,4 +10,13 @@
 
     <color name="naver">#FF03C75A</color>
     <color name="calendar_header">#FF06d66d</color>
+    <color name="calendar_bottom">#FFfafcfa</color>
+
+    <color name="gray1">#FFf0f0f0</color>
+    <color name="gray2">#FFd3d3d3</color>
+    <color name="gray3">#FFbebebe</color>
+    <color name="gray4">#FFa9a9a9</color>
+    <color name="gray5">#FF808080</color>
+    <color name="gray6">#FF505050</color>
+    <color name="gray7">#FF303030</color>
 </resources>

@@ -13,6 +13,10 @@
 
     <dimen name="dimen_calendar_error_text">24sp</dimen>
 
+    <dimen name="dimen_category_dropdown_item_text">14sp</dimen>
+    <dimen name="dimen_category_dialog_text">16sp</dimen>
+
     <!-- margin -->
     <dimen name="dimen_header_start_margin">10dp</dimen>
+    <dimen name="dimen_category_dropdown_item_margin">4dp</dimen>
 </resources>

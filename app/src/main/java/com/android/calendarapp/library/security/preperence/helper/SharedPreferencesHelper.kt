@@ -1,7 +1,7 @@
 package com.android.calendarapp.library.security.preperence.helper
 
 import com.android.calendarapp.library.security.preperence.AppEncryptedSharedPreferences
-import com.android.calendarapp.library.security.preperence.constants.SharedPreferenceKeys
+import com.android.calendarapp.library.security.preperence.constants.SharedPreferenceConstance
 import javax.inject.Inject
 
 class SharedPreferencesHelper @Inject constructor(
@@ -9,10 +9,10 @@ class SharedPreferencesHelper @Inject constructor(
 ) : ISharedPreferencesHelper {
 
     override fun setUserId(value: String) {
-        preferences.setString(SharedPreferenceKeys.USER_ID_PREF, value)
+        preferences.setString(SharedPreferenceConstance.USER_ID_PREF, value)
     }
 
     override fun getUserId(): String {
-        return preferences.getString(SharedPreferenceKeys.USER_ID_PREF)
+        return preferences.getString(SharedPreferenceConstance.USER_ID_PREF)
     }
 }

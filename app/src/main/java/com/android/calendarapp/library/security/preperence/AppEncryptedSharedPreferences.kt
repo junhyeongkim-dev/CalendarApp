@@ -12,7 +12,6 @@ import javax.inject.Inject
 class AppEncryptedSharedPreferences @Inject constructor(
     context: Context
 ) {
-
     private val sharedPreferences: SharedPreferences
 
     init {

@@ -1,9 +1,14 @@
 package com.android.calendarapp.ui.common.dialog.models
 
+import androidx.compose.runtime.State
+
 sealed class DialogContent(
-    open val text: String
 ) {
     data class Default(
-        override val text: String
-    ) : DialogContent(text)
+        val text: String
+    ) : DialogContent()
+    data class Category(
+        val text: State<String>,
+        val onChangeText: (String) -> Unit
+    ) : DialogContent()
 }

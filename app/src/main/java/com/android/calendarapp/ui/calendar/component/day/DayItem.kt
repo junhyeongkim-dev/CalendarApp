@@ -15,8 +15,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,24 +28,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.android.calendarapp.R
-import com.android.calendarapp.ui.calendar.data.DayItemData
+import com.android.calendarapp.ui.calendar.model.DayItemModel
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 
 @Composable
 fun RowScope.DayItem(
-    data: DayItemData,
+    data: DayItemModel,
     height: Dp,
-    selectedDay: LiveData<String>,
+    selectedDay: State<String>,
     dayItemOnclick: (String) -> Unit
 ) {
     val dayPadding = 4.dp
 
-    val selectedDayState by selectedDay.observeAsState()
+    val selectedDayState = selectedDay.value
 
-    val borderStroke = if(selectedDayState == data.dayText){
+    val borderStroke = if(selectedDayState == data.dayText && data.isDayInCurrentMonth){
         BorderStroke(
             1.dp,
             Color.Black
@@ -63,8 +62,9 @@ fun RowScope.DayItem(
             .border(
                 border = borderStroke,
                 shape = RectangleShape
-            ).clickable {
-                dayItemOnclick.invoke(data.dayText)
+            )
+            .clickable {
+                if (data.isDayInCurrentMonth) dayItemOnclick.invoke(data.dayText)
             },
         contentAlignment = Alignment.TopEnd
     ){
@@ -163,16 +163,20 @@ fun DayItemPreview() {
         Row(
             modifier = Modifier.background(Color.White)
         ) {
-            val data = DayItemData(
+            val data = DayItemModel(
                 dayText = "1"
             )
-            DayItem(data, 80.dp, MutableLiveData("1"), {})
+            DayItem(data, 80.dp, remember {
+                mutableStateOf("1")
+            }, {})
 
-            val borderData = DayItemData(
+            val borderData = DayItemModel(
                 dayText = "1",
                 needBorder = true
             )
-            DayItem(borderData, 80.dp, MutableLiveData("1"), {})
+            DayItem(borderData, 80.dp, remember {
+                mutableStateOf("1")
+            }, {})
         }
     }
 }

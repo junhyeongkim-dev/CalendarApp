@@ -1,7 +1,10 @@
 package com.android.calendarapp.ui.common.dialog
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import com.android.calendarapp.R
 import com.android.calendarapp.ui.common.dialog.models.DialogButton
 import com.android.calendarapp.ui.common.dialog.models.DialogContent
 
@@ -21,6 +24,17 @@ fun DialogWrapper(appDialog: AppDialog) {
             DefaultTwoButtonDialog(
                 title = appDialog.title,
                 contentText = appDialog.content,
+                confirmOnClick = appDialog.confirmOnClick,
+                cancelOnClick = appDialog.cancelOnClick,
+                onDismiss = appDialog.onDismiss
+            )
+        }
+
+        is AppDialog.CategoryDialog -> {
+            CategoryDialog(
+                title = appDialog.title,
+                text = appDialog.text,
+                onChangeText = appDialog.onChangeText,
                 confirmOnClick = appDialog.confirmOnClick,
                 cancelOnClick = appDialog.cancelOnClick,
                 onDismiss = appDialog.onDismiss
@@ -74,6 +88,39 @@ fun DefaultTwoButtonDialog(
                 text = "확인",
                 textColor = Color.Black,
                 buttonColor = Color.Blue,
+                onClick = confirmOnClick
+            )
+        ),
+        onDismiss = onDismiss
+    )
+}
+
+@Composable
+fun CategoryDialog(
+    title: String,
+    text: State<String>,
+    onChangeText: (String) -> Unit,
+    confirmOnClick: () -> Unit,
+    cancelOnClick: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    BaseDialog(
+        title = title,
+        dialogContent = DialogContent.Category(
+            text = text,
+            onChangeText = onChangeText
+        ),
+        buttonList = listOf(
+            DialogButton.Default(
+                text = "취소",
+                textColor = Color.Black,
+                buttonColor = Color.LightGray,
+                onClick = cancelOnClick
+            ),
+            DialogButton.Default(
+                text = "저장",
+                textColor = Color.White,
+                buttonColor = Color(colorResource(id = R.color.naver).value),
                 onClick = confirmOnClick
             )
         ),

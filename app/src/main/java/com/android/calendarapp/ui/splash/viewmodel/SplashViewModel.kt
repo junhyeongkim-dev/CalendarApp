@@ -1,13 +1,11 @@
 package com.android.calendarapp.ui.splash.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.android.calendarapp.feature.login.data.LoginFailResponseData
-import com.android.calendarapp.feature.login.naver.manager.INaverLoginManager
-import com.android.calendarapp.feature.login.naver.manager.NaverLoginManager
-import com.android.calendarapp.feature.login.naver.response.NaverLoginResponse
+import com.android.calendarapp.library.login.model.LoginFailResponseModel
+import com.android.calendarapp.library.login.naver.manager.INaverLoginManager
+import com.android.calendarapp.library.login.naver.response.NaverLoginResponse
 import com.android.calendarapp.library.security.preperence.helper.ISharedPreferencesHelper
 import com.android.calendarapp.ui.common.viewmodel.BaseViewModel
-import com.android.calendarapp.ui.login.output.LoginNavigateEffect
 import com.android.calendarapp.ui.splash.input.ISplashViewModelInput
 import com.android.calendarapp.ui.splash.output.ISplashViewModelOutput
 import com.android.calendarapp.ui.splash.output.LoginStateEffect
@@ -39,7 +37,7 @@ class SplashViewModel @Inject constructor(
                             }
                         }
 
-                        override fun onFail(data: LoginFailResponseData) {
+                        override fun onFail(data: LoginFailResponseModel) {
                             viewModelScope.launch {
                                 _loginState.emit(
                                     LoginStateEffect.NotLogin(true))

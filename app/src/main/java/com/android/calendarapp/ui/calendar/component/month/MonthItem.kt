@@ -6,23 +6,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.android.calendarapp.ui.calendar.component.week.WeekItem
-import com.android.calendarapp.ui.calendar.data.DayItemData
+import com.android.calendarapp.ui.calendar.model.DayItemModel
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 
 @Composable
 fun MonthItem(
-    monthData: List<List<DayItemData>>,
-    selectedDay: LiveData<String>,
+    monthData: List<List<DayItemModel>>,
+    selectedDay: State<String>,
     dayItemOnclick: (String) -> Unit
 ) {
-    val height = 80.dp
+    val height = 70.dp
 
     Column(
         modifier = Modifier
@@ -33,8 +32,8 @@ fun MonthItem(
                 weekData = weekData,
                 weekIndex = index,
                 height = height,
-                selectedDay,
-                dayItemOnclick
+                selectedDay = selectedDay,
+                dayItemOnclick = dayItemOnclick
             )
 
             Spacer(
@@ -50,11 +49,11 @@ fun MonthItem(
 @Preview
 @Composable
 fun MonthItemPreview() {
-    val weekData: MutableList<DayItemData> = mutableListOf()
-    val monthData: MutableList<List<DayItemData>> = mutableListOf()
+    val weekData: MutableList<DayItemModel> = mutableListOf()
+    val monthData: MutableList<List<DayItemModel>> = mutableListOf()
 
     for(i in 1..28) {
-        weekData.add(DayItemData(
+        weekData.add(DayItemModel(
             dayText = i.toString()
         ))
 
@@ -65,6 +64,6 @@ fun MonthItemPreview() {
     }
 
     CalendarAppTheme {
-        MonthItem(monthData, MutableLiveData("18"), {})
+//        MonthItem(monthData, MutableLiveData("18"), {})
     }
 }

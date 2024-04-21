@@ -4,13 +4,13 @@ import com.android.calendarapp.ui.common.dialog.AppDialog
 import kotlinx.coroutines.flow.StateFlow
 
 interface IBaseViewModelOutput {
-    val dialogState: StateFlow<DialogState>
+    val defaultDialogState: StateFlow<DialogState>
 }
 
 sealed class DialogState {
-    data object Close : DialogState()
+    data object Dismiss : DialogState()
 
-    data class Open(
+    data class Show(
         val dialogType: AppDialog
     ) : DialogState()
 }

@@ -17,7 +17,8 @@
             android:name=".ui.splash.SplashActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.CalendarApp">
+            android:theme="@style/Theme.CalendarApp"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,6 +1,7 @@
 package com.android.calendarapp.util
 
 import android.content.Context
+import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -14,6 +15,10 @@ class ResourceUtil {
 
         fun getString(context: Context, @StringRes id: Int, vararg formatArgs: Any): String {
             return context.getString(id, *formatArgs)
+        }
+
+        fun getColor(context: Context, @ColorRes id: Int): Int {
+            return context.getColor(id)
         }
     }
 }

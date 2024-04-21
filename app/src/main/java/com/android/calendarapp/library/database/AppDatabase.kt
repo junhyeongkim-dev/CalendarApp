@@ -2,10 +2,17 @@ package com.android.calendarapp.library.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.android.calendarapp.library.database.user.UserInfo
-import com.android.calendarapp.library.database.user.UserInfoDAO
+import com.android.calendarapp.feature.category.data.dao.CategoryDAO
+import com.android.calendarapp.feature.category.data.entity.CategoryEntity
+import com.android.calendarapp.feature.user.data.entity.UserEntity
+import com.android.calendarapp.feature.user.data.dao.UserDAO
 
-@Database(entities = [UserInfo::class], version = 1)
+@Database(
+    entities = [UserEntity::class, CategoryEntity::class],
+    version = 1
+)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun userInfoDAO() : UserInfoDAO
+    abstract fun userInfoDAO() : UserDAO
+
+    abstract fun categoryDAO() : CategoryDAO
 }

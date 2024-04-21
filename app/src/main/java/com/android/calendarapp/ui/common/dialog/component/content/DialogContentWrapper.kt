@@ -8,6 +8,11 @@ fun DialogContentWrapper(
     dialogContent: DialogContent
 ) {
     when(dialogContent) {
-        is DialogContent.Default -> DefaultDialogContent(dialogContent.text)
+        is DialogContent.Default -> DefaultDialogContent(text = dialogContent.text)
+        is DialogContent.Category ->
+            CategoryDialogContent(
+                text = dialogContent.text,
+                onChangeText = dialogContent.onChangeText
+            )
     }
 }

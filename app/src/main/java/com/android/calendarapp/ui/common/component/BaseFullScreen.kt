@@ -22,8 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,11 +37,14 @@ import kotlinx.coroutines.flow.StateFlow
 fun BaseFullScreen(
     title: String,
     isShowBackBtn: Boolean,
+    isShowBottomLine: Boolean = false,
     dialogState: StateFlow<DialogState>,
+    onBackPress: () -> Unit,
     snackBarHostState: SnackbarHostState,
     content: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
     Scaffold(
+        modifier = Modifier,
         topBar = {
             Box(
                 modifier = Modifier
@@ -80,17 +81,19 @@ fun BaseFullScreen(
                     )
                 }
 
-                Box(
-                    modifier = Modifier
-                    .fillMaxSize()
-                ) {
-                    Spacer(
+                if(isShowBottomLine) {
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(Color.LightGray)
-                            .align(Alignment.BottomCenter)
-                    )
+                            .fillMaxSize()
+                    ) {
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .background(Color.LightGray)
+                                .align(Alignment.BottomCenter)
+                        )
+                    }
                 }
             }
         },
@@ -112,13 +115,16 @@ fun BaseFullScreen(
         content.invoke(it)
     }
 
-    DialogInit(uiState = dialogState)
+    /*DialogInit(
+        uiState = dialogState,
+        onBackPress = onBackPress
+    )*/
 }
 
 @Preview
 @Composable
 fun BaseFullScreenPreview() {
     CalendarAppTheme {
-        BaseFullScreen("로그인",true, MutableStateFlow(DialogState.Close), SnackbarHostState(), {})
+        BaseFullScreen("로그인",true, true, MutableStateFlow(DialogState.Dismiss),{}, SnackbarHostState(), {})
     }
 }

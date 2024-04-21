@@ -14,18 +14,23 @@ open class BaseViewModel(
     private val preferencesHelper: ISharedPreferencesHelper
 ) : ViewModel(), IBaseViewModelInput, IBaseViewModelOutput {
 
-    private var _dialogState: MutableStateFlow<DialogState> = MutableStateFlow(DialogState.Close)
-    override val dialogState: StateFlow<DialogState> = _dialogState
+    private var _defaultDialogState: MutableStateFlow<DialogState> = MutableStateFlow(DialogState.Dismiss)
+    override val defaultDialogState: StateFlow<DialogState> = _defaultDialogState
 
     // 로그인 여부 확인
     override fun isLogin(): Boolean {
         return preferencesHelper.getUserId().isNotEmpty()
     }
 
-    // 다이얼로그 on, off
-    override fun changeDialogUiState(dialogState: DialogState) {
+    override fun onDismissDefaultDialog() {
         viewModelScope.launch {
-            _dialogState.emit(dialogState)
+            _defaultDialogState.emit(DialogState.Dismiss)
+        }
+    }
+
+    override fun showDialogDefault(dialogState: DialogState) {
+        viewModelScope.launch {
+            _defaultDialogState.emit(dialogState)
         }
     }
 }

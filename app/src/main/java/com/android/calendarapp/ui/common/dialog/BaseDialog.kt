@@ -35,7 +35,6 @@ fun BaseDialog(
         onDismissRequest = onDismiss
     ) {
         Card(
-            modifier = Modifier.width(250.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White
             ),

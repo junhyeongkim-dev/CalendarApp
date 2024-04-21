@@ -8,38 +8,27 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.android.calendarapp.ui.calendar.component.day.DayItem
-import com.android.calendarapp.ui.calendar.data.DayItemData
+import com.android.calendarapp.ui.calendar.model.DayItemModel
 
 @Composable
 fun WeekItem(
-    weekData: List<DayItemData>,
+    weekData: List<DayItemModel>,
     weekIndex: Int,
     height: Dp,
-    selectedDay: LiveData<String>,
+    selectedDay: State<String>,
     dayItemOnclick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier.height(height)
     ){
         for((index, dayData) in weekData.withIndex()) {
-
-            // 여섯번째 주에 처음에는 시작 spacer를 준다.
-            if(weekIndex == 5 && index == 0) {
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(0.5.dp)
-                        .background(Color.Black)
-                )
-            }
 
             DayItem(dayData, height, selectedDay, dayItemOnclick)
 
@@ -66,17 +55,17 @@ fun WeekItem(
 @Composable
 fun WeekItemPreview() {
 
-    val dayItemList: MutableList<DayItemData> = mutableListOf()
-    val borderDayItemList: MutableList<DayItemData> = mutableListOf()
+    val dayItemList: MutableList<DayItemModel> = mutableListOf()
+    val borderDayItemList: MutableList<DayItemModel> = mutableListOf()
 
     for (i in 1..7) {
         dayItemList.add(
-            DayItemData(
+            DayItemModel(
                 dayText = i.toString()
             )
         )
         borderDayItemList.add(
-            DayItemData(
+            DayItemModel(
                 dayText = i.toString(),
                 needBorder = true
             )
@@ -84,8 +73,8 @@ fun WeekItemPreview() {
     }
 
     Column {
-        WeekItem(dayItemList, 0, 80.dp, MutableLiveData("18"), {})
-        WeekItem(borderDayItemList, 0, 80.dp, MutableLiveData("18"), {})
+        /*WeekItem(dayItemList, 0, 80.dp, MutableLiveData("18"), {})
+        WeekItem(borderDayItemList, 0, 80.dp, MutableLiveData("18"), {})*/
     }
 
 

@@ -42,6 +42,7 @@ androidx-hilt-compose = { group = "androidx.hilt", name = "hilt-navigation-compo
 
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime" , version.ref = "roomVersion"}
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler" , version.ref = "roomVersion"}
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx" , version.ref = "roomVersion"}
 
 com-navercorp-nid-oauth = { group = "com.navercorp.nid", name = "oauth" , version.ref = "naverOauthVersion"}
 
