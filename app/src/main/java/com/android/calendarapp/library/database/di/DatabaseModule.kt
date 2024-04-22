@@ -3,6 +3,7 @@ package com.android.calendarapp.library.database.di
 import android.content.Context
 import androidx.room.Room
 import com.android.calendarapp.feature.category.data.dao.CategoryDAO
+import com.android.calendarapp.feature.schedule.data.dao.ScheduleDAO
 import com.android.calendarapp.feature.user.data.dao.UserDAO
 import com.android.calendarapp.library.database.AppDatabase
 import dagger.Module
@@ -36,5 +37,11 @@ object DatabaseModule {
     @Singleton
     fun provideCategoryDao(database: AppDatabase) : CategoryDAO {
         return database.categoryDAO()
+    }
+
+    @Provides
+    @Singleton
+    fun provideScheduleDao(database: AppDatabase) : ScheduleDAO {
+        return database.scheduleDAO()
     }
 }

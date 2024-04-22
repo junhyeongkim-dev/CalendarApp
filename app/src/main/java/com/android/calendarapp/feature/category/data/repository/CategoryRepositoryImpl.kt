@@ -20,7 +20,7 @@ class CategoryRepositoryImpl @Inject constructor(
         categoryDAO.insert(categoryEntity)
     }
 
-    override suspend fun deleteCategory(categoryName: String) {
-        categoryDAO.delete(categoryName)
+    override suspend fun deleteCategory(categoryEntity: CategoryEntity) {
+        categoryDAO.delete(categoryEntity)
     }
 }

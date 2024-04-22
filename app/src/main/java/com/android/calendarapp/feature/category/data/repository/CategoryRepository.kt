@@ -10,5 +10,5 @@ interface CategoryRepository {
 
     suspend fun insertCategory(categoryEntity: CategoryEntity)
 
-    suspend fun deleteCategory(categoryName: String)
+    suspend fun deleteCategory(categoryEntity: CategoryEntity)
 }

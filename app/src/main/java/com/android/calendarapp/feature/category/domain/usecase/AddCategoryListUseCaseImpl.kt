@@ -9,7 +9,7 @@ class AddCategoryListUseCaseImpl @Inject constructor(
     private val context: Context,
     private val categoryRepositoryImpl: CategoryRepositoryImpl
 ) : AddCategoryListUseCase {
-    override suspend fun invoke() {
-        categoryRepositoryImpl.insertCategoryList(GsonUtil.readJsonData("prepare_category_info.json", context))
-    }
+    override suspend fun invoke() = categoryRepositoryImpl.insertCategoryList(
+        GsonUtil.readJsonData("prepare_category_info.json", context)
+    )
 }

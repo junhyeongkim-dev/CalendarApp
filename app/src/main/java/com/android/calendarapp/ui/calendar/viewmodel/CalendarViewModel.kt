@@ -35,8 +35,6 @@ class CalendarViewModel @Inject constructor(
     private val preferencesHelper: ISharedPreferencesHelper,
     private val applicationContext: Context,
     private val tinkHelper: TinkHelper,
-    private val addCategoryUseCase: AddCategoryUseCase,
-    private val getCategoryListUseCase: GetCategoryListUseCase,
     private val getUserUseCase: GetUserUseCase
 ) : BaseViewModel(preferencesHelper), ICalendarViewModelInput, ICalendarViewModelOutput {
 
@@ -52,8 +50,6 @@ class CalendarViewModel @Inject constructor(
     private val _selectedDay: MutableState<String> = mutableStateOf(DateUtil.getCurrentDay())
     override val selectedDay: State<String> = _selectedDay
 
-    override var categoryList: Flow<List<CategoryModel>> = emptyFlow()
-
     private val _calendarData: MutableMap<Int, List<List<DayItemModel>>> = mutableMapOf()
     override val calendarData: Map<Int, List<List<DayItemModel>>> = _calendarData
 
@@ -63,34 +59,14 @@ class CalendarViewModel @Inject constructor(
     private val _calendarUiState: MutableStateFlow<CalendarUiEffect> = MutableStateFlow(CalendarUiEffect.Loading)
     override val calendarUiState: StateFlow<CalendarUiEffect> = _calendarUiState
 
-    private val _scheduleUiState: MutableState<Boolean> = mutableStateOf(false)
-    override val scheduleUiState: State<Boolean> = _scheduleUiState
-
     private val _yearMonthHeader: MutableState<String> = mutableStateOf(DateUtil.getCurrentYearMonth())
     override val yearMonthHeader: State<String> = _yearMonthHeader
-
-    private val _scheduleEditText: MutableState<String> = mutableStateOf("")
-    override val scheduleText: State<String> = _scheduleEditText
-
-    private val _dropDownState: MutableState<Boolean> = mutableStateOf(false)
-    override val dropDownState: State<Boolean> = _dropDownState
-
-    private val _selectedCategory: MutableState<String> = mutableStateOf(ResourceUtil.getString(applicationContext, R.string.category_default_text))
-    override val selectedCategory: State<String> = _selectedCategory
-
-    private val _categoryDialogState: MutableStateFlow<DialogState> = MutableStateFlow(DialogState.Dismiss)
-    override val categoryDialogState: StateFlow<DialogState> = _categoryDialogState
-
-    private val _categoryDialogText: MutableState<String> = mutableStateOf("")
-    override val categoryDialogText: State<String> = _categoryDialogText
 
 
     suspend fun init() {
         viewModelScope.launch(Dispatchers.IO) {
             val userId = preferencesHelper.getUserId()
             userBirth = tinkHelper.stringDecrypt(getUserUseCase(userId).userBirth, userId)
-
-            categoryList = getCategoryListUseCase()
         }
 
         viewModelScope.launch {
@@ -134,66 +110,5 @@ class CalendarViewModel @Inject constructor(
 
     override fun onClickDayItem(day: String) {
         _selectedDay.value = day
-    }
-
-    override fun onChangeScheduleState() {
-        if(_scheduleUiState.value) {
-            // 팝업 닫기 요청 일 때
-
-            _scheduleEditText.value = ""
-            _selectedCategory.value = ResourceUtil.getString(applicationContext, R.string.category_default_text)
-        }
-
-        _scheduleUiState.value = !_scheduleUiState.value
-    }
-
-    override fun onChangeScheduleEditText(text: String) {
-        _scheduleEditText.value = text
-    }
-
-    override fun onChangeDropDownState() {
-        _dropDownState.value = !_dropDownState.value
-    }
-
-    override fun onChangeCategory(category: String) {
-        if(category.isEmpty()) _selectedCategory.value = ResourceUtil.getString(applicationContext, R.string.category_default_text)
-        else _selectedCategory.value = category
-    }
-
-    override fun onClickAddCategory() {
-        viewModelScope.launch {
-            _categoryDialogState.emit(
-                DialogState.Show(
-                    AppDialog.CategoryDialog(
-                        title = ResourceUtil.getString(applicationContext, R.string.category_dialog_title),
-                        text = categoryDialogText,
-                        onChangeText = { text ->
-                            _categoryDialogText.value = text
-                        },
-                        confirmOnClick = {
-                            viewModelScope.launch(Dispatchers.IO) {
-                                addCategoryUseCase(CategoryModel(
-                                    categoryName = _categoryDialogText.value
-                                ))
-                                
-                                onDismissCategoryDialog()
-                            }
-                        },
-                        cancelOnClick = {
-                            _categoryDialogText.value = ""
-                            onDismissCategoryDialog()
-                        },
-                        onDismiss = {
-                            _categoryDialogText.value = ""
-                            onDismissCategoryDialog()
-                        }
-                    )
-                )
-            )
-        }
-    }
-
-    override fun onDismissCategoryDialog() {
-        _categoryDialogState.value = DialogState.Dismiss
     }
 }
