@@ -9,6 +9,8 @@ import com.android.calendarapp.R
 import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.feature.category.domain.usecase.AddCategoryUseCase
 import com.android.calendarapp.feature.category.domain.usecase.GetCategoryListUseCase
+import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
+import com.android.calendarapp.feature.schedule.domain.usecase.GetScheduleGroupListUseCase
 import com.android.calendarapp.feature.user.domain.usecase.GetUserUseCase
 import com.android.calendarapp.library.security.preperence.helper.ISharedPreferencesHelper
 import com.android.calendarapp.library.security.tink.helper.TinkHelper
@@ -23,11 +25,15 @@ import com.android.calendarapp.util.DateUtil
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,8 +41,8 @@ class CalendarViewModel @Inject constructor(
     private val preferencesHelper: ISharedPreferencesHelper,
     private val applicationContext: Context,
     private val tinkHelper: TinkHelper,
-    private val getUserUseCase: GetUserUseCase
-) : BaseViewModel(preferencesHelper), ICalendarViewModelInput, ICalendarViewModelOutput {
+    private val getUserUseCase: GetUserUseCase,
+) : BaseViewModel(), ICalendarViewModelInput, ICalendarViewModelOutput {
 
     val input: ICalendarViewModelInput = this
     val output: ICalendarViewModelOutput = this
@@ -47,9 +53,6 @@ class CalendarViewModel @Inject constructor(
     // 유저 생일
     private var userBirth = ""
 
-    private val _selectedDay: MutableState<String> = mutableStateOf(DateUtil.getCurrentDay())
-    override val selectedDay: State<String> = _selectedDay
-
     private val _calendarData: MutableMap<Int, List<List<DayItemModel>>> = mutableMapOf()
     override val calendarData: Map<Int, List<List<DayItemModel>>> = _calendarData
 
@@ -59,21 +62,22 @@ class CalendarViewModel @Inject constructor(
     private val _calendarUiState: MutableStateFlow<CalendarUiEffect> = MutableStateFlow(CalendarUiEffect.Loading)
     override val calendarUiState: StateFlow<CalendarUiEffect> = _calendarUiState
 
-    private val _yearMonthHeader: MutableState<String> = mutableStateOf(DateUtil.getCurrentYearMonth())
-    override val yearMonthHeader: State<String> = _yearMonthHeader
+    private val _yearMonthHeader: MutableStateFlow<String> = MutableStateFlow(DateUtil.getCurrentYearMonth())
+    override val yearMonthHeader: StateFlow<String> = _yearMonthHeader
 
+    private val _selectedDay: MutableStateFlow<String> = MutableStateFlow(DateUtil.getCurrentDay())
+    override val selectedDay: StateFlow<String> = _selectedDay
+    override val refreshDayScheduleFlow: Flow<Pair<String, String>>
+        get() = _yearMonthHeader.combine(_selectedDay) { yearMonth, day ->
+                    Pair(yearMonth, day)
+                }
 
     suspend fun init() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val userId = preferencesHelper.getUserId()
-            userBirth = tinkHelper.stringDecrypt(getUserUseCase(userId).userBirth, userId)
-        }
-
         viewModelScope.launch {
-            if(_calendarData.size >= 7) {
-                // 이미 초기 세팅이 끝났을 때
 
-                _calendarUiState.emit(CalendarUiEffect.Complete)
+            withContext(Dispatchers.IO) {
+                val userId = preferencesHelper.getUserId()
+                userBirth = tinkHelper.stringDecrypt(getUserUseCase(userId).userBirth, userId)
             }
         }
     }
@@ -91,7 +95,7 @@ class CalendarViewModel @Inject constructor(
                 val monthData = DateUtil.makeMonthData(applicationContext, defaultPage, page, userBirth)
 
                 //현재 요청일 저장
-                if(monthData.size >= 4) _calendarData[page] = monthData else _calendarErrorData[page] = ResourceUtil.getString(applicationContext, R.string.calendar_data_parsing_error)
+                if(monthData.size == 6) _calendarData[page] = monthData else _calendarErrorData[page] = ResourceUtil.getString(applicationContext, R.string.calendar_data_parsing_error)
             }catch (e: Exception) {
                 _calendarErrorData[page] = e.toString()
             }finally {

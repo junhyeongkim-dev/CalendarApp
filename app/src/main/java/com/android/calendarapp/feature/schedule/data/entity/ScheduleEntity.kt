@@ -8,10 +8,13 @@ import androidx.room.PrimaryKey
 class ScheduleEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "seq_no")
-    val seqNo: Int,
+    val seqNo: Int = 0,
 
-    @ColumnInfo(name = "schedule_date")
-    val scheduleDate: String,
+    @ColumnInfo(name = "schedule_year_month")
+    val scheduleYearMonth: String,
+
+    @ColumnInfo(name = "schedule_day")
+    val scheduleDay: String,
 
     @ColumnInfo(name = "schedule_content")
     val scheduleContent: String,

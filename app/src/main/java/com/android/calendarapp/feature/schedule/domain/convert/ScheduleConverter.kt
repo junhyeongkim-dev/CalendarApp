@@ -5,14 +5,16 @@ import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
 
 fun ScheduleEntity.toModel(): ScheduleModel = ScheduleModel(
     seqNo = this.seqNo,
-    scheduleDate = this.scheduleDate,
+    scheduleYearMonth = this.scheduleYearMonth,
+    scheduleDay = this.scheduleDay,
     scheduleContent = this.scheduleContent,
     categoryName = this.categoryName
 )
 
 fun ScheduleModel.toEntity(): ScheduleEntity = ScheduleEntity(
     seqNo = this.seqNo,
-    scheduleDate = this.scheduleDate,
+    scheduleYearMonth = this.scheduleYearMonth,
+    scheduleDay = this.scheduleDay,
     scheduleContent = this.scheduleContent,
     categoryName = this.categoryName
 )

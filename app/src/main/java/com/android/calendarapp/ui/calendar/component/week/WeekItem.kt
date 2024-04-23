@@ -14,15 +14,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import com.android.calendarapp.ui.calendar.component.day.DayItem
 import com.android.calendarapp.ui.calendar.model.DayItemModel
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun WeekItem(
     weekData: List<DayItemModel>,
-    weekIndex: Int,
+    scheduleData: Flow<List<ScheduleGroupModel>>,
     height: Dp,
-    selectedDay: State<String>,
+    selectedDay: String,
     dayItemOnclick: (String) -> Unit
 ) {
     Row(
@@ -30,7 +32,13 @@ fun WeekItem(
     ){
         for((index, dayData) in weekData.withIndex()) {
 
-            DayItem(dayData, height, selectedDay, dayItemOnclick)
+            DayItem(
+                data = dayData,
+                height = height,
+                selectedDay = selectedDay,
+                scheduleData = scheduleData,
+                dayItemOnclick = dayItemOnclick
+            )
 
             if(index != weekData.lastIndex) {
                 Spacer(

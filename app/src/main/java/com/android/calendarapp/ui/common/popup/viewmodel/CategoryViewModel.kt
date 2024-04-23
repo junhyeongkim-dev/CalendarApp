@@ -14,6 +14,7 @@ import com.android.calendarapp.ui.common.dialog.AppDialog
 import com.android.calendarapp.ui.common.output.DialogState
 import com.android.calendarapp.ui.common.popup.input.ICategoryViewModelInput
 import com.android.calendarapp.ui.common.popup.output.ICategoryViewModelOutput
+import com.android.calendarapp.ui.common.viewmodel.BaseViewModel
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +33,17 @@ class CategoryViewModel @Inject constructor(
     private val getCategoryListUseCase: GetCategoryListUseCase
 ) : ViewModel(), ICategoryViewModelInput, ICategoryViewModelOutput {
 
+    override var categoryList: Flow<List<CategoryModel>> = emptyFlow()
+
+    private val _categoryDialogState: MutableStateFlow<DialogState> = MutableStateFlow(DialogState.Dismiss)
+    override val categoryDialogState: StateFlow<DialogState> = _categoryDialogState
+
+    private val _categoryDialogText: MutableState<String> = mutableStateOf("")
+    override val categoryDialogText: State<String> = _categoryDialogText
+
+    private val _isNotExistCategoryState: MutableState<Boolean> = mutableStateOf(false)
+    override val isNotExistCategoryState: State<Boolean> = _isNotExistCategoryState
+
     init {
         init()
     }
@@ -41,14 +53,6 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    override var categoryList: Flow<List<CategoryModel>> = emptyFlow()
-
-    private val _categoryDialogState: MutableStateFlow<DialogState> = MutableStateFlow(DialogState.Dismiss)
-    override val categoryDialogState: StateFlow<DialogState> = _categoryDialogState
-
-    private val _categoryDialogText: MutableState<String> = mutableStateOf("")
-    override val categoryDialogText: State<String> = _categoryDialogText
-
     override fun showCategoryDialog() {
         viewModelScope.launch {
             _categoryDialogState.emit(
@@ -56,18 +60,27 @@ class CategoryViewModel @Inject constructor(
                     AppDialog.CategoryDialog(
                         title = ResourceUtil.getString(applicationContext, R.string.category_dialog_title),
                         text = categoryDialogText,
+                        isNotExistCategoryState = isNotExistCategoryState,
                         onChangeText = { text ->
+                            _isNotExistCategoryState.value = false
+
                             _categoryDialogText.value = text
                         },
                         confirmOnClick = {
-                            viewModelScope.launch(Dispatchers.IO) {
-                                addCategoryUseCase(
-                                    CategoryModel(
-                                        categoryName = _categoryDialogText.value
-                                    )
-                                )
+                            if(_categoryDialogText.value.isEmpty()) {
+                                // 입력된 카테고리 이름이 없을 때
 
-                                onDismissCategoryDialog()
+                                _isNotExistCategoryState.value = true
+                            } else {
+                                viewModelScope.launch(Dispatchers.IO) {
+                                    addCategoryUseCase(
+                                        CategoryModel(
+                                            categoryName = _categoryDialogText.value
+                                        )
+                                    )
+
+                                    onDismissCategoryDialog()
+                                }
                             }
                         },
                         cancelOnClick = {

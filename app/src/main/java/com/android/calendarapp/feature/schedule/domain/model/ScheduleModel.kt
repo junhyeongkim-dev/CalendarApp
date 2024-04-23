@@ -1,9 +1,13 @@
 package com.android.calendarapp.feature.schedule.domain.model
 
-data class ScheduleModel(
-    val seqNo: Int,
+import androidx.room.ColumnInfo
 
-    val scheduleDate: String,
+data class ScheduleModel(
+    val seqNo: Int = 0,
+
+    val scheduleYearMonth: String,
+
+    val scheduleDay: String,
 
     val scheduleContent: String,
 

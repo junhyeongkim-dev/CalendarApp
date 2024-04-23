@@ -2,6 +2,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
+import java.util.Date
 import java.util.Locale
 
 fun getDayOfWeek(year: Int, month: Int): String {
@@ -51,6 +52,10 @@ fun flatMapTest() {
     }
 
     println(characters)
+}
+
+fun getDate(date: String) {
+    println()
 }
 
 //getDayOfWeek(2024, 2)

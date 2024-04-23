@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,11 +29,12 @@ import androidx.compose.ui.unit.sp
 import com.android.calendarapp.R
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 
-private val maxLength = 30
+private const val maxLength = 30
 
 @Composable
 fun CategoryDialogContent(
     text: State<String>,
+    isNotExistCategoryState: State<Boolean>,
     onChangeText: (String) -> Unit
 ) {
     val textFieldValue = text.value
@@ -101,14 +103,21 @@ fun CategoryDialogContent(
         }
 
         if(text.value.length == maxLength) {
-            Text(
-                modifier = Modifier.padding(top = 5.dp),
-                text = "카테고리의 이름이 한도를 초과했습니다.",
-                fontSize = 12.sp,
-                color = Color.Red
-            )
+            NotiText(stringResource(id = R.string.category_popup_over_max_length))
+        }else if(isNotExistCategoryState.value) {
+            NotiText(stringResource(id = R.string.category_popup_not_exist_name))
         }
     }
+}
+
+@Composable
+private fun NotiText(message: String) {
+    Text(
+        modifier = Modifier.padding(top = 5.dp),
+        text = message,
+        fontSize = 12.sp,
+        color = Color.Red
+    )
 }
 
 @Preview
@@ -118,6 +127,9 @@ fun CategoryDialogContentPreview() {
         CategoryDialogContent(
             text = remember {
                 mutableStateOf("asdfsdaf")
+            },
+            isNotExistCategoryState = remember {
+                mutableStateOf(false)
             }
         ) {
 

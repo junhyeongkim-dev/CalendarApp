@@ -2,14 +2,20 @@
     <string name="app_name">CalendarApp</string>
     <string name="app_bar_sign_in_title_name">로그인</string>
     <string name="app_bar_calendar_title_name">%1$s의 캘린더</string>
+
+    <string name="dialog_login_error_title">로그인 에러</string>
+    <string name="dialog_login_error_content">%1$s 로그인 중 에러가 발생했습니다. \n 잠시후 다시 시도해주세요. \n%2$s</string>
+
+    <string name="calendar_data_parsing_error">입력받은 년,월 데이터 형식이 잘못됐습니다. \n 관리자에게 문의해주세요.</string>
+    <string name="calendar_load_data_error">페이지 에러 \n (Error : %1$s)</string>
+    <string name="calendar_empty_schedule">등록된 일정이 없습니다. \n +버튼을 클릭해 일정을 등록해보세요.</string>
+
+    <string name="snackbar_auto_login_error">자동로그인에 실패했습니다. \n 다시 로그인해주세요.</string>
+    <string name="snackbar_not_schedule_content">스케줄 내용을 입력해주세요.</string>
+
     <string name="category_dropdown_add_text">새로 만들기</string>
     <string name="category_default_text">카테고리 없음</string>
     <string name="category_dialog_title">카테고리 추가</string>
-
-    <!-- 에러 alert -->
-    <string name="dialog_login_error_title">로그인 에러</string>
-    <string name="dialog_login_error_content">%1$s 로그인 중 에러가 발생했습니다. \n 잠시후 다시 시도해주세요. \n%2$s</string>
-    <string name="snackbar_auto_login_error">자동로그인에 실패했습니다. \n 다시 로그인해주세요.</string>
-    <string name="calendar_data_parsing_error">입력받은 년,월 데이터 형식이 잘못됐습니다. \n 관리자에게 문의해주세요.</string>
-    <string name="calendar_load_data_error">페이지 에러 \n (Error : %1$s)</string>
+    <string name="category_popup_over_max_length">카테고리의 이름이 한도를 초과했습니다.</string>
+    <string name="category_popup_not_exist_name">카테고리 이름을 입력해주세요.</string>
 </resources>

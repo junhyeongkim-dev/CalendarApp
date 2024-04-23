@@ -60,6 +60,7 @@ sealed class AppDialog(
         override val confirmOnClick: () -> Unit,
         override val onDismiss: () -> Unit,
         val text: State<String>,
+        val isNotExistCategoryState: State<Boolean>,
         val onChangeText: (String) -> Unit,
         val cancelOnClick: () -> Unit
     ) : AppDialog(title, confirmOnClick, onDismiss)

@@ -19,7 +19,7 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val preferencesHelper: ISharedPreferencesHelper,
     private val naverLoginManager: INaverLoginManager
-) : BaseViewModel(preferencesHelper), ISplashViewModelInput, ISplashViewModelOutput {
+) : BaseViewModel(), ISplashViewModelInput, ISplashViewModelOutput {
 
     private val _loginState: MutableSharedFlow<LoginStateEffect> = MutableSharedFlow(replay = 0)
     override val loginState: SharedFlow<LoginStateEffect> = _loginState

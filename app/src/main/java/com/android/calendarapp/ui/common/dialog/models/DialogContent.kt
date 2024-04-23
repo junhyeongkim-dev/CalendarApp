@@ -9,6 +9,7 @@ sealed class DialogContent(
     ) : DialogContent()
     data class Category(
         val text: State<String>,
-        val onChangeText: (String) -> Unit
+        val onChangeText: (String) -> Unit,
+        val isNotExistCategoryState: State<Boolean>
     ) : DialogContent()
 }

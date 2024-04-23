@@ -17,6 +17,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,7 +39,7 @@ fun CalendarHeader(
     previousOnClick: () -> Unit,
     nextOnClick: () -> Unit
 ) {
-    var headerDate = "${date.split(dateDelimiter)[0]}년 ${date.split(dateDelimiter)[1]}월"
+    val headerDate = "${date.split(dateDelimiter)[0]}년 ${date.split(dateDelimiter)[1]}월"
 
     Column {
         Row(
@@ -50,9 +53,11 @@ fun CalendarHeader(
             Icon(
                 modifier = Modifier
                     .size(30.dp)
-                    .clickable {
-                        previousOnClick.invoke()
-                    },
+                    .then(
+                        remember {
+                            Modifier.clickable { previousOnClick.invoke() }
+                        }
+                    ),
                 imageVector = Icons.Filled.KeyboardArrowLeft,
                 contentDescription = "이전 월 Icon"
             )
@@ -71,10 +76,11 @@ fun CalendarHeader(
             Icon(
                 modifier = Modifier
                     .size(30.dp)
-                    .clickable {
-                        nextOnClick.invoke()
-                    }
-                ,
+                    .then(
+                        remember {
+                            Modifier.clickable { nextOnClick.invoke() }
+                        }
+                    ),
                 imageVector = Icons.Filled.KeyboardArrowRight,
                 contentDescription = "다음 월 Icon"
             )

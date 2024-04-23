@@ -34,6 +34,7 @@ fun DialogWrapper(appDialog: AppDialog) {
             CategoryDialog(
                 title = appDialog.title,
                 text = appDialog.text,
+                isNotExistCategoryState = appDialog.isNotExistCategoryState,
                 onChangeText = appDialog.onChangeText,
                 confirmOnClick = appDialog.confirmOnClick,
                 cancelOnClick = appDialog.cancelOnClick,
@@ -99,6 +100,7 @@ fun DefaultTwoButtonDialog(
 fun CategoryDialog(
     title: String,
     text: State<String>,
+    isNotExistCategoryState: State<Boolean>,
     onChangeText: (String) -> Unit,
     confirmOnClick: () -> Unit,
     cancelOnClick: () -> Unit,
@@ -108,6 +110,7 @@ fun CategoryDialog(
         title = title,
         dialogContent = DialogContent.Category(
             text = text,
+            isNotExistCategoryState = isNotExistCategoryState,
             onChangeText = onChangeText
         ),
         buttonList = listOf(

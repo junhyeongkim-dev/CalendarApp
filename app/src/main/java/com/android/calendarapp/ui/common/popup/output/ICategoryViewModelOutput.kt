@@ -18,4 +18,7 @@ interface ICategoryViewModelOutput {
 
     // 카테고리 다이얼로그 텍스트필드
     val categoryDialogText: State<String>
+
+    // 카테고리 없이 저장하려고 할 때 메시지 노출을 위한 상태
+    val isNotExistCategoryState: State<Boolean>
 }

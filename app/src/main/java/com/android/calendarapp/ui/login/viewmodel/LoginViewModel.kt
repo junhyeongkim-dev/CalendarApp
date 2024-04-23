@@ -39,7 +39,7 @@ class LoginViewModel @Inject constructor(
     private val getCategoryListUseCase: GetCategoryListUseCase,
     private val addCategoryListUseCase: AddCategoryListUseCase,
     private val addUserUseCase: AddUserUseCase
-) : BaseViewModel(preferencesHelper), ILoginViewModelInput, ILoginViewModelOutput {
+) : BaseViewModel(), ILoginViewModelInput, ILoginViewModelOutput {
 
     private val _loginNavigateEffect = MutableSharedFlow<LoginNavigateEffect>(replay = 0)
     override val loginNavigateEffect: SharedFlow<LoginNavigateEffect> = _loginNavigateEffect

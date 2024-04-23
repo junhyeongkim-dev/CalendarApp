@@ -41,7 +41,6 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val snackBarHostState = SnackbarHostState()
 
     BaseFullScreen(
         title = stringResource(id = R.string.app_bar_sign_in_title_name),
@@ -49,7 +48,7 @@ fun LoginScreen(
         isShowBottomLine = true,
         dialogState = viewModel.defaultDialogState,
         onBackPress = { viewModel.onDismissDefaultDialog() },
-        snackBarHostState = snackBarHostState
+        snackBarHostState = viewModel.snackBarHostState
     ) { paddingValues ->
         Row(
             modifier = Modifier
@@ -88,7 +87,7 @@ fun LoginScreen(
     // 메시지가 있다면 스낵바 오픈
     if(isFailLogin) {
         LaunchedEffect(key1 = true) {
-            snackBarHostState.showSnackbar(
+            viewModel.showSnackBar(
                 getString(
                     context,
                     id = R.string.snackbar_auto_login_error

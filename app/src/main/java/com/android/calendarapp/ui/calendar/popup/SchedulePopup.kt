@@ -29,6 +29,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,20 +42,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.calendarapp.R
 import com.android.calendarapp.feature.category.domain.model.CategoryModel
+import com.android.calendarapp.ui.calendar.output.ICalendarViewModelOutput
 import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
 import com.android.calendarapp.ui.calendar.popup.output.IScheduleViewModelOutput
-import com.android.calendarapp.ui.calendar.popup.viewModel.ScheduleViewModel
 
 @Composable
 fun SchedulePopup(
     categoryItems: List<CategoryModel>,
+    page: Int,
     scheduleInput: IScheduleViewModelInput,
     scheduleOutput: IScheduleViewModelOutput,
+    calendarOutput: ICalendarViewModelOutput,
+    snackBarEvent: (String) -> Unit,
     onClickAddCategory: () -> Unit
 ) {
+
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -163,11 +170,31 @@ fun SchedulePopup(
                         .weight(1f)
                     )
 
+                    val scheduleText = remember { scheduleOutput::scheduleText.get() }
+
+                    val snackBarMessage = stringResource(id = R.string.snackbar_not_schedule_content)
+
+                    val selectedYearMonth = remember { calendarOutput.yearMonthHeader.value }
+                    val selectedDay = remember { calendarOutput.selectedDay.value }
+                    val selectedCategory = remember{ scheduleOutput::selectedCategory.get() }
+                    val addScheduleFunction = remember{ scheduleInput::onClickAddSchedule }
+
                     IconButton(
                         modifier = Modifier
                             .size(40.dp)
                             .padding(),
-                        onClick = {},
+                        onClick = {
+
+                            if(scheduleText.value.isEmpty()) {
+                                // 입력된 일정이 없을 때
+
+                                snackBarEvent.invoke(snackBarMessage)
+                            }else{
+                                addScheduleFunction.invoke(
+                                    page, selectedYearMonth, selectedDay, selectedCategory.value
+                                )
+                            }
+                        },
                         colors = IconButtonDefaults.iconButtonColors(
                             containerColor = Color(colorResource(id = R.color.naver).value)
                         )
@@ -215,23 +242,25 @@ private fun CategoryDropDown(
             }
         )
 
-        categoryItems.forEach { categoryModel ->
-            DropdownMenuItem(
-                modifier = Modifier
-                    .padding(
-                        vertical = dimensionResource(id = R.dimen.dimen_category_dropdown_item_margin).value.dp
-                    ),
-                text = {
-                    Text(
-                        text = categoryModel.categoryName,
-                        fontSize = dimensionResource(id = R.dimen.dimen_category_dropdown_item_text).value.sp,
-                        color = Color.Black
-                    )
-                }, onClick = {
-                    onChangeDropDownState.invoke()
-                    onChangeSelectedCategory(categoryModel.categoryName)
-                }
-            )
+        categoryItems.forEach { categoryItem ->
+            key(categoryItem.categoryName) {
+                DropdownMenuItem(
+                    modifier = Modifier
+                        .padding(
+                            vertical = dimensionResource(id = R.dimen.dimen_category_dropdown_item_margin).value.dp
+                        ),
+                    text = {
+                        Text(
+                            text = categoryItem.categoryName,
+                            fontSize = dimensionResource(id = R.dimen.dimen_category_dropdown_item_text).value.sp,
+                            color = Color.Black
+                        )
+                    }, onClick = {
+                        onChangeDropDownState.invoke()
+                        onChangeSelectedCategory(categoryItem.categoryName)
+                    }
+                )
+            }
         }
 
         DropdownMenuItem(

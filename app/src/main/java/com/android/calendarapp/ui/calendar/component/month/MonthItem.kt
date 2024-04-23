@@ -11,14 +11,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import com.android.calendarapp.ui.calendar.component.week.WeekItem
 import com.android.calendarapp.ui.calendar.model.DayItemModel
 import com.android.calendarapp.ui.theme.CalendarAppTheme
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun MonthItem(
     monthData: List<List<DayItemModel>>,
-    selectedDay: State<String>,
+    selectedDay: String,
+    scheduleData: Flow<List<ScheduleGroupModel>>,
     dayItemOnclick: (String) -> Unit
 ) {
     val height = 70.dp
@@ -27,10 +30,10 @@ fun MonthItem(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        for ((index, weekData) in monthData.withIndex()) {
+        for (weekData in monthData) {
             WeekItem(
                 weekData = weekData,
-                weekIndex = index,
+                scheduleData = scheduleData,
                 height = height,
                 selectedDay = selectedDay,
                 dayItemOnclick = dayItemOnclick

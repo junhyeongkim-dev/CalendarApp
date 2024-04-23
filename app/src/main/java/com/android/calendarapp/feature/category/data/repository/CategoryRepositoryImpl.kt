@@ -8,19 +8,13 @@ import javax.inject.Inject
 class CategoryRepositoryImpl @Inject constructor(
     private val categoryDAO: CategoryDAO
 ) : CategoryRepository {
-    override suspend fun selectCategoryList(): Flow<List<CategoryEntity>> {
-        return categoryDAO.selectAll()
-    }
+    override suspend fun selectCategoryList(): Flow<List<CategoryEntity>> = categoryDAO.selectAll()
 
-    override suspend fun insertCategoryList(categoryEntityList: List<CategoryEntity>) {
-        categoryDAO.insertAll(categoryEntityList)
-    }
+    override suspend fun insertCategoryList(categoryEntityList: List<CategoryEntity>) = categoryDAO.insertAll(categoryEntityList)
 
-    override suspend fun insertCategory(categoryEntity: CategoryEntity) {
-        categoryDAO.insert(categoryEntity)
-    }
+    override suspend fun insertCategory(categoryEntity: CategoryEntity) = categoryDAO.insert(categoryEntity)
 
-    override suspend fun deleteCategory(categoryEntity: CategoryEntity) {
-        categoryDAO.delete(categoryEntity)
-    }
+    override suspend fun selectCategory(categoryName: String): String? = categoryDAO.selectCategory(categoryName)
+
+    override suspend fun deleteCategory(categoryEntity: CategoryEntity) = categoryDAO.delete(categoryEntity)
 }

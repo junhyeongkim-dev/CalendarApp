@@ -12,6 +12,7 @@ fun DialogContentWrapper(
         is DialogContent.Category ->
             CategoryDialogContent(
                 text = dialogContent.text,
+                isNotExistCategoryState = dialogContent.isNotExistCategoryState,
                 onChangeText = dialogContent.onChangeText
             )
     }

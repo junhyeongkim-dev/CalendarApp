@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetScheduleListUseCaseImpl @Inject constructor(
+class GetAllScheduleUseCaseImpl @Inject constructor(
     private val scheduleRepository: ScheduleRepository
-) : GetScheduleListUseCase {
+) : GetAllScheduleUseCase {
     override suspend fun invoke(): Flow<List<ScheduleModel>> =
-        scheduleRepository.selectScheduleList().map { scheduleEntityList ->
+        scheduleRepository.selectAllSchedule().map { scheduleEntityList ->
             scheduleEntityList.map { scheduleEntity ->
                 scheduleEntity.toModel()
             }
