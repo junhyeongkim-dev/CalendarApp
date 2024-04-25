@@ -1,4 +1,4 @@
-package com.android.calendarapp.ui.common.popup.config
+package com.android.calendarapp.ui.calendar.popup.config
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenu

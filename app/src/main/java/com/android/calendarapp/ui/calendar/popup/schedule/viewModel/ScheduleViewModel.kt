@@ -1,4 +1,4 @@
-package com.android.calendarapp.ui.calendar.popup.viewModel
+package com.android.calendarapp.ui.calendar.popup.schedule.viewModel
 
 import android.content.Context
 import androidx.compose.runtime.MutableState
@@ -14,10 +14,12 @@ import com.android.calendarapp.feature.schedule.domain.usecase.AddScheduleUseCas
 import com.android.calendarapp.feature.schedule.domain.usecase.GetDayScheduleUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.GetScheduleGroupListUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.RemoveScheduleUseCase
-import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
-import com.android.calendarapp.ui.calendar.popup.output.IScheduleViewModelOutput
+import com.android.calendarapp.ui.calendar.popup.schedule.input.IScheduleViewModelInput
+import com.android.calendarapp.ui.calendar.popup.schedule.output.IScheduleViewModelOutput
 import com.android.calendarapp.ui.common.dialog.AppDialog
 import com.android.calendarapp.ui.common.dialog.DialogUiState
+import com.android.calendarapp.ui.common.popup.category.input.ICategoryViewModelInput
+import com.android.calendarapp.ui.common.popup.category.output.ICategoryViewModelOutput
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -52,9 +54,6 @@ class ScheduleViewModel @Inject constructor(
     private val _scheduleText: MutableState<String> = mutableStateOf("")
     override val scheduleText: State<String> = _scheduleText
 
-    private val _dropDownState: MutableState<Boolean> = mutableStateOf(false)
-    override val dropDownState: State<Boolean> = _dropDownState
-
     private val _selectedCategory: MutableState<String> = mutableStateOf(ResourceUtil.getString(applicationContext, R.string.category_default_text))
     override val selectedCategory: State<String> = _selectedCategory
 
@@ -87,10 +86,6 @@ class ScheduleViewModel @Inject constructor(
 
     override fun onChangeScheduleEditText(text: String) {
         _scheduleText.value = text
-    }
-
-    override fun onChangeDropDownState() {
-        _dropDownState.value = !_dropDownState.value
     }
 
     override fun onChangeCategory(category: String) {
@@ -132,8 +127,8 @@ class ScheduleViewModel @Inject constructor(
 
     override fun modifySchedule(
         seqNo: Int,
-        categoryList: List<CategoryModel>,
-        onClickAddCategory: () -> Unit
+        categoryInput: ICategoryViewModelInput,
+        categoryOutput: ICategoryViewModelOutput
     ) {
         viewModelScope.launch {
             val schedule = _scheduleList.value.find { it.seqNo == seqNo }!!
@@ -142,11 +137,11 @@ class ScheduleViewModel @Inject constructor(
                 DialogUiState.Show(
                     AppDialog.ScheduleDialog(
                         title = ResourceUtil.getString(applicationContext, R.string.schedule_modify_dialog_title),
+                        schedule = schedule,
                         scheduleInput = input,
                         scheduleOutput = output,
-                        schedule = schedule,
-                        categoryItems = categoryList,
-                        onClickAddCategory = onClickAddCategory,
+                        categoryInput = categoryInput,
+                        categoryOutput = categoryOutput,
                         confirmOnClick = {
                             modifySchedule(schedule)
                             onDismissDialog()

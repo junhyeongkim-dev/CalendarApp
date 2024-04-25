@@ -1,7 +1,9 @@
-package com.android.calendarapp.ui.calendar.popup.input
+package com.android.calendarapp.ui.calendar.popup.schedule.input
 
 import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.ui.common.dialog.DialogUiState
+import com.android.calendarapp.ui.common.popup.category.input.ICategoryViewModelInput
+import com.android.calendarapp.ui.common.popup.category.output.ICategoryViewModelOutput
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 
@@ -15,9 +17,6 @@ interface IScheduleViewModelInput {
 
     // 일정 텍스트
     fun onChangeScheduleEditText(text: String)
-
-    // 카테고리 리스트 팝업 노출 여부 변경
-    fun onChangeDropDownState()
 
     // 선택된 카테고리 변경
     fun onChangeCategory(category: String)
@@ -35,8 +34,8 @@ interface IScheduleViewModelInput {
 
     fun modifySchedule(
         seqNo: Int,
-        categoryList: List<CategoryModel>,
-        onClickAddCategory: () -> Unit
+        categoryInput: ICategoryViewModelInput,
+        categoryOutput: ICategoryViewModelOutput
     )
 
     fun setDialogChannel(channel: Channel<DialogUiState>)

@@ -1,4 +1,4 @@
-package com.android.calendarapp.ui.common.popup.config.input
+package com.android.calendarapp.ui.calendar.popup.config.input
 
 import com.android.calendarapp.feature.user.domain.model.UserModel
 

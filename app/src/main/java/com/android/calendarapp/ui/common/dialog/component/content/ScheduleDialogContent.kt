@@ -27,20 +27,23 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.calendarapp.R
 import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
-import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
-import com.android.calendarapp.ui.calendar.popup.output.IScheduleViewModelOutput
+import com.android.calendarapp.ui.calendar.popup.schedule.input.IScheduleViewModelInput
+import com.android.calendarapp.ui.calendar.popup.schedule.output.IScheduleViewModelOutput
 import com.android.calendarapp.ui.common.popup.category.CategoryDropDown
+import com.android.calendarapp.ui.common.popup.category.input.ICategoryViewModelInput
+import com.android.calendarapp.ui.common.popup.category.output.ICategoryViewModelOutput
 
 @Composable
 fun ScheduleDialogContent(
     scheduleModel: ScheduleModel,
     scheduleInput: IScheduleViewModelInput,
     scheduleOutput: IScheduleViewModelOutput,
-    categoryItems: List<CategoryModel>,
-    onClickAddCategory: () -> Unit
+    categoryInput: ICategoryViewModelInput,
+    categoryOutput: ICategoryViewModelOutput,
 ) {
     Column(
         modifier = Modifier
@@ -48,6 +51,7 @@ fun ScheduleDialogContent(
             .height(140.dp)
             .padding(15.dp)
     ) {
+        val categoryItems = categoryOutput.categoryList.collectAsStateWithLifecycle().value
 
         LaunchedEffect(key1 = true) {
             // 수정할 일정 정보 세팅
@@ -101,7 +105,7 @@ fun ScheduleDialogContent(
                     .background(Color(colorResource(id = R.color.gray2).value))
                     .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 8.dp)
                     .clickable {
-                        scheduleInput.onChangeDropDownState()
+                        categoryInput.onChangeCategoryUiState()
                     }
             ) {
                 Text(
@@ -123,16 +127,16 @@ fun ScheduleDialogContent(
             }
 
             CategoryDropDown(
-                dropDownState= scheduleOutput.dropDownState.value,
+                dropDownState= categoryOutput.categoryPopupUiState.value,
                 categoryItems = categoryItems,
                 selectedCategory = scheduleOutput.selectedCategory.value,
                 onChangeDropDownState = {
-                    scheduleInput.onChangeDropDownState()
+                    categoryInput.onChangeCategoryUiState()
                 },
                 onChangeSelectedCategory = { category ->
                     scheduleInput.onChangeCategory(category)
                 },
-                onClickAddCategory = onClickAddCategory
+                onClickAddCategory = categoryInput::showCategoryDialog
             )
         }
     }

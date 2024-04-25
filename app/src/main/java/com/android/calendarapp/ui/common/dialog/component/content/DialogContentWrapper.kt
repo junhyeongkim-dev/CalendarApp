@@ -2,6 +2,7 @@ package com.android.calendarapp.ui.common.dialog.component.content
 
 import androidx.compose.runtime.Composable
 import com.android.calendarapp.ui.common.dialog.models.DialogContent
+import com.android.calendarapp.ui.common.popup.category.output.ICategoryViewModelOutput
 
 @Composable
 fun DialogContentWrapper(
@@ -21,8 +22,8 @@ fun DialogContentWrapper(
                 scheduleModel = dialogContent.schedule,
                 scheduleInput = dialogContent.scheduleInput,
                 scheduleOutput = dialogContent.scheduleOutput,
-                categoryItems = dialogContent.categoryItems,
-                onClickAddCategory =dialogContent.onClickAddCategory
+                categoryInput = dialogContent.categoryInput,
+                categoryOutput = dialogContent.categoryOutput,
             )
         }
     }

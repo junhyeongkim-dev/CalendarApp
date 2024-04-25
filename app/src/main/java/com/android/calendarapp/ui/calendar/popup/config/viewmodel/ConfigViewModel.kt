@@ -1,4 +1,4 @@
-package com.android.calendarapp.ui.common.popup.config.viewmodel
+package com.android.calendarapp.ui.calendar.popup.config.viewmodel
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.android.calendarapp.feature.category.domain.usecase.RemoveCategoryUseCase
 import com.android.calendarapp.feature.user.domain.model.UserModel
 import com.android.calendarapp.feature.user.domain.usecase.AddUserUseCase
-import com.android.calendarapp.ui.common.popup.config.input.IConfigViewModelInput
-import com.android.calendarapp.ui.common.popup.config.output.IConfigViewModelOutput
+import com.android.calendarapp.ui.calendar.popup.config.input.IConfigViewModelInput
+import com.android.calendarapp.ui.calendar.popup.config.output.IConfigViewModelOutput
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

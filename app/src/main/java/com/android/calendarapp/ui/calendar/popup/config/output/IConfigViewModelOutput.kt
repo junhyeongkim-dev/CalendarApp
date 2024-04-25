@@ -1,4 +1,4 @@
-package com.android.calendarapp.ui.common.popup.config.output
+package com.android.calendarapp.ui.calendar.popup.config.output
 
 import androidx.compose.runtime.State
 

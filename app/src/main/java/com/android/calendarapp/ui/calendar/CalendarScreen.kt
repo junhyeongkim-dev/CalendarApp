@@ -60,12 +60,13 @@ import com.android.calendarapp.ui.calendar.component.header.CalendarHeader
 import com.android.calendarapp.ui.calendar.component.month.MonthItem
 import com.android.calendarapp.ui.calendar.input.ICalendarViewModelInput
 import com.android.calendarapp.ui.calendar.output.CalendarUiEffect
-import com.android.calendarapp.ui.calendar.popup.SchedulePopup
-import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
-import com.android.calendarapp.ui.calendar.popup.viewModel.ScheduleViewModel
+import com.android.calendarapp.ui.calendar.popup.schedule.SchedulePopup
+import com.android.calendarapp.ui.calendar.popup.schedule.input.IScheduleViewModelInput
+import com.android.calendarapp.ui.calendar.popup.schedule.viewModel.ScheduleViewModel
 import com.android.calendarapp.ui.calendar.viewmodel.CalendarViewModel
 import com.android.calendarapp.ui.common.component.BaseFullScreen
-import com.android.calendarapp.ui.common.dialog.DialogInit
+import com.android.calendarapp.ui.common.popup.category.input.ICategoryViewModelInput
+import com.android.calendarapp.ui.common.popup.category.output.ICategoryViewModelOutput
 import com.android.calendarapp.ui.common.popup.category.viewmodel.CategoryViewModel
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 import com.android.calendarapp.util.DateUtil
@@ -227,8 +228,8 @@ fun CalendarScreen(
                                         ScheduleItem(
                                             input = scheduleViewModel.input,
                                             scheduleItem = scheduleList[index],
-                                            categoryList = categoryList,
-                                            onClickAddCategory = remember { categoryViewModel::showCategoryDialog },
+                                            categoryInput = categoryViewModel.input,
+                                            categoryOutput = categoryViewModel.output,
                                             onClickDeleteSchedule = remember { scheduleViewModel::deleteSchedule },
                                             currentPage = pagerState.currentPage,
                                             date = selectedYearMonth
@@ -264,11 +265,12 @@ fun CalendarScreen(
                 SchedulePopup(
                     categoryItems = categoryList,
                     page = remember{ pagerState.currentPage },
+                    categoryPopupUiState = categoryViewModel.categoryPopupUiState.value,
                     scheduleInput = scheduleViewModel.input,
                     scheduleOutput = scheduleViewModel.output,
                     calendarOutput = calendarViewModel.output,
-                    snackBarEvent = remember { calendarViewModel::showSnackBar },
-                    onClickAddCategory = remember { categoryViewModel::showCategoryDialog }
+                    categoryInput = categoryViewModel.input,
+                    snackBarEvent = remember { calendarViewModel::showSnackBar }
                 )
             }
         }
@@ -306,8 +308,8 @@ private fun AddScheduleButton(onClick: () -> Unit) {
 private fun ScheduleItem(
     input: IScheduleViewModelInput,
     scheduleItem: ScheduleModel,
-    categoryList: List<CategoryModel>,
-    onClickAddCategory: () -> Unit,
+    categoryInput: ICategoryViewModelInput,
+    categoryOutput: ICategoryViewModelOutput,
     onClickDeleteSchedule: (seqNo: Int, currentPage: Int, date: String) -> Unit,
     currentPage: Int,
     date: String
@@ -321,7 +323,7 @@ private fun ScheduleItem(
                 remember {
                     Modifier.clickable {
                         input::modifySchedule.invoke(
-                            scheduleItem.seqNo, categoryList, onClickAddCategory
+                            scheduleItem.seqNo, categoryInput, categoryOutput
                         )
                     }
                 }

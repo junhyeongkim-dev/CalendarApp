@@ -1,17 +1,15 @@
 package com.android.calendarapp.ui.common.dialog
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
-import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
-import com.android.calendarapp.ui.calendar.popup.output.IScheduleViewModelOutput
+import com.android.calendarapp.ui.calendar.popup.schedule.input.IScheduleViewModelInput
+import com.android.calendarapp.ui.calendar.popup.schedule.output.IScheduleViewModelOutput
+import com.android.calendarapp.ui.common.popup.category.input.ICategoryViewModelInput
+import com.android.calendarapp.ui.common.popup.category.output.ICategoryViewModelOutput
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
@@ -74,7 +72,7 @@ sealed class AppDialog(
         val schedule: ScheduleModel,
         val scheduleInput: IScheduleViewModelInput,
         val scheduleOutput: IScheduleViewModelOutput,
-        val categoryItems: List<CategoryModel>,
-        val onClickAddCategory: () -> Unit
+        val categoryInput: ICategoryViewModelInput,
+        val categoryOutput: ICategoryViewModelOutput
     ) : AppDialog(title, confirmOnClick, onDismiss)
 }

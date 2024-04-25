@@ -7,10 +7,12 @@ import androidx.compose.ui.res.colorResource
 import com.android.calendarapp.R
 import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
-import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
-import com.android.calendarapp.ui.calendar.popup.output.IScheduleViewModelOutput
+import com.android.calendarapp.ui.calendar.popup.schedule.input.IScheduleViewModelInput
+import com.android.calendarapp.ui.calendar.popup.schedule.output.IScheduleViewModelOutput
 import com.android.calendarapp.ui.common.dialog.models.DialogButton
 import com.android.calendarapp.ui.common.dialog.models.DialogContent
+import com.android.calendarapp.ui.common.popup.category.input.ICategoryViewModelInput
+import com.android.calendarapp.ui.common.popup.category.output.ICategoryViewModelOutput
 
 @Composable
 fun DialogWrapper(appDialog: AppDialog) {
@@ -52,8 +54,8 @@ fun DialogWrapper(appDialog: AppDialog) {
                 schedule = appDialog.schedule,
                 scheduleInput = appDialog.scheduleInput,
                 scheduleOutput = appDialog.scheduleOutput,
-                categoryItems = appDialog.categoryItems,
-                onClickAddCategory = appDialog.onClickAddCategory,
+                categoryInput = appDialog.categoryInput,
+                categoryOutput = appDialog.categoryOutput,
                 confirmOnClick = appDialog.confirmOnClick,
                 cancelOnClick = appDialog.cancelOnClick,
                 onDismiss = appDialog.onDismiss
@@ -155,8 +157,8 @@ fun ScheduleModifyDialog(
     schedule: ScheduleModel,
     scheduleInput: IScheduleViewModelInput,
     scheduleOutput: IScheduleViewModelOutput,
-    categoryItems: List<CategoryModel>,
-    onClickAddCategory: () -> Unit,
+    categoryInput: ICategoryViewModelInput,
+    categoryOutput: ICategoryViewModelOutput,
     confirmOnClick: () -> Unit,
     cancelOnClick: () -> Unit,
     onDismiss: () -> Unit
@@ -167,8 +169,8 @@ fun ScheduleModifyDialog(
             schedule = schedule,
             scheduleInput = scheduleInput,
             scheduleOutput = scheduleOutput,
-            categoryItems = categoryItems,
-            onClickAddCategory = onClickAddCategory,
+            categoryInput = categoryInput,
+            categoryOutput = categoryOutput
         ),
         buttonList = listOf(
             DialogButton.Default(

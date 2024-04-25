@@ -18,7 +18,6 @@ import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
@@ -33,7 +32,11 @@ class CategoryViewModel @Inject constructor(
     private val getCategoryListUseCase: GetCategoryListUseCase
 ) : ViewModel(), ICategoryViewModelInput, ICategoryViewModelOutput {
 
-    override var categoryList: Flow<List<CategoryModel>> = emptyFlow()
+    val input: ICategoryViewModelInput = this
+    val output: ICategoryViewModelOutput = this
+
+    private val _categoryList: MutableStateFlow<List<CategoryModel>> = MutableStateFlow(emptyList())
+    override var categoryList: StateFlow<List<CategoryModel>> = _categoryList
 
     private val _categoryDialogText: MutableState<String> = mutableStateOf("")
     override val categoryDialogText: State<String> = _categoryDialogText
@@ -41,15 +44,25 @@ class CategoryViewModel @Inject constructor(
     private val _isNotExistCategoryState: MutableState<Boolean> = mutableStateOf(false)
     override val isNotExistCategoryState: State<Boolean> = _isNotExistCategoryState
 
+    private val _dropDownState: MutableState<Boolean> = mutableStateOf(false)
+    override val categoryPopupUiState: State<Boolean> = _dropDownState
+
     private var dialogChannel: Channel<DialogUiState> = Channel()
 
     init {
         init()
     }
+
     private fun init() {
         viewModelScope.launch(Dispatchers.IO) {
-            categoryList = getCategoryListUseCase()
+            getCategoryListUseCase().collect { categoryList ->
+                _categoryList.value = categoryList
+            }
         }
+    }
+
+    override fun onChangeCategoryUiState() {
+        _dropDownState.value = !_dropDownState.value
     }
 
     override fun showCategoryDialog() {

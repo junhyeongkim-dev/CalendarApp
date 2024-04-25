@@ -1,4 +1,4 @@
-package com.android.calendarapp.ui.calendar.popup
+package com.android.calendarapp.ui.calendar.popup.schedule
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,19 +40,21 @@ import androidx.compose.ui.unit.sp
 import com.android.calendarapp.R
 import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.ui.calendar.output.ICalendarViewModelOutput
-import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
-import com.android.calendarapp.ui.calendar.popup.output.IScheduleViewModelOutput
+import com.android.calendarapp.ui.calendar.popup.schedule.input.IScheduleViewModelInput
+import com.android.calendarapp.ui.calendar.popup.schedule.output.IScheduleViewModelOutput
 import com.android.calendarapp.ui.common.popup.category.CategoryDropDown
+import com.android.calendarapp.ui.common.popup.category.input.ICategoryViewModelInput
 
 @Composable
 fun SchedulePopup(
     categoryItems: List<CategoryModel>,
     page: Int,
+    categoryPopupUiState: Boolean,
     scheduleInput: IScheduleViewModelInput,
     scheduleOutput: IScheduleViewModelOutput,
     calendarOutput: ICalendarViewModelOutput,
+    categoryInput: ICategoryViewModelInput,
     snackBarEvent: (String) -> Unit,
-    onClickAddCategory: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -122,16 +124,16 @@ fun SchedulePopup(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     CategoryDropDown(
-                        dropDownState= scheduleOutput.dropDownState.value,
+                        dropDownState= categoryPopupUiState,
                         categoryItems = categoryItems,
                         selectedCategory = scheduleOutput.selectedCategory.value,
                         onChangeDropDownState = {
-                            scheduleInput.onChangeDropDownState()
+                            categoryInput.onChangeCategoryUiState()
                         },
                         onChangeSelectedCategory = { category ->
                             scheduleInput.onChangeCategory(category)
                         },
-                        onClickAddCategory = onClickAddCategory
+                        onClickAddCategory = categoryInput::showCategoryDialog
                     )
 
                     Box(
@@ -142,7 +144,7 @@ fun SchedulePopup(
                             .background(Color(colorResource(id = R.color.gray2).value))
                             .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 8.dp)
                             .clickable {
-                                scheduleInput.onChangeDropDownState()
+                                categoryInput.onChangeCategoryUiState()
                             }
                     ) {
                         Text(
