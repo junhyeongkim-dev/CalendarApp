@@ -1,5 +1,6 @@
 package com.android.calendarapp.feature.schedule.domain.usecase
 
+import com.android.calendarapp.feature.category.data.repository.CategoryRepository
 import com.android.calendarapp.feature.schedule.data.repository.ScheduleRepository
 import com.android.calendarapp.feature.schedule.domain.convert.toModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel

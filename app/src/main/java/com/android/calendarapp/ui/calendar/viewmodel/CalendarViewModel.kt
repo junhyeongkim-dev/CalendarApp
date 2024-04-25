@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.android.calendarapp.R
 import com.android.calendarapp.feature.user.domain.model.UserModel
 import com.android.calendarapp.feature.user.domain.usecase.GetUserUseCase
-import com.android.calendarapp.ui.calendar.input.ICalendarViewModelInput
+import com.android.calendarapp.ui.calendar.input.ICalendarInput
 import com.android.calendarapp.ui.calendar.model.DayItemModel
 import com.android.calendarapp.ui.calendar.output.CalendarUiEffect
-import com.android.calendarapp.ui.calendar.output.ICalendarViewModelOutput
+import com.android.calendarapp.ui.calendar.output.ICalendarOutput
 import com.android.calendarapp.ui.common.dialog.DialogUiState
-import com.android.calendarapp.ui.common.viewmodel.BaseViewModel
+import com.android.calendarapp.ui.common.base.viewmodel.BaseViewModel
 import com.android.calendarapp.util.DateUtil
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,10 +30,10 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     private val applicationContext: Context,
     private val getUserUseCase: GetUserUseCase
-) : BaseViewModel(), ICalendarViewModelInput, ICalendarViewModelOutput {
+) : BaseViewModel(), ICalendarInput, ICalendarOutput {
 
-    val input: ICalendarViewModelInput = this
-    val output: ICalendarViewModelOutput = this
+    val input: ICalendarInput = this
+    val output: ICalendarOutput = this
 
     // 현재 월의 앞뒤로 미리 데이터 세팅할 갯수
     val prepareCount = 3
@@ -75,7 +75,7 @@ class CalendarViewModel @Inject constructor(
 
         viewModelScope.launch {
             dialogChannel.consumeEach { dialogUiState ->
-                _defaultDialogUiState.emit(dialogUiState)
+                showDialogDefault(dialogUiState)
             }
         }
     }

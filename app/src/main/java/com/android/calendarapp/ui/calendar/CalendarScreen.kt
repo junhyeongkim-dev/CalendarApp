@@ -53,23 +53,24 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.android.calendarapp.R
-import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
 import com.android.calendarapp.ui.calendar.component.error.CalendarError
 import com.android.calendarapp.ui.calendar.component.header.CalendarHeader
 import com.android.calendarapp.ui.calendar.component.month.MonthItem
-import com.android.calendarapp.ui.calendar.input.ICalendarViewModelInput
+import com.android.calendarapp.ui.calendar.input.ICalendarInput
 import com.android.calendarapp.ui.calendar.output.CalendarUiEffect
-import com.android.calendarapp.ui.calendar.popup.schedule.SchedulePopup
-import com.android.calendarapp.ui.calendar.popup.schedule.input.IScheduleViewModelInput
-import com.android.calendarapp.ui.calendar.popup.schedule.viewModel.ScheduleViewModel
+import com.android.calendarapp.ui.common.popup.config.viewmodel.ConfigViewModel
+import com.android.calendarapp.ui.calendar.popup.SchedulePopup
+import com.android.calendarapp.ui.calendar.popup.input.ISchedulePopupInput
+import com.android.calendarapp.ui.calendar.popup.viewModel.SchedulePopupViewModel
 import com.android.calendarapp.ui.calendar.viewmodel.CalendarViewModel
 import com.android.calendarapp.ui.common.component.BaseFullScreen
-import com.android.calendarapp.ui.common.popup.category.input.ICategoryViewModelInput
-import com.android.calendarapp.ui.common.popup.category.output.ICategoryViewModelOutput
-import com.android.calendarapp.ui.common.popup.category.viewmodel.CategoryViewModel
+import com.android.calendarapp.ui.common.popup.category.input.ICategoryPopupInput
+import com.android.calendarapp.ui.common.popup.category.output.ICategoryPopupOutput
+import com.android.calendarapp.ui.common.popup.category.viewmodel.CategoryPopupViewModel
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 import com.android.calendarapp.util.DateUtil
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
@@ -84,13 +85,12 @@ private const val MAX_PAGE = 1000
 @Composable
 fun CalendarScreen(
     navController: NavHostController,
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
+    schedulePopupViewModel: SchedulePopupViewModel = hiltViewModel(),
+    categoryPopupViewModel: CategoryPopupViewModel = hiltViewModel(),
+    configViewModel: ConfigViewModel = hiltViewModel(),
+    onClickScope: CoroutineScope = rememberCoroutineScope()
 ) {
-
-    val calendarViewModel: CalendarViewModel = hiltViewModel()
-    val scheduleViewModel: ScheduleViewModel = hiltViewModel()
-    val categoryViewModel: CategoryViewModel = hiltViewModel()
-
-    val onClickScope = rememberCoroutineScope()
 
     // 페이저 초기 페이지 및 총 갯수 설정
     val pagerState = rememberPagerState(
@@ -103,32 +103,36 @@ fun CalendarScreen(
     val pagerUiState by calendarViewModel.calendarUiState.collectAsStateWithLifecycle()
 
     // 스케줄 등록 팝업 노출 상태
-    val scheduleUiState = scheduleViewModel.scheduleUiState.value
+    val scheduleUiState = schedulePopupViewModel.scheduleUiState.value
 
     // 카테고리 리스트
-    val categoryList = categoryViewModel.categoryList.collectAsStateWithLifecycle(initialValue = emptyList()).value
+    val categoryList = categoryPopupViewModel.categoryList.collectAsStateWithLifecycle(initialValue = emptyList()).value
 
     // 선택된 년월
     val selectedYearMonth = calendarViewModel.selectedYearMonth.collectAsStateWithLifecycle().value
 
     LaunchedEffect(key1 = true) {
         calendarViewModel.init()
-        scheduleViewModel.setRefreshDayScheduleFlow(calendarViewModel.refreshDayScheduleFlow)
-        scheduleViewModel.setDialogChannel(calendarViewModel.dialogChannel)
-        categoryViewModel.setDialogChannel(calendarViewModel.dialogChannel)
+        schedulePopupViewModel.setRefreshDayScheduleFlow(calendarViewModel.refreshDayScheduleFlow)
+        schedulePopupViewModel.setDialogChannel(calendarViewModel.dialogChannel)
+        categoryPopupViewModel.setDialogChannel(calendarViewModel.dialogChannel)
+        configViewModel.setDialogChannel(calendarViewModel.dialogChannel)
+        configViewModel.setUserNameState(calendarViewModel.userInfo)
     }
 
-    Init(calendarViewModel.input, scheduleViewModel.input)
+    Init(calendarViewModel.input, schedulePopupViewModel.input)
 
     // 스케줄 등록 팝업 오픈 시 뒤로가기 클릭하면 꺼지도록
     BackHandler(enabled = scheduleUiState) {
-        scheduleViewModel.onChangeScheduleState()
+        schedulePopupViewModel.onChangeScheduleState()
     }
 
     BaseFullScreen(
         title = stringResource(id = R.string.app_bar_calendar_title_name, calendarViewModel.userInfo.collectAsStateWithLifecycle().value.userName),
         isShowMoreBtn = true,
         dialogUiState = calendarViewModel.defaultDialogUiState,
+        configPopupUiState = configViewModel.configPopupUiState.value,
+        configInput = configViewModel.input,
         snackBarHostState = calendarViewModel.snackBarHostState
     ) { paddingValues ->
         Box {
@@ -138,6 +142,7 @@ fun CalendarScreen(
                         top = paddingValues.calculateTopPadding()
                     )
             ) {
+
                 // 현재 페이저의 년월 및 요일 헤더
                 CalendarHeader(
                     date = selectedYearMonth,
@@ -167,7 +172,7 @@ fun CalendarScreen(
                         val changePage = changePage(pagerState.currentPage, calendarViewModel.prepareCount)
                         calendarViewModel.onChangeCalendarDate(DateUtil.convertPageToYearMonth(DEFAULT_PAGE, pagerState.currentPage))
                         calendarViewModel.getMonthData(DEFAULT_PAGE, changePage)
-                        scheduleViewModel.getMonthScheduleData(
+                        schedulePopupViewModel.getMonthScheduleData(
                             page = changePage,
                             date = DateUtil.convertPageToYearMonth(DEFAULT_PAGE, changePage),
                             isForce = false
@@ -183,7 +188,7 @@ fun CalendarScreen(
                             MonthItem(
                                 monthData = calendarViewModel.calendarData[page] ?: listOf(),
                                 selectedDay = calendarViewModel.selectedDay.collectAsStateWithLifecycle(initialValue = "").value,
-                                scheduleData = scheduleViewModel.scheduleData[page] ?: emptyFlow(),
+                                scheduleData = schedulePopupViewModel.scheduleData[page] ?: emptyFlow(),
                                 dayItemOnclick = { day ->
                                     calendarViewModel.onClickDayItem(day)
                                 }
@@ -203,7 +208,7 @@ fun CalendarScreen(
                             .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        val scheduleList = scheduleViewModel.scheduleList.collectAsStateWithLifecycle(initialValue = emptyList()).value
+                        val scheduleList = schedulePopupViewModel.scheduleList.collectAsStateWithLifecycle(initialValue = emptyList()).value
 
                         if(scheduleList.isNotEmpty()) {
                             Column {
@@ -226,11 +231,10 @@ fun CalendarScreen(
                                         }
                                     ) {index ->
                                         ScheduleItem(
-                                            input = scheduleViewModel.input,
+                                            input = schedulePopupViewModel.input,
                                             scheduleItem = scheduleList[index],
-                                            categoryInput = categoryViewModel.input,
-                                            categoryOutput = categoryViewModel.output,
-                                            onClickDeleteSchedule = remember { scheduleViewModel::deleteSchedule },
+                                            categoryInput = categoryPopupViewModel.input,
+                                            categoryOutput = categoryPopupViewModel.output,
                                             currentPage = pagerState.currentPage,
                                             date = selectedYearMonth
                                         )
@@ -254,7 +258,7 @@ fun CalendarScreen(
                     if(!scheduleUiState) {
                         AddScheduleButton(
                             onClick = remember {
-                                scheduleViewModel::onChangeScheduleState
+                                schedulePopupViewModel::onChangeScheduleState
                             }
                         )
                     }
@@ -265,11 +269,11 @@ fun CalendarScreen(
                 SchedulePopup(
                     categoryItems = categoryList,
                     page = remember{ pagerState.currentPage },
-                    categoryPopupUiState = categoryViewModel.categoryPopupUiState.value,
-                    scheduleInput = scheduleViewModel.input,
-                    scheduleOutput = scheduleViewModel.output,
+                    categoryPopupUiState = categoryPopupViewModel.categoryPopupUiState.value,
+                    scheduleInput = schedulePopupViewModel.input,
+                    scheduleOutput = schedulePopupViewModel.output,
                     calendarOutput = calendarViewModel.output,
-                    categoryInput = categoryViewModel.input,
+                    categoryInput = categoryPopupViewModel.input,
                     snackBarEvent = remember { calendarViewModel::showSnackBar }
                 )
             }
@@ -306,11 +310,10 @@ private fun AddScheduleButton(onClick: () -> Unit) {
 
 @Composable
 private fun ScheduleItem(
-    input: IScheduleViewModelInput,
+    input: ISchedulePopupInput,
     scheduleItem: ScheduleModel,
-    categoryInput: ICategoryViewModelInput,
-    categoryOutput: ICategoryViewModelOutput,
-    onClickDeleteSchedule: (seqNo: Int, currentPage: Int, date: String) -> Unit,
+    categoryInput: ICategoryPopupInput,
+    categoryOutput: ICategoryPopupOutput,
     currentPage: Int,
     date: String
 ) {
@@ -377,13 +380,15 @@ private fun ScheduleItem(
 
             Spacer(modifier = Modifier.width(10.dp))
 
+            val rememberSeqNo = remember { scheduleItem.seqNo }
             val rememberPage = remember { currentPage }
             val rememberDate = remember { date }
+            val rememberDeleteSchedule = remember { input::deleteSchedule }
             IconButton(
                 modifier = Modifier
                     .size(35.dp),
                 onClick = {
-                    onClickDeleteSchedule.invoke(scheduleItem.seqNo, rememberPage, rememberDate)
+                    rememberDeleteSchedule.invoke(rememberSeqNo, rememberPage, rememberDate)
                 }
             ) {
                 Icon(
@@ -400,7 +405,7 @@ private fun ScheduleItem(
 
 // 첫 화면 진입 시 실행
 @Composable
-private fun Init(calendarInput: ICalendarViewModelInput, scheduleInput: IScheduleViewModelInput) {
+private fun Init(calendarInput: ICalendarInput, scheduleInput: ISchedulePopupInput) {
     LaunchedEffect(key1 = true) {
 
         // 이번달 월별 일자 데이터 요청

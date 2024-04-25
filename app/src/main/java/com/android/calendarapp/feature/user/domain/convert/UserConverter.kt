@@ -4,10 +4,10 @@ import com.android.calendarapp.feature.user.data.entity.UserEntity
 import com.android.calendarapp.feature.user.domain.model.UserModel
 import com.android.calendarapp.library.security.tink.helper.TinkHelper
 
-fun UserModel.toEntity(): UserEntity = UserEntity (
+fun UserModel.toEntity(tinkHelper: TinkHelper): UserEntity = UserEntity (
     userId = this.userId,
-    userName = this.userName,
-    userBirth = this.userBirth,
+    userName = tinkHelper.stringEncrypt(this.userName, this.userId),
+    userBirth = tinkHelper.stringEncrypt(this.userBirth, this.userId),
     userType = this.userType
 )
 

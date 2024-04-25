@@ -132,70 +132,6 @@ private fun NotiText(message: String) {
     )
 }
 
-@Composable
-fun ConfigCategoryDialogContent(categoryList: List<CategoryModel>) {
-    LazyColumn(
-        contentPadding = PaddingValues(10.dp)
-    ) {
-        items(
-            count = categoryList.size,
-            key = { index ->
-                categoryList[index].seqNo
-            }
-        ){ index ->
-            Row(
-                modifier = Modifier
-                    .padding(
-                        top = 10.dp,
-                        end = 10.dp
-                    )
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = Icons.Filled.Star,
-                    contentDescription = "",
-                    tint = Color(colorResource(id = R.color.naver).value)
-                )
-
-                Text(
-                    modifier = Modifier
-                        .width(0.dp)
-                        .weight(1f),
-                    text = categoryList[index].categoryName,
-                    color = Color.Black,
-                    fontSize = 25.sp
-                )
-
-                Spacer(modifier = Modifier.size(10.dp))
-
-                Text(
-                    modifier = Modifier
-                        .width(0.dp)
-                        .weight(1f),
-                    text = "",
-                    color = Color.Gray,
-                    fontSize = 20.sp
-                )
-
-                IconButton(
-                    modifier = Modifier.size(30.dp),
-                    onClick = {
-
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.MoreVert,
-                        contentDescription = "카테고리 관리",
-                        tint = Color.Gray
-                    )
-                }
-            }
-        }
-    }
-}
-
 @Preview
 @Composable
 fun CategoryDialogContentPreview() {
@@ -210,22 +146,5 @@ fun CategoryDialogContentPreview() {
         ) {
 
         }
-    }
-}
-
-@Preview(
-    name = "Light Mode",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
-@Composable
-fun ConfigCategoryDialogContentPreview() {
-    CalendarAppTheme {
-        ConfigCategoryDialogContent(
-            categoryList = listOf(
-                CategoryModel(0, "아라라라랄라라라라"),
-                CategoryModel(1, "로로로로롤로로로로")
-            )
-        )
     }
 }

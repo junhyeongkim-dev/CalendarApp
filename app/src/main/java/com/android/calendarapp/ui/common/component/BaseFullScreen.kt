@@ -2,6 +2,7 @@ package com.android.calendarapp.ui.common.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,8 +30,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.calendarapp.R
+import com.android.calendarapp.ui.common.popup.config.ConfigPopup
 import com.android.calendarapp.ui.common.dialog.DialogInit
 import com.android.calendarapp.ui.common.dialog.DialogUiState
+import com.android.calendarapp.ui.common.popup.config.input.IConfigPopupInput
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,6 +45,8 @@ fun BaseFullScreen(
     isShowBackBtn: Boolean = false,
     isShowMoreBtn: Boolean = false,
     isShowBottomLine: Boolean = false,
+    configPopupUiState: Boolean = false,
+    configInput: IConfigPopupInput? = null,
     dialogUiState: StateFlow<DialogUiState>,
     snackBarHostState: SnackbarHostState,
     content: @Composable (paddingValues: PaddingValues) -> Unit
@@ -92,7 +98,25 @@ fun BaseFullScreen(
                             .padding(
                                 end = dimensionResource(id = R.dimen.dimen_header_margin).value.dp
                             )
+                            .then(
+                                remember {
+                                    Modifier.clickable {
+                                        configInput?.onChangePopupUiState()
+                                    }
+                                }
+                            )
                     ){
+                        if(null != configInput) {
+                            Box(
+                                modifier = Modifier.align(Alignment.BottomEnd)
+                            ) {
+                                ConfigPopup(
+                                    expandState = configPopupUiState,
+                                    configInput = configInput
+                                )
+                            }
+                        }
+
                         Icon(
                             modifier = Modifier
                                 .size(25.dp)

@@ -5,9 +5,9 @@ import com.android.calendarapp.library.login.model.LoginFailResponseModel
 import com.android.calendarapp.library.login.naver.manager.INaverLoginManager
 import com.android.calendarapp.library.login.naver.response.NaverLoginResponse
 import com.android.calendarapp.library.security.preperence.helper.ISharedPreferencesHelper
-import com.android.calendarapp.ui.common.viewmodel.BaseViewModel
-import com.android.calendarapp.ui.splash.input.ISplashViewModelInput
-import com.android.calendarapp.ui.splash.output.ISplashViewModelOutput
+import com.android.calendarapp.ui.common.base.viewmodel.BaseViewModel
+import com.android.calendarapp.ui.splash.input.ISplashInput
+import com.android.calendarapp.ui.splash.output.ISplashOutput
 import com.android.calendarapp.ui.splash.output.LoginStateEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val preferencesHelper: ISharedPreferencesHelper,
     private val naverLoginManager: INaverLoginManager
-) : BaseViewModel(), ISplashViewModelInput, ISplashViewModelOutput {
+) : BaseViewModel(), ISplashInput, ISplashOutput {
 
     private val _loginState: MutableSharedFlow<LoginStateEffect> = MutableSharedFlow(replay = 0)
     override val loginState: SharedFlow<LoginStateEffect> = _loginState

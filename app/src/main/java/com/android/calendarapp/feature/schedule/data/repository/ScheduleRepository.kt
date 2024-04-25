@@ -1,7 +1,7 @@
 package com.android.calendarapp.feature.schedule.data.repository
 
 import com.android.calendarapp.feature.schedule.data.entity.ScheduleEntity
-import com.android.calendarapp.feature.schedule.data.entity.ScheduleGroupEntity
+import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import kotlinx.coroutines.flow.Flow
 
 interface ScheduleRepository {
@@ -11,7 +11,7 @@ interface ScheduleRepository {
 
     suspend fun insertSchedule(scheduleEntity: ScheduleEntity)
 
-    suspend fun selectGroupByYearMonth(scheduleYearMonth: String) : List<ScheduleGroupEntity>
+    suspend fun selectGroupByYearMonth(scheduleYearMonth: String) : List<ScheduleGroupModel>
 
     suspend fun deleteSchedule(scheduleEntity: ScheduleEntity)
 }

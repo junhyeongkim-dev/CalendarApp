@@ -5,6 +5,8 @@ import com.android.calendarapp.feature.category.domain.usecase.AddCategoryUseCas
 import com.android.calendarapp.feature.category.domain.usecase.GetCategoryListUseCaseImpl
 import com.android.calendarapp.feature.category.domain.usecase.AddCategoryListUseCase
 import com.android.calendarapp.feature.category.domain.usecase.AddCategoryUseCase
+import com.android.calendarapp.feature.category.domain.usecase.GetCategoryGroupListUseCase
+import com.android.calendarapp.feature.category.domain.usecase.GetCategoryGroupListUseCaseImpl
 import com.android.calendarapp.feature.category.domain.usecase.GetCategoryListUseCase
 import com.android.calendarapp.feature.category.domain.usecase.RemoveCategoryUseCase
 import com.android.calendarapp.feature.category.domain.usecase.RemoveCategoryUseCaseImpl
@@ -20,15 +22,19 @@ abstract class CategoryUseCaseModule {
 
     @Binds
     @Singleton
-    abstract fun bindGetCategoryListUseCase(getCategoryListUseCaseImpl: GetCategoryListUseCaseImpl) : GetCategoryListUseCase
-
-    @Binds
-    @Singleton
     abstract fun bindAddCategoryListUseCase(addCategoryListUseCaseImpl: AddCategoryListUseCaseImpl) : AddCategoryListUseCase
 
     @Binds
     @Singleton
     abstract fun bindAddCategoryUseCase(addCategoryUseCaseImpl: AddCategoryUseCaseImpl) : AddCategoryUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindGetCategoryListUseCase(getCategoryListUseCaseImpl: GetCategoryListUseCaseImpl) : GetCategoryListUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindGetCategoryGroupListUseCase(getCategoryGroupListUseCaseImpl: GetCategoryGroupListUseCaseImpl) : GetCategoryGroupListUseCase
 
     @Binds
     @Singleton

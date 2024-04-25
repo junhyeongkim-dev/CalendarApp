@@ -8,7 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.android.calendarapp.feature.schedule.data.entity.ScheduleEntity
-import com.android.calendarapp.feature.schedule.data.entity.ScheduleGroupEntity
+import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import kotlinx.coroutines.flow.Flow
 @Dao
 interface ScheduleDAO {
@@ -21,22 +21,26 @@ interface ScheduleDAO {
     fun selectAll() : Flow<List<ScheduleEntity>>
 
     @Transaction
-    @Query("SELECT * FROM schedule WHERE schedule_year_month = :yearMonth AND schedule_day = :day")
+    @Query(
+        "SELECT * " +
+        "FROM schedule " +
+        "WHERE schedule_year_month = :yearMonth AND schedule_day = :day"
+    )
     fun selectDaySchedule(yearMonth: String, day: String) : Flow<List<ScheduleEntity>>
 
     @Transaction
     @Query(
         "SELECT " +
-            "schedule_day, " +
+            "schedule_day AS day, " +
             "COUNT(schedule_day) AS count," +
-            "schedule_year_month " +
+            "schedule_year_month AS yearMonth " +
         "FROM " +
             "schedule " +
         "WHERE " +
             "schedule_year_month = :yearMonth " +
         "GROUP BY schedule_day"
     )
-    fun selectGroupByYearMonth(yearMonth: String): List<ScheduleGroupEntity>
+    fun selectGroupByYearMonth(yearMonth: String): List<ScheduleGroupModel>
 
     @Update
     fun update(scheduleEntity: ScheduleEntity)

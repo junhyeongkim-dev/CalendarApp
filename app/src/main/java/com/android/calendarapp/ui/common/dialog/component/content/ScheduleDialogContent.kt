@@ -29,21 +29,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.calendarapp.R
-import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
-import com.android.calendarapp.ui.calendar.popup.schedule.input.IScheduleViewModelInput
-import com.android.calendarapp.ui.calendar.popup.schedule.output.IScheduleViewModelOutput
+import com.android.calendarapp.ui.calendar.popup.input.ISchedulePopupInput
+import com.android.calendarapp.ui.calendar.popup.output.ISchedulePopupOutput
 import com.android.calendarapp.ui.common.popup.category.CategoryDropDown
-import com.android.calendarapp.ui.common.popup.category.input.ICategoryViewModelInput
-import com.android.calendarapp.ui.common.popup.category.output.ICategoryViewModelOutput
+import com.android.calendarapp.ui.common.popup.category.input.ICategoryPopupInput
+import com.android.calendarapp.ui.common.popup.category.output.ICategoryPopupOutput
 
 @Composable
 fun ScheduleDialogContent(
     scheduleModel: ScheduleModel,
-    scheduleInput: IScheduleViewModelInput,
-    scheduleOutput: IScheduleViewModelOutput,
-    categoryInput: ICategoryViewModelInput,
-    categoryOutput: ICategoryViewModelOutput,
+    scheduleInput: ISchedulePopupInput,
+    scheduleOutput: ISchedulePopupOutput,
+    categoryInput: ICategoryPopupInput,
+    categoryOutput: ICategoryPopupOutput,
 ) {
     Column(
         modifier = Modifier

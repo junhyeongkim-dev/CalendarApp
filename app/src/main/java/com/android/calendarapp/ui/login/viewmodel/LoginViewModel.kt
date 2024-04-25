@@ -12,11 +12,10 @@ import com.android.calendarapp.library.login.type.LoginType
 import com.android.calendarapp.feature.user.domain.model.UserModel
 import com.android.calendarapp.feature.user.domain.usecase.AddUserUseCase
 import com.android.calendarapp.library.security.preperence.helper.ISharedPreferencesHelper
-import com.android.calendarapp.library.security.tink.helper.ITinkHelper
 import com.android.calendarapp.ui.common.dialog.AppDialog
 import com.android.calendarapp.ui.common.dialog.DialogUiState
-import com.android.calendarapp.ui.common.viewmodel.BaseViewModel
-import com.android.calendarapp.ui.login.input.ILoginViewModelInput
+import com.android.calendarapp.ui.common.base.viewmodel.BaseViewModel
+import com.android.calendarapp.ui.login.input.ILoginInput
 import com.android.calendarapp.ui.login.output.ILoginViewModelOutput
 import com.android.calendarapp.ui.login.output.LoginNavigateEffect
 import com.android.calendarapp.util.ResourceUtil
@@ -32,12 +31,11 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val naverLoginManager: NaverLoginManager,
     private val preferencesHelper: ISharedPreferencesHelper,
-    private val tinkHelper: ITinkHelper,
     private val applicationContext: Context,
     private val getCategoryListUseCase: GetCategoryListUseCase,
     private val addCategoryListUseCase: AddCategoryListUseCase,
     private val addUserUseCase: AddUserUseCase
-) : BaseViewModel(), ILoginViewModelInput, ILoginViewModelOutput {
+) : BaseViewModel(), ILoginInput, ILoginViewModelOutput {
 
     private val _loginNavigateEffect = MutableSharedFlow<LoginNavigateEffect>(replay = 0)
     override val loginNavigateEffect: SharedFlow<LoginNavigateEffect> = _loginNavigateEffect
@@ -56,9 +54,9 @@ class LoginViewModel @Inject constructor(
 
                                 val userModel = UserModel(
                                     userId = userId,
-                                    userName = tinkHelper.stringEncrypt(data["name"].toString(), userId),
+                                    userName = data["name"].toString(),
                                     if(!data["birthday"]?.toString().isNullOrBlank()) {
-                                        tinkHelper.stringEncrypt(data["birthday"].toString(), userId)
+                                        data["birthday"].toString()
                                     } else {
                                         ""
                                     },
