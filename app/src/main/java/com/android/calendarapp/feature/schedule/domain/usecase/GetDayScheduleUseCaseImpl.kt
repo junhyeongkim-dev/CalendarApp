@@ -10,8 +10,10 @@ import javax.inject.Inject
 class GetDayScheduleUseCaseImpl @Inject constructor(
     private val scheduleRepository: ScheduleRepository
 ) : GetDayScheduleUseCase {
-    override suspend fun invoke(yearMonth: String, day: String) : List<ScheduleModel> =
-        scheduleRepository.selectDaySchedule(yearMonth, day).map { scheduleEntity ->
-            scheduleEntity.toModel()
+    override suspend fun invoke(yearMonth: String, day: String) : Flow<List<ScheduleModel>> =
+        scheduleRepository.selectDaySchedule(yearMonth, day).map { scheduleEntityList ->
+            scheduleEntityList.map { scheduleEntity ->
+                scheduleEntity.toModel()
+            }
         }
 }

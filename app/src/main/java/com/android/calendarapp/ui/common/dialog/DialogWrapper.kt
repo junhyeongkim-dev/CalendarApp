@@ -5,6 +5,10 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import com.android.calendarapp.R
+import com.android.calendarapp.feature.category.domain.model.CategoryModel
+import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
+import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
+import com.android.calendarapp.ui.calendar.popup.output.IScheduleViewModelOutput
 import com.android.calendarapp.ui.common.dialog.models.DialogButton
 import com.android.calendarapp.ui.common.dialog.models.DialogContent
 
@@ -36,6 +40,20 @@ fun DialogWrapper(appDialog: AppDialog) {
                 text = appDialog.text,
                 isNotExistCategoryState = appDialog.isNotExistCategoryState,
                 onChangeText = appDialog.onChangeText,
+                confirmOnClick = appDialog.confirmOnClick,
+                cancelOnClick = appDialog.cancelOnClick,
+                onDismiss = appDialog.onDismiss
+            )
+        }
+
+        is AppDialog.ScheduleDialog -> {
+            ScheduleModifyDialog(
+                title = appDialog.title,
+                schedule = appDialog.schedule,
+                scheduleInput = appDialog.scheduleInput,
+                scheduleOutput = appDialog.scheduleOutput,
+                categoryItems = appDialog.categoryItems,
+                onClickAddCategory = appDialog.onClickAddCategory,
                 confirmOnClick = appDialog.confirmOnClick,
                 cancelOnClick = appDialog.cancelOnClick,
                 onDismiss = appDialog.onDismiss
@@ -87,8 +105,8 @@ fun DefaultTwoButtonDialog(
             ),
             DialogButton.Default(
                 text = "확인",
-                textColor = Color.Black,
-                buttonColor = Color.Blue,
+                textColor = Color.White,
+                buttonColor = Color(colorResource(id = R.color.naver).value),
                 onClick = confirmOnClick
             )
         ),
@@ -122,6 +140,45 @@ fun CategoryDialog(
             ),
             DialogButton.Default(
                 text = "저장",
+                textColor = Color.White,
+                buttonColor = Color(colorResource(id = R.color.naver).value),
+                onClick = confirmOnClick
+            )
+        ),
+        onDismiss = onDismiss
+    )
+}
+
+@Composable
+fun ScheduleModifyDialog(
+    title: String,
+    schedule: ScheduleModel,
+    scheduleInput: IScheduleViewModelInput,
+    scheduleOutput: IScheduleViewModelOutput,
+    categoryItems: List<CategoryModel>,
+    onClickAddCategory: () -> Unit,
+    confirmOnClick: () -> Unit,
+    cancelOnClick: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    BaseDialog(
+        title = title,
+        dialogContent = DialogContent.Schedule(
+            schedule = schedule,
+            scheduleInput = scheduleInput,
+            scheduleOutput = scheduleOutput,
+            categoryItems = categoryItems,
+            onClickAddCategory = onClickAddCategory,
+        ),
+        buttonList = listOf(
+            DialogButton.Default(
+                text = "취소",
+                textColor = Color.Black,
+                buttonColor = Color.LightGray,
+                onClick = cancelOnClick
+            ),
+            DialogButton.Default(
+                text = "수정",
                 textColor = Color.White,
                 buttonColor = Color(colorResource(id = R.color.naver).value),
                 onClick = confirmOnClick

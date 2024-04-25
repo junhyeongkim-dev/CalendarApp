@@ -24,12 +24,12 @@ fun DefaultDialogContent(
 ) {
     Column(
         modifier = Modifier
-            .width(250.dp)
+            .fillMaxWidth()
             .padding(
-                top = 20.dp,
-                bottom = 20.dp,
-                start = 10.dp,
-                end = 10.dp
+                top = 30.dp,
+                bottom = 30.dp,
+                start = 20.dp,
+                end = 20.dp
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center

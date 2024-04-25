@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -27,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.calendarapp.R
 import com.android.calendarapp.ui.common.dialog.DialogInit
-import com.android.calendarapp.ui.common.output.DialogState
+import com.android.calendarapp.ui.common.dialog.DialogUiState
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,10 +38,10 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun BaseFullScreen(
     title: String,
-    isShowBackBtn: Boolean,
+    isShowBackBtn: Boolean = false,
+    isShowMoreBtn: Boolean = false,
     isShowBottomLine: Boolean = false,
-    dialogState: StateFlow<DialogState>,
-    onBackPress: () -> Unit,
+    dialogUiState: StateFlow<DialogUiState>,
     snackBarHostState: SnackbarHostState,
     content: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
@@ -56,15 +58,17 @@ fun BaseFullScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(
-                                start = dimensionResource(id = R.dimen.dimen_header_start_margin).value.dp
+                                start = dimensionResource(id = R.dimen.dimen_header_margin).value.dp
                             )
                     ){
+                        val backBtn = painterResource(id = R.drawable.ic_back)
                         Icon(
                             modifier = Modifier
                                 .size(35.dp)
                                 .align(Alignment.CenterStart),
-                            painter = painterResource(id = R.drawable.ic_back),
+                            painter = backBtn,
                             contentDescription = "뒤로가기 버튼",
+                            tint = Color.Black
                         )
                     }
                 }
@@ -79,6 +83,25 @@ fun BaseFullScreen(
                         fontSize = dimensionResource(id = R.dimen.dimen_app_bar_title).value.sp,
                         color = Color.Black
                     )
+                }
+
+                if (isShowMoreBtn) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                end = dimensionResource(id = R.dimen.dimen_header_margin).value.dp
+                            )
+                    ){
+                        Icon(
+                            modifier = Modifier
+                                .size(25.dp)
+                                .align(Alignment.CenterEnd),
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "뒤로가기 버튼",
+                            tint = Color.Black
+                        )
+                    }
                 }
 
                 if(isShowBottomLine) {
@@ -115,16 +138,19 @@ fun BaseFullScreen(
         content.invoke(it)
     }
 
-    /*DialogInit(
-        uiState = dialogState,
-        onBackPress = onBackPress
-    )*/
+    DialogInit(
+        uiState = dialogUiState
+    )
 }
 
 @Preview
 @Composable
 fun BaseFullScreenPreview() {
     CalendarAppTheme {
-        BaseFullScreen("로그인",true, true, MutableStateFlow(DialogState.Dismiss),{}, SnackbarHostState(), {})
+        BaseFullScreen(
+            title = "로그인",
+            dialogUiState = MutableStateFlow(DialogUiState.Dismiss),
+            snackBarHostState = SnackbarHostState(),
+            ){}
     }
 }

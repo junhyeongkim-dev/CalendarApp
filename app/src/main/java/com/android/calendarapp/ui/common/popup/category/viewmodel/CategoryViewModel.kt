@@ -1,4 +1,4 @@
-package com.android.calendarapp.ui.common.popup.viewmodel
+package com.android.calendarapp.ui.common.popup.category.viewmodel
 
 import android.content.Context
 import androidx.compose.runtime.MutableState
@@ -11,13 +11,13 @@ import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.feature.category.domain.usecase.AddCategoryUseCase
 import com.android.calendarapp.feature.category.domain.usecase.GetCategoryListUseCase
 import com.android.calendarapp.ui.common.dialog.AppDialog
-import com.android.calendarapp.ui.common.output.DialogState
-import com.android.calendarapp.ui.common.popup.input.ICategoryViewModelInput
-import com.android.calendarapp.ui.common.popup.output.ICategoryViewModelOutput
-import com.android.calendarapp.ui.common.viewmodel.BaseViewModel
+import com.android.calendarapp.ui.common.dialog.DialogUiState
+import com.android.calendarapp.ui.common.popup.category.input.ICategoryViewModelInput
+import com.android.calendarapp.ui.common.popup.category.output.ICategoryViewModelOutput
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,14 +35,13 @@ class CategoryViewModel @Inject constructor(
 
     override var categoryList: Flow<List<CategoryModel>> = emptyFlow()
 
-    private val _categoryDialogState: MutableStateFlow<DialogState> = MutableStateFlow(DialogState.Dismiss)
-    override val categoryDialogState: StateFlow<DialogState> = _categoryDialogState
-
     private val _categoryDialogText: MutableState<String> = mutableStateOf("")
     override val categoryDialogText: State<String> = _categoryDialogText
 
     private val _isNotExistCategoryState: MutableState<Boolean> = mutableStateOf(false)
     override val isNotExistCategoryState: State<Boolean> = _isNotExistCategoryState
+
+    private var dialogChannel: Channel<DialogUiState> = Channel()
 
     init {
         init()
@@ -55,8 +54,8 @@ class CategoryViewModel @Inject constructor(
 
     override fun showCategoryDialog() {
         viewModelScope.launch {
-            _categoryDialogState.emit(
-                DialogState.Show(
+            dialogChannel.send(
+                DialogUiState.Show(
                     AppDialog.CategoryDialog(
                         title = ResourceUtil.getString(applicationContext, R.string.category_dialog_title),
                         text = categoryDialogText,
@@ -84,11 +83,9 @@ class CategoryViewModel @Inject constructor(
                             }
                         },
                         cancelOnClick = {
-                            _categoryDialogText.value = ""
                             onDismissCategoryDialog()
                         },
                         onDismiss = {
-                            _categoryDialogText.value = ""
                             onDismissCategoryDialog()
                         }
                     )
@@ -97,7 +94,14 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    override fun onDismissCategoryDialog() {
-        _categoryDialogState.value = DialogState.Dismiss
+    override fun setDialogChannel(channel: Channel<DialogUiState>) {
+        dialogChannel = channel
+    }
+
+    private fun onDismissCategoryDialog() {
+        viewModelScope.launch {
+            _categoryDialogText.value = ""
+            dialogChannel.send(DialogUiState.Dismiss)
+        }
     }
 }

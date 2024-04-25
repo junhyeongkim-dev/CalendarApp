@@ -7,19 +7,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.calendarapp.R
+import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
 import com.android.calendarapp.feature.schedule.domain.usecase.AddScheduleUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.GetDayScheduleUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.GetScheduleGroupListUseCase
+import com.android.calendarapp.feature.schedule.domain.usecase.RemoveScheduleUseCase
 import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
 import com.android.calendarapp.ui.calendar.popup.output.IScheduleViewModelOutput
-import com.android.calendarapp.ui.common.viewmodel.BaseViewModel
+import com.android.calendarapp.ui.common.dialog.AppDialog
+import com.android.calendarapp.ui.common.dialog.DialogUiState
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,7 +36,8 @@ class ScheduleViewModel @Inject constructor(
     private val applicationContext: Context,
     private val addScheduleUseCase: AddScheduleUseCase,
     private val getScheduleGroupListUseCase: GetScheduleGroupListUseCase,
-    private val getDayScheduleUseCase: GetDayScheduleUseCase
+    private val getDayScheduleUseCase: GetDayScheduleUseCase,
+    private val removeScheduleUseCase: RemoveScheduleUseCase
 ) : ViewModel(), IScheduleViewModelInput, IScheduleViewModelOutput {
 
     val input: IScheduleViewModelInput = this
@@ -46,8 +49,8 @@ class ScheduleViewModel @Inject constructor(
     private val _scheduleUiState: MutableState<Boolean> = mutableStateOf(false)
     override val scheduleUiState: State<Boolean> = _scheduleUiState
 
-    private val _scheduleEditText: MutableState<String> = mutableStateOf("")
-    override val scheduleText: State<String> = _scheduleEditText
+    private val _scheduleText: MutableState<String> = mutableStateOf("")
+    override val scheduleText: State<String> = _scheduleText
 
     private val _dropDownState: MutableState<Boolean> = mutableStateOf(false)
     override val dropDownState: State<Boolean> = _dropDownState
@@ -57,6 +60,8 @@ class ScheduleViewModel @Inject constructor(
 
     private val _scheduleList: MutableStateFlow<List<ScheduleModel>> = MutableStateFlow(emptyList())
     override var scheduleList: StateFlow<List<ScheduleModel>> = _scheduleList
+
+    private var dialogChannel: Channel<DialogUiState> = Channel()
 
     override fun getMonthScheduleData(page: Int, date: String, isForce: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -73,7 +78,7 @@ class ScheduleViewModel @Inject constructor(
         if(_scheduleUiState.value) {
             // 팝업 닫기 요청 일 때
 
-            _scheduleEditText.value = ""
+            _scheduleText.value = ""
             _selectedCategory.value = ResourceUtil.getString(applicationContext, R.string.category_default_text)
         }
 
@@ -81,7 +86,7 @@ class ScheduleViewModel @Inject constructor(
     }
 
     override fun onChangeScheduleEditText(text: String) {
-        _scheduleEditText.value = text
+        _scheduleText.value = text
     }
 
     override fun onChangeDropDownState() {
@@ -94,7 +99,7 @@ class ScheduleViewModel @Inject constructor(
     }
 
     override fun onClickAddSchedule(currentPage: Int, yearMonth: String, day: String, categoryName: String) {
-        val scheduleContent = _scheduleEditText.value
+        val scheduleContent = _scheduleText.value
 
         viewModelScope.launch(Dispatchers.IO) {
             addScheduleUseCase(
@@ -107,24 +112,108 @@ class ScheduleViewModel @Inject constructor(
             )
 
             getMonthScheduleData(currentPage, yearMonth, true)
-            refreshDaySchedule(yearMonth, day)
         }
 
         onChangeScheduleState()
-    }
-
-    private suspend fun refreshDaySchedule(yearMonth: String, day: String) {
-        withContext(Dispatchers.IO){
-            _scheduleList.value = getDayScheduleUseCase(yearMonth, day)
-        }
     }
 
     override fun setRefreshDayScheduleFlow(flow: Flow<Pair<String, String>>) {
         viewModelScope.launch {
 
             flow.collectLatest { (yearMonth, day) ->
-                refreshDaySchedule(yearMonth, day)
+                withContext(Dispatchers.IO){
+                    getDayScheduleUseCase(yearMonth, day).collectLatest { scheduleList ->
+                        _scheduleList.value = scheduleList
+                    }
+                }
             }
+        }
+    }
+
+    override fun modifySchedule(
+        seqNo: Int,
+        categoryList: List<CategoryModel>,
+        onClickAddCategory: () -> Unit
+    ) {
+        viewModelScope.launch {
+            val schedule = _scheduleList.value.find { it.seqNo == seqNo }!!
+
+            dialogChannel.send(
+                DialogUiState.Show(
+                    AppDialog.ScheduleDialog(
+                        title = ResourceUtil.getString(applicationContext, R.string.schedule_modify_dialog_title),
+                        scheduleInput = input,
+                        scheduleOutput = output,
+                        schedule = schedule,
+                        categoryItems = categoryList,
+                        onClickAddCategory = onClickAddCategory,
+                        confirmOnClick = {
+                            modifySchedule(schedule)
+                            onDismissDialog()
+                        },
+                        cancelOnClick = {
+                            onDismissDialog()
+                        },
+                        onDismiss = {
+                            onDismissDialog()
+                        }
+                    )
+                )
+            )
+        }
+    }
+
+    private fun onDismissDialog() {
+        viewModelScope.launch {
+            onChangeCategory("")
+            onChangeScheduleEditText("")
+
+            dialogChannel.send(DialogUiState.Dismiss)
+        }
+    }
+
+    override fun setDialogChannel(channel: Channel<DialogUiState>) {
+        dialogChannel = channel
+    }
+
+    override fun deleteSchedule(seqNo: Int, currentPage: Int, yearMonth: String) {
+        val schedule = _scheduleList.value.find { it.seqNo == seqNo }!!
+
+        viewModelScope.launch {
+            dialogChannel.send(
+                DialogUiState.Show(
+                    AppDialog.DefaultTwoButtonDialog(
+                        title = ResourceUtil.getString(applicationContext, R.string.schedule_delete_dialog_title),
+                        content = ResourceUtil.getString(applicationContext, R.string.schedule_delete_dialog_content,),
+                        confirmOnClick = {
+                            deleteSchedule(schedule, currentPage, yearMonth)
+                            onDismissDialog()
+                        },
+                        cancelOnClick = { onDismissDialog() },
+                        onDismiss = { onDismissDialog() }
+                    )
+                )
+            )
+        }
+    }
+
+    // 스케줄 수정
+    private fun modifySchedule(schedule: ScheduleModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            addScheduleUseCase(
+                schedule.copy(
+                    scheduleContent = _scheduleText.value,
+                    categoryName = _selectedCategory.value
+                )
+            )
+        }
+    }
+
+    private fun deleteSchedule(schedule: ScheduleModel, currentPage: Int, yearMonth: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            removeScheduleUseCase(schedule)
+
+            getMonthScheduleData(currentPage, yearMonth, true)
         }
     }
 }

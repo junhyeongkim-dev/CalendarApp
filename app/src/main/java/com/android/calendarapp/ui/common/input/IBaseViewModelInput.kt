@@ -1,6 +1,6 @@
 package com.android.calendarapp.ui.common.input
 
-import com.android.calendarapp.ui.common.output.DialogState
+import com.android.calendarapp.ui.common.dialog.DialogUiState
 
 interface IBaseViewModelInput {
 
@@ -8,7 +8,7 @@ interface IBaseViewModelInput {
     fun onDismissDefaultDialog()
 
     // 기본 다이얼로그 열기
-    fun showDialogDefault(dialogState: DialogState)
+    fun showDialogDefault(dialogUiState: DialogUiState)
 
     // 스낵바 호출
     fun showSnackBar(message: String)

@@ -10,17 +10,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -29,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.unit.dp
@@ -47,6 +42,7 @@ import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.ui.calendar.output.ICalendarViewModelOutput
 import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
 import com.android.calendarapp.ui.calendar.popup.output.IScheduleViewModelOutput
+import com.android.calendarapp.ui.common.popup.category.CategoryDropDown
 
 @Composable
 fun SchedulePopup(
@@ -58,9 +54,6 @@ fun SchedulePopup(
     snackBarEvent: (String) -> Unit,
     onClickAddCategory: () -> Unit
 ) {
-
-
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -113,7 +106,11 @@ fun SchedulePopup(
                         unfocusedContainerColor = Color(colorResource(id = R.color.gray2).value),
                         unfocusedIndicatorColor = Color.Transparent, // 포커스가 없을 때 밑줄 색상을 투명하게 설정
                         focusedIndicatorColor = Color.Transparent, // 포커스가 있을 때 밑줄 색상을 투명하게 설정
-                        cursorColor = Color.Black
+                        cursorColor = Color.Black,
+                        selectionColors = TextSelectionColors(
+                            handleColor = Color(colorResource(id = R.color.naver).value), // 물방울 핸들 색상
+                            backgroundColor = Color.Black.copy(alpha = 0.5f) // 텍스트 선택 영역 색상
+                        )
                     ),
                     maxLines = 1
                 )
@@ -127,6 +124,7 @@ fun SchedulePopup(
                     CategoryDropDown(
                         dropDownState= scheduleOutput.dropDownState.value,
                         categoryItems = categoryItems,
+                        selectedCategory = scheduleOutput.selectedCategory.value,
                         onChangeDropDownState = {
                             scheduleInput.onChangeDropDownState()
                         },
@@ -174,7 +172,7 @@ fun SchedulePopup(
 
                     val snackBarMessage = stringResource(id = R.string.snackbar_not_schedule_content)
 
-                    val selectedYearMonth = remember { calendarOutput.yearMonthHeader.value }
+                    val selectedYearMonth = remember { calendarOutput.selectedYearMonth.value }
                     val selectedDay = remember { calendarOutput.selectedDay.value }
                     val selectedCategory = remember{ scheduleOutput::selectedCategory.get() }
                     val addScheduleFunction = remember{ scheduleInput::onClickAddSchedule }
@@ -209,85 +207,5 @@ fun SchedulePopup(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun CategoryDropDown(
-    dropDownState: Boolean,
-    categoryItems: List<CategoryModel>,
-    onChangeDropDownState: () -> Unit,
-    onChangeSelectedCategory: (String) -> Unit,
-    onClickAddCategory: () -> Unit
-) {
-    DropdownMenu(
-        modifier = Modifier.height(250.dp),
-        expanded = dropDownState,
-        onDismissRequest = onChangeDropDownState
-    ) {
-        DropdownMenuItem(
-            modifier = Modifier
-                .padding(
-                    vertical = dimensionResource(id = R.dimen.dimen_category_dropdown_item_margin).value.dp
-                ),
-            text = {
-                Text(
-                    text = "없음",
-                    fontSize = dimensionResource(id = R.dimen.dimen_category_dropdown_item_text).value.sp,
-                    color = Color.Gray
-                )
-            }, onClick = {
-                onChangeDropDownState.invoke()
-                onChangeSelectedCategory("")
-            }
-        )
-
-        categoryItems.forEach { categoryItem ->
-            key(categoryItem.categoryName) {
-                DropdownMenuItem(
-                    modifier = Modifier
-                        .padding(
-                            vertical = dimensionResource(id = R.dimen.dimen_category_dropdown_item_margin).value.dp
-                        ),
-                    text = {
-                        Text(
-                            text = categoryItem.categoryName,
-                            fontSize = dimensionResource(id = R.dimen.dimen_category_dropdown_item_text).value.sp,
-                            color = Color.Black
-                        )
-                    }, onClick = {
-                        onChangeDropDownState.invoke()
-                        onChangeSelectedCategory(categoryItem.categoryName)
-                    }
-                )
-            }
-        }
-
-        DropdownMenuItem(
-            modifier = Modifier
-                .padding(
-                    vertical = dimensionResource(id = R.dimen.dimen_category_dropdown_item_margin).value.dp
-                ),
-            text = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "새로 만들기 아이콘",
-                        tint = Color(colorResource(id = R.color.naver).value)
-                    )
-                    Text(
-                        text = stringResource(id = R.string.category_dropdown_add_text),
-                        fontSize = dimensionResource(id = R.dimen.dimen_category_dropdown_item_text).value.sp,
-                        color = Color(colorResource(id = R.color.naver).value)
-                    )
-                }
-
-            }, onClick = {
-                onChangeDropDownState.invoke()
-                onClickAddCategory.invoke()
-            }
-        )
     }
 }

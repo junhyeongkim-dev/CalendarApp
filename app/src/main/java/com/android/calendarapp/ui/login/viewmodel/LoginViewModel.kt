@@ -14,7 +14,7 @@ import com.android.calendarapp.feature.user.domain.usecase.AddUserUseCase
 import com.android.calendarapp.library.security.preperence.helper.ISharedPreferencesHelper
 import com.android.calendarapp.library.security.tink.helper.ITinkHelper
 import com.android.calendarapp.ui.common.dialog.AppDialog
-import com.android.calendarapp.ui.common.output.DialogState
+import com.android.calendarapp.ui.common.dialog.DialogUiState
 import com.android.calendarapp.ui.common.viewmodel.BaseViewModel
 import com.android.calendarapp.ui.login.input.ILoginViewModelInput
 import com.android.calendarapp.ui.login.output.ILoginViewModelOutput
@@ -24,8 +24,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -102,7 +100,7 @@ class LoginViewModel @Inject constructor(
                                         onDismissDefaultDialog()
                                     }
                                 )
-                                showDialogDefault(dialogState = DialogState.Show(dialogType))
+                                showDialogDefault(dialogUiState = DialogUiState.Show(dialogType))
                             }
                         }
                     )

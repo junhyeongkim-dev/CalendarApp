@@ -8,31 +8,32 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.android.calendarapp.ui.common.output.DialogState
+import com.android.calendarapp.feature.category.domain.model.CategoryModel
+import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
+import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
+import com.android.calendarapp.ui.calendar.popup.output.IScheduleViewModelOutput
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun DialogInit(
-    uiState: StateFlow<DialogState>,
-    onBackPress: () -> Unit
+    uiState: StateFlow<DialogUiState>,
 ) {
     val dialogState by uiState.collectAsStateWithLifecycle()
-    val backHandleState: MutableState<Boolean> = remember { mutableStateOf(false) }
-
-    BackHandler(enabled = backHandleState.value) {
-        onBackPress()
-    }
 
     when(dialogState) {
-        DialogState.Dismiss -> {
-            backHandleState.value = false
-        }
-        is DialogState.Show -> {
-            backHandleState.value = true
-
-            DialogWrapper(appDialog = (dialogState as DialogState.Show).dialogType)
+        DialogUiState.Dismiss -> {}
+        is DialogUiState.Show -> {
+            DialogWrapper(appDialog = (dialogState as DialogUiState.Show).dialogType)
         }
     }
+}
+
+sealed class DialogUiState {
+    data object Dismiss : DialogUiState()
+
+    data class Show(
+        val dialogType: AppDialog
+    ) : DialogUiState()
 }
 
 sealed class AppDialog(
@@ -59,9 +60,21 @@ sealed class AppDialog(
         override val title: String,
         override val confirmOnClick: () -> Unit,
         override val onDismiss: () -> Unit,
+        val cancelOnClick: () -> Unit,
         val text: State<String>,
         val isNotExistCategoryState: State<Boolean>,
-        val onChangeText: (String) -> Unit,
-        val cancelOnClick: () -> Unit
+        val onChangeText: (String) -> Unit
+    ) : AppDialog(title, confirmOnClick, onDismiss)
+
+    data class ScheduleDialog(
+        override val title: String,
+        override val confirmOnClick: () -> Unit,
+        override val onDismiss: () -> Unit,
+        val cancelOnClick: () -> Unit,
+        val schedule: ScheduleModel,
+        val scheduleInput: IScheduleViewModelInput,
+        val scheduleOutput: IScheduleViewModelOutput,
+        val categoryItems: List<CategoryModel>,
+        val onClickAddCategory: () -> Unit
     ) : AppDialog(title, confirmOnClick, onDismiss)
 }

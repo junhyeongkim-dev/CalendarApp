@@ -1,16 +1,17 @@
 package com.android.calendarapp.ui.calendar.output
 
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
-import com.android.calendarapp.feature.category.domain.model.CategoryModel
-import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
+import com.android.calendarapp.feature.user.domain.model.UserModel
 import com.android.calendarapp.ui.calendar.model.DayItemModel
-import com.android.calendarapp.ui.common.output.DialogState
+import com.android.calendarapp.ui.common.dialog.DialogUiState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface ICalendarViewModelOutput {
+
+    // 유저정보
+    val userInfo: StateFlow<UserModel>
 
     // 월별 일자 데이터 리스트
     val calendarData: Map<Int, List<List<DayItemModel>>>
@@ -23,7 +24,7 @@ interface ICalendarViewModelOutput {
 
     // 달력 헤더
     @Stable
-    val yearMonthHeader: StateFlow<String>
+    val selectedYearMonth: StateFlow<String>
 
     // 현재 선택된 일자
     @Stable
@@ -31,6 +32,8 @@ interface ICalendarViewModelOutput {
 
     // 년월, 일 을 묶어서 해당일자의 일정 조히를 위한 flow
     val refreshDayScheduleFlow: Flow<Pair<String, String>>
+
+    val dialogChannel: Channel<DialogUiState>
 }
 
 // 초기 데이터 저장 완료 Effect

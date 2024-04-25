@@ -22,7 +22,7 @@ interface ScheduleDAO {
 
     @Transaction
     @Query("SELECT * FROM schedule WHERE schedule_year_month = :yearMonth AND schedule_day = :day")
-    fun selectDaySchedule(yearMonth: String, day: String) : List<ScheduleEntity>
+    fun selectDaySchedule(yearMonth: String, day: String) : Flow<List<ScheduleEntity>>
 
     @Transaction
     @Query(

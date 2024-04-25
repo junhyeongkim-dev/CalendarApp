@@ -3,12 +3,12 @@ package com.android.calendarapp.ui.calendar
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +21,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -37,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -51,7 +51,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.android.calendarapp.R
+import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
 import com.android.calendarapp.ui.calendar.component.error.CalendarError
 import com.android.calendarapp.ui.calendar.component.header.CalendarHeader
@@ -63,11 +65,10 @@ import com.android.calendarapp.ui.calendar.popup.input.IScheduleViewModelInput
 import com.android.calendarapp.ui.calendar.popup.viewModel.ScheduleViewModel
 import com.android.calendarapp.ui.calendar.viewmodel.CalendarViewModel
 import com.android.calendarapp.ui.common.component.BaseFullScreen
-import com.android.calendarapp.ui.common.popup.CategoryDialogPopup
-import com.android.calendarapp.ui.common.popup.viewmodel.CategoryViewModel
+import com.android.calendarapp.ui.common.dialog.DialogInit
+import com.android.calendarapp.ui.common.popup.category.viewmodel.CategoryViewModel
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 import com.android.calendarapp.util.DateUtil
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
@@ -103,18 +104,20 @@ fun CalendarScreen(
     // 스케줄 등록 팝업 노출 상태
     val scheduleUiState = scheduleViewModel.scheduleUiState.value
 
+    // 카테고리 리스트
+    val categoryList = categoryViewModel.categoryList.collectAsStateWithLifecycle(initialValue = emptyList()).value
+
+    // 선택된 년월
+    val selectedYearMonth = calendarViewModel.selectedYearMonth.collectAsStateWithLifecycle().value
+
     LaunchedEffect(key1 = true) {
         calendarViewModel.init()
         scheduleViewModel.setRefreshDayScheduleFlow(calendarViewModel.refreshDayScheduleFlow)
+        scheduleViewModel.setDialogChannel(calendarViewModel.dialogChannel)
+        categoryViewModel.setDialogChannel(calendarViewModel.dialogChannel)
     }
 
     Init(calendarViewModel.input, scheduleViewModel.input)
-
-    CategoryDialogPopup(
-        dialogState = categoryViewModel.categoryDialogState
-    ){
-        categoryViewModel.onDismissCategoryDialog()
-    }
 
     // 스케줄 등록 팝업 오픈 시 뒤로가기 클릭하면 꺼지도록
     BackHandler(enabled = scheduleUiState) {
@@ -122,10 +125,9 @@ fun CalendarScreen(
     }
 
     BaseFullScreen(
-        title = stringResource(id = R.string.app_bar_calendar_title_name, "김준형"),
-        isShowBackBtn = false,
-        dialogState = calendarViewModel.defaultDialogState,
-        onBackPress = { calendarViewModel.onDismissDefaultDialog() },
+        title = stringResource(id = R.string.app_bar_calendar_title_name, calendarViewModel.userInfo.collectAsStateWithLifecycle().value.userName),
+        isShowMoreBtn = true,
+        dialogUiState = calendarViewModel.defaultDialogUiState,
         snackBarHostState = calendarViewModel.snackBarHostState
     ) { paddingValues ->
         Box {
@@ -137,7 +139,7 @@ fun CalendarScreen(
             ) {
                 // 현재 페이저의 년월 및 요일 헤더
                 CalendarHeader(
-                    date = calendarViewModel.yearMonthHeader.collectAsStateWithLifecycle(initialValue = DateUtil.getCurrentYearMonth()).value,
+                    date = selectedYearMonth,
                     previousOnClick = {
                         onClickScope.launch {
                             pagerState.scrollToPage(pagerState.currentPage-1)
@@ -212,7 +214,8 @@ fun CalendarScreen(
                                     modifier = Modifier.fillMaxSize(),
                                     contentPadding = PaddingValues(
                                         start = 15.dp,
-                                        end = 15.dp
+                                        end = 15.dp,
+                                        bottom = 100.dp
                                     )
                                 ) {
                                     items(
@@ -221,7 +224,15 @@ fun CalendarScreen(
                                             scheduleList[index].seqNo
                                         }
                                     ) {index ->
-                                        ScheduleItem(scheduleList[index])
+                                        ScheduleItem(
+                                            input = scheduleViewModel.input,
+                                            scheduleItem = scheduleList[index],
+                                            categoryList = categoryList,
+                                            onClickAddCategory = remember { categoryViewModel::showCategoryDialog },
+                                            onClickDeleteSchedule = remember { scheduleViewModel::deleteSchedule },
+                                            currentPage = pagerState.currentPage,
+                                            date = selectedYearMonth
+                                        )
                                     }
                                 }
                             }
@@ -251,7 +262,7 @@ fun CalendarScreen(
 
             if(scheduleUiState) {
                 SchedulePopup(
-                    categoryItems = categoryViewModel.categoryList.collectAsStateWithLifecycle(initialValue = emptyList()).value,
+                    categoryItems = categoryList,
                     page = remember{ pagerState.currentPage },
                     scheduleInput = scheduleViewModel.input,
                     scheduleOutput = scheduleViewModel.output,
@@ -292,12 +303,29 @@ private fun AddScheduleButton(onClick: () -> Unit) {
 }
 
 @Composable
-private fun ScheduleItem(scheduleItem: ScheduleModel) {
+private fun ScheduleItem(
+    input: IScheduleViewModelInput,
+    scheduleItem: ScheduleModel,
+    categoryList: List<CategoryModel>,
+    onClickAddCategory: () -> Unit,
+    onClickDeleteSchedule: (seqNo: Int, currentPage: Int, date: String) -> Unit,
+    currentPage: Int,
+    date: String
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .padding(bottom = 10.dp),
+            .padding(bottom = 10.dp)
+            .then(
+                remember {
+                    Modifier.clickable {
+                        input::modifySchedule.invoke(
+                            scheduleItem.seqNo, categoryList, onClickAddCategory
+                        )
+                    }
+                }
+            ),
         colors = CardDefaults.cardColors(
             containerColor = colorResource(id = R.color.gray2)
         )
@@ -308,27 +336,10 @@ private fun ScheduleItem(scheduleItem: ScheduleModel) {
                 .padding(end = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(8.dp)
-                    .background(colorResource(id = R.color.naver))
-            )
-            Text(
-                modifier = Modifier
-                    .width(0.dp)
-                    .weight(1f)
-                    .padding(start = 10.dp),
-                text = scheduleItem.scheduleContent,
-                fontSize = dimensionResource(id = R.dimen.dimen_schedule_item_content).value.sp,
-                color = Color.Black,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Spacer(modifier = Modifier.width(10.dp))
 
             if(scheduleItem.categoryName.isNotEmpty()) {
+                Spacer(modifier = Modifier.width(10.dp))
+
                 Box(
                     modifier = Modifier
                         .clip(
@@ -348,6 +359,38 @@ private fun ScheduleItem(scheduleItem: ScheduleModel) {
                         )
                     )
                 }
+            }
+
+            Text(
+                modifier = Modifier
+                    .width(0.dp)
+                    .weight(1f)
+                    .padding(start = 10.dp),
+                text = scheduleItem.scheduleContent,
+                fontSize = dimensionResource(id = R.dimen.dimen_schedule_item_content).value.sp,
+                color = Color.Black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            val rememberPage = remember { currentPage }
+            val rememberDate = remember { date }
+            IconButton(
+                modifier = Modifier
+                    .size(35.dp),
+                onClick = {
+                    onClickDeleteSchedule.invoke(scheduleItem.seqNo, rememberPage, rememberDate)
+                }
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(20.dp),
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "일정 삭제 버튼",
+                    tint = Color.Black
+                )
             }
         }
     }
@@ -395,9 +438,7 @@ private fun changePage(targetPage: Int, intervalCount: Int) : Int {
 fun ScheduleAddDialogPreview() {
     CalendarAppTheme {
         Column {
-            /*AddSchedulePopup("", remember {
-                true
-            }*/
+            CalendarScreen(navController = rememberNavController())
         }
     }
 }

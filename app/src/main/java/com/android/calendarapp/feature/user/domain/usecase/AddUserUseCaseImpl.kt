@@ -8,7 +8,6 @@ import javax.inject.Inject
 class AddUserUseCaseImpl @Inject constructor(
     private val userRepository: UserRepository
 ) : AddUserUseCase {
-    override suspend fun invoke(userModel: UserModel) {
+    override suspend fun invoke(userModel: UserModel) =
         userRepository.insertUser(userModel.toEntity())
-    }
 }

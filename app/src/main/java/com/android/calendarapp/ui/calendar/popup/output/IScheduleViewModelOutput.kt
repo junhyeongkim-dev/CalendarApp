@@ -3,8 +3,9 @@ package com.android.calendarapp.ui.calendar.popup.output
 import androidx.compose.runtime.State
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
-import kotlinx.coroutines.channels.Channel
+import com.android.calendarapp.ui.common.dialog.DialogUiState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface IScheduleViewModelOutput {
 

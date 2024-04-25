@@ -13,7 +13,7 @@ class ScheduleRepositoryImpl @Inject constructor(
     override suspend fun selectDaySchedule(
         yearMonth: String,
         day: String
-    ): List<ScheduleEntity> = scheduleDAO.selectDaySchedule(yearMonth, day)
+    ): Flow<List<ScheduleEntity>> = scheduleDAO.selectDaySchedule(yearMonth, day)
 
     override suspend fun insertSchedule(scheduleEntity: ScheduleEntity) = scheduleDAO.insert(scheduleEntity)
 

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface ScheduleRepository {
     suspend fun selectAllSchedule() : Flow<List<ScheduleEntity>>
 
-    suspend fun selectDaySchedule(yearMonth: String, day: String) : List<ScheduleEntity>
+    suspend fun selectDaySchedule(yearMonth: String, day: String) : Flow<List<ScheduleEntity>>
 
     suspend fun insertSchedule(scheduleEntity: ScheduleEntity)
 

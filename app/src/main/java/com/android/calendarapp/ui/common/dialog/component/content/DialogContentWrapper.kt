@@ -15,5 +15,15 @@ fun DialogContentWrapper(
                 isNotExistCategoryState = dialogContent.isNotExistCategoryState,
                 onChangeText = dialogContent.onChangeText
             )
+
+        is DialogContent.Schedule -> {
+            ScheduleDialogContent(
+                scheduleModel = dialogContent.schedule,
+                scheduleInput = dialogContent.scheduleInput,
+                scheduleOutput = dialogContent.scheduleOutput,
+                categoryItems = dialogContent.categoryItems,
+                onClickAddCategory =dialogContent.onClickAddCategory
+            )
+        }
     }
 }

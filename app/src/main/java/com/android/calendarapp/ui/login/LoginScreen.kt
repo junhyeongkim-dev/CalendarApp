@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,10 +43,8 @@ fun LoginScreen(
 
     BaseFullScreen(
         title = stringResource(id = R.string.app_bar_sign_in_title_name),
-        isShowBackBtn = false,
         isShowBottomLine = true,
-        dialogState = viewModel.defaultDialogState,
-        onBackPress = { viewModel.onDismissDefaultDialog() },
+        dialogUiState = viewModel.defaultDialogUiState,
         snackBarHostState = viewModel.snackBarHostState
     ) { paddingValues ->
         Row(

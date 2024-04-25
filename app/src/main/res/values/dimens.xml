@@ -21,6 +21,6 @@
     <dimen name="dimen_schedule_empty_text">16sp</dimen>
 
     <!-- margin -->
-    <dimen name="dimen_header_start_margin">10dp</dimen>
+    <dimen name="dimen_header_margin">10dp</dimen>
     <dimen name="dimen_category_dropdown_item_margin">4dp</dimen>
 </resources>
