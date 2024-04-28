@@ -40,9 +40,11 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val currentRoute = navController.currentDestination?.route ?: ""
 
     BaseFullScreen(
         title = stringResource(id = R.string.app_bar_sign_in_title_name),
+        navController = navController,
         isShowBottomLine = true,
         dialogUiState = viewModel.defaultDialogUiState,
         snackBarHostState = viewModel.snackBarHostState
@@ -68,13 +70,13 @@ fun LoginScreen(
         ) {
             NaverButton{
 
-                viewModel.login(LoginType.NAVER, context)
+                viewModel.login(LoginType.NAVER, context, currentRoute)
             }
 
             Spacer(modifier = Modifier.size(20.dp))
 
             GuestButton{
-                viewModel.login(LoginType.GUEST, context)
+                viewModel.login(LoginType.GUEST, context, currentRoute)
             }
         }
     }

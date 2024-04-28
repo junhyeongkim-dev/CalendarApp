@@ -15,5 +15,7 @@ interface CategoryRepository {
 
     suspend fun selectGroupByCategory(): Flow<List<CategoryGroupModel>>
 
+    suspend fun updateCategory(seqNo: Int, categoryName: String)
+
     suspend fun deleteCategory(categoryEntity: CategoryEntity)
 }

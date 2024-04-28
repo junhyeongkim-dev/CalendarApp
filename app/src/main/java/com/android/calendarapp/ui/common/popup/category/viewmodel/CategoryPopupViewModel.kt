@@ -4,12 +4,12 @@ import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.calendarapp.R
 import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.feature.category.domain.usecase.AddCategoryUseCase
 import com.android.calendarapp.feature.category.domain.usecase.GetCategoryListUseCase
+import com.android.calendarapp.ui.common.base.viewmodel.BaseViewModel
 import com.android.calendarapp.ui.common.dialog.AppDialog
 import com.android.calendarapp.ui.common.dialog.DialogUiState
 import com.android.calendarapp.ui.common.popup.category.input.ICategoryPopupInput
@@ -29,7 +29,7 @@ class CategoryPopupViewModel @Inject constructor(
     private val applicationContext: Context,
     private val addCategoryUseCase: AddCategoryUseCase,
     private val getCategoryListUseCase: GetCategoryListUseCase
-) : ViewModel(), ICategoryPopupInput, ICategoryPopupOutput {
+) : BaseViewModel(), ICategoryPopupInput, ICategoryPopupOutput {
 
     val input: ICategoryPopupInput = this
     val output: ICategoryPopupOutput = this
@@ -46,6 +46,7 @@ class CategoryPopupViewModel @Inject constructor(
     private val _dropDownState: MutableState<Boolean> = mutableStateOf(false)
     override val categoryPopupUiState: State<Boolean> = _dropDownState
 
+    private var currentRoute: String = ""
     private var dialogChannel: Channel<DialogUiState> = Channel()
 
     init {
@@ -68,8 +69,9 @@ class CategoryPopupViewModel @Inject constructor(
         viewModelScope.launch {
             dialogChannel.send(
                 DialogUiState.Show(
-                    AppDialog.CategoryDialog(
-                        title = ResourceUtil.getString(applicationContext, R.string.category_dialog_title),
+                    route = currentRoute,
+                    dialogType = AppDialog.CategoryDialog(
+                        title = ResourceUtil.getString(applicationContext, R.string.category_add_dialog_title),
                         text = categoryDialogText,
                         isNotExistCategoryState = isNotExistCategoryState,
                         onChangeText = { text ->
@@ -106,7 +108,8 @@ class CategoryPopupViewModel @Inject constructor(
         }
     }
 
-    override fun setDialogChannel(channel: Channel<DialogUiState>) {
+    override fun setDialogChannel(channel: Channel<DialogUiState>, currentRoute: String) {
+        this.currentRoute = currentRoute
         dialogChannel = channel
     }
 

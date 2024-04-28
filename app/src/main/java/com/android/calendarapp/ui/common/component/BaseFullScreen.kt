@@ -29,6 +29,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.android.calendarapp.R
 import com.android.calendarapp.ui.common.popup.config.ConfigPopup
 import com.android.calendarapp.ui.common.dialog.DialogInit
@@ -42,10 +45,12 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun BaseFullScreen(
     title: String,
+    navController: NavHostController,
     isShowBackBtn: Boolean = false,
     isShowMoreBtn: Boolean = false,
     isShowBottomLine: Boolean = false,
     configPopupUiState: Boolean = false,
+    configCategoryOnClick: (() -> Unit)? = null,
     configInput: IConfigPopupInput? = null,
     dialogUiState: StateFlow<DialogUiState>,
     snackBarHostState: SnackbarHostState,
@@ -70,8 +75,15 @@ fun BaseFullScreen(
                         val backBtn = painterResource(id = R.drawable.ic_back)
                         Icon(
                             modifier = Modifier
-                                .size(35.dp)
-                                .align(Alignment.CenterStart),
+                                .size(25.dp)
+                                .align(Alignment.CenterStart)
+                                .then(
+                                    remember {
+                                        Modifier.clickable {
+                                            navController.popBackStack()
+                                        }
+                                    }
+                                ),
                             painter = backBtn,
                             contentDescription = "뒤로가기 버튼",
                             tint = Color.Black
@@ -98,19 +110,14 @@ fun BaseFullScreen(
                             .padding(
                                 end = dimensionResource(id = R.dimen.dimen_header_margin).value.dp
                             )
-                            .then(
-                                remember {
-                                    Modifier.clickable {
-                                        configInput?.onChangePopupUiState()
-                                    }
-                                }
-                            )
                     ){
                         if(null != configInput) {
                             Box(
-                                modifier = Modifier.align(Alignment.BottomEnd)
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
                             ) {
                                 ConfigPopup(
+                                    configCategoryOnClick = configCategoryOnClick ?: {},
                                     expandState = configPopupUiState,
                                     configInput = configInput
                                 )
@@ -120,7 +127,14 @@ fun BaseFullScreen(
                         Icon(
                             modifier = Modifier
                                 .size(25.dp)
-                                .align(Alignment.CenterEnd),
+                                .align(Alignment.CenterEnd)
+                                .then(
+                                    remember {
+                                        Modifier.clickable {
+                                            configInput?.onChangePopupUiState()
+                                        }
+                                    }
+                                ),
                             imageVector = Icons.Filled.MoreVert,
                             contentDescription = "뒤로가기 버튼",
                             tint = Color.Black
@@ -163,7 +177,8 @@ fun BaseFullScreen(
     }
 
     DialogInit(
-        uiState = dialogUiState
+        uiState = dialogUiState,
+        currentRoute = navController.currentDestination?.route ?: ""
     )
 }
 
@@ -173,6 +188,7 @@ fun BaseFullScreenPreview() {
     CalendarAppTheme {
         BaseFullScreen(
             title = "로그인",
+            rememberNavController(),
             dialogUiState = MutableStateFlow(DialogUiState.Dismiss),
             snackBarHostState = SnackbarHostState(),
             ){}

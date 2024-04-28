@@ -19,13 +19,13 @@ open class BaseViewModel(
 
     override val snackBarHostState: SnackbarHostState = SnackbarHostState()
 
-    override fun onDismissDefaultDialog() {
+    override fun onDismissDialog() {
         viewModelScope.launch {
             _defaultDialogUiState.emit(DialogUiState.Dismiss)
         }
     }
 
-    override fun showDialogDefault(dialogUiState: DialogUiState) {
+    override fun showDialog(dialogUiState: DialogUiState) {
         viewModelScope.launch {
             _defaultDialogUiState.emit(dialogUiState)
         }

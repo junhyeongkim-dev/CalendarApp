@@ -34,8 +34,6 @@ class ConfigViewModel @Inject constructor(
 
     val input: IConfigPopupInput = this
 
-    private var dialogChannel: Channel<DialogUiState> = Channel()
-
     private val _configPopupUiState: MutableState<Boolean> = mutableStateOf(false)
     override val configPopupUiState: State<Boolean> = _configPopupUiState
 
@@ -48,20 +46,17 @@ class ConfigViewModel @Inject constructor(
     // 현재 저장되어 있는 유저 네임
     private lateinit var savedUserModel: UserModel
 
+    private var currentRoute = ""
+    private var dialogChannel: Channel<DialogUiState> = Channel()
+
     override fun onChangePopupUiState() {
         _configPopupUiState.value = !_configPopupUiState.value
     }
 
     override fun onChangeConfigDialogUiState(dialogType: ConfigDialog) {
         when(dialogType) {
-            ConfigDialog.ConfigCategory -> {
-
-            }
             ConfigDialog.UserName -> showUserNameDialog()
-
-            ConfigDialog.Dismiss -> {
-
-            }
+            ConfigDialog.Dismiss -> {}
         }
     }
 
@@ -71,7 +66,8 @@ class ConfigViewModel @Inject constructor(
         viewModelScope.launch {
             dialogChannel.send(
                 DialogUiState.Show(
-                    AppDialog.UserNameDialog(
+                    route = currentRoute,
+                    dialogType = AppDialog.UserNameDialog(
                         title = ResourceUtil.getString(applicationContext, R.string.config_modify_user_name_title),
                         userName = userNameEditText,
                         onChangeUserName = this@ConfigViewModel::onChangeUserNameEditText,
@@ -110,11 +106,8 @@ class ConfigViewModel @Inject constructor(
         }
     }
 
-    override fun configCategory() {
-
-    }
-
-    override fun setDialogChannel(channel: Channel<DialogUiState>) {
+    override fun setDialogChannel(channel: Channel<DialogUiState>, currentRoute: String) {
+        this.currentRoute = currentRoute
         dialogChannel = channel
     }
 

@@ -16,11 +16,8 @@ interface IConfigPopupInput {
 
     fun onChangeUserNameEditText(text: String)
 
-    // 카테고리 관리
-    fun configCategory()
-
     // 다이얼로그 상태 전달을 위한 채널
-    fun setDialogChannel(channel: Channel<DialogUiState>)
+    fun setDialogChannel(channel: Channel<DialogUiState>, currentRoute: String)
 
     // 유저 이름을 받기 위한 flow
     fun setUserNameState(userModel: StateFlow<UserModel>)

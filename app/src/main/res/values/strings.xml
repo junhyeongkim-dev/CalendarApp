@@ -15,7 +15,10 @@
 
     <string name="category_dropdown_add_text">새로 만들기</string>
     <string name="category_default_text">카테고리 없음</string>
-    <string name="category_dialog_title">카테고리 추가</string>
+    <string name="category_add_dialog_title">카테고리 추가</string>
+    <string name="category_modify_dialog_title">카테고리 수정</string>
+    <string name="category_delete_dialog_title">카테고리 삭제</string>
+    <string name="category_delete_dialog_content">해당 카테고리를 삭제하시겠습니까?</string>
     <string name="category_popup_over_max_length">카테고리의 이름이 한도를 초과했습니다.</string>
     <string name="category_popup_not_exist_name">카테고리 이름을 입력해주세요.</string>
 
@@ -24,4 +27,5 @@
     <string name="schedule_delete_dialog_content">해당 일정을 삭제하시겠습니까?</string>
 
     <string name="config_modify_user_name_title">이름 변경</string>
+    <string name="config_category_title">카테고리 관리</string>
 </resources>

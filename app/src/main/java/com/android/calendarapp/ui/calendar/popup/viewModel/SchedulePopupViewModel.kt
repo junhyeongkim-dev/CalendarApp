@@ -59,6 +59,7 @@ class SchedulePopupViewModel @Inject constructor(
     private val _scheduleList: MutableStateFlow<List<ScheduleModel>> = MutableStateFlow(emptyList())
     override var scheduleList: StateFlow<List<ScheduleModel>> = _scheduleList
 
+    private var currentRoute: String = ""
     private var dialogChannel: Channel<DialogUiState> = Channel()
 
     override fun getMonthScheduleData(page: Int, date: String, isForce: Boolean) {
@@ -134,7 +135,8 @@ class SchedulePopupViewModel @Inject constructor(
 
             dialogChannel.send(
                 DialogUiState.Show(
-                    AppDialog.ScheduleDialog(
+                    route = currentRoute,
+                    dialogType = AppDialog.ScheduleDialog(
                         title = ResourceUtil.getString(applicationContext, R.string.schedule_modify_dialog_title),
                         schedule = schedule,
                         scheduleInput = input,
@@ -166,17 +168,23 @@ class SchedulePopupViewModel @Inject constructor(
         }
     }
 
-    override fun setDialogChannel(channel: Channel<DialogUiState>) {
+    override fun setDialogChannel(channel: Channel<DialogUiState>, currentRoute: String) {
+        this.currentRoute = currentRoute
         dialogChannel = channel
     }
 
-    override fun deleteSchedule(seqNo: Int, currentPage: Int, yearMonth: String) {
+    override fun deleteSchedule(
+        seqNo: Int,
+        currentPage: Int,
+        yearMonth: String
+    ) {
         val schedule = _scheduleList.value.find { it.seqNo == seqNo }!!
 
         viewModelScope.launch {
             dialogChannel.send(
                 DialogUiState.Show(
-                    AppDialog.DefaultTwoButtonDialog(
+                    route = currentRoute,
+                    dialogType = AppDialog.DefaultTwoButtonDialog(
                         title = ResourceUtil.getString(applicationContext, R.string.schedule_delete_dialog_title),
                         content = ResourceUtil.getString(applicationContext, R.string.schedule_delete_dialog_content,),
                         confirmOnClick = {

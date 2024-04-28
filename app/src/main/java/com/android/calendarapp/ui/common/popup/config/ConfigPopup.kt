@@ -11,7 +11,8 @@ import com.android.calendarapp.ui.common.popup.config.output.ConfigDialog
 @Composable
 fun ConfigPopup(
     expandState: Boolean,
-    configInput: IConfigPopupInput
+    configInput: IConfigPopupInput,
+    configCategoryOnClick: () -> Unit
 ) {
     DropdownMenu(
         expanded = expandState,
@@ -39,9 +40,7 @@ fun ConfigPopup(
                 )
             },
             onClick = {
-                configInput.onChangeConfigDialogUiState(
-                    dialogType = ConfigDialog.ConfigCategory
-                )
+                configCategoryOnClick.invoke()
             }
         )
     }

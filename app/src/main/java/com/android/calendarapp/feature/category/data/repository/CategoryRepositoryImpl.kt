@@ -17,6 +17,7 @@ class CategoryRepositoryImpl @Inject constructor(
 
     override suspend fun selectCategory(categoryName: String): String? = categoryDAO.selectCategory(categoryName)
     override suspend fun selectGroupByCategory(): Flow<List<CategoryGroupModel>> = categoryDAO.selectGroupByCategory()
+    override suspend fun updateCategory(seqNo: Int, categoryName: String) = categoryDAO.updateCategory(seqNo, categoryName)
 
     override suspend fun deleteCategory(categoryEntity: CategoryEntity) = categoryDAO.delete(categoryEntity)
 }

@@ -20,6 +20,9 @@ class ScheduleRepositoryImpl @Inject constructor(
     override suspend fun selectGroupByYearMonth(scheduleYearMonth: String): List<ScheduleGroupModel> =
         scheduleDAO.selectGroupByYearMonth(scheduleYearMonth)
 
+    override suspend fun updateCategory(currentCategoryName: String, changeCategoryName: String) =
+        scheduleDAO.updateCategory(currentCategoryName, changeCategoryName)
+
     override suspend fun deleteSchedule(scheduleEntity: ScheduleEntity) = scheduleDAO.delete(scheduleEntity)
 
 }

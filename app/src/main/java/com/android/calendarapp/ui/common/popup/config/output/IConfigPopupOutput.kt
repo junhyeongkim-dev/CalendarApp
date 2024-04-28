@@ -12,5 +12,4 @@ interface IConfigPopupOutput {
 sealed class ConfigDialog {
     data object Dismiss: ConfigDialog()
     data object UserName: ConfigDialog()
-    data object ConfigCategory: ConfigDialog()
 }

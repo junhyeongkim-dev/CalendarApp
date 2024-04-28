@@ -13,5 +13,7 @@ interface ScheduleRepository {
 
     suspend fun selectGroupByYearMonth(scheduleYearMonth: String) : List<ScheduleGroupModel>
 
+    suspend fun updateCategory(currentCategoryName: String, changeCategoryName: String)
+
     suspend fun deleteSchedule(scheduleEntity: ScheduleEntity)
 }

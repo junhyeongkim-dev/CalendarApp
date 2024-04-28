@@ -236,7 +236,11 @@ class DateUtil {
                 if(count % 7 == 0) {
 
                     // 첫날은 일요일로 빨간색
-                    weekData[0].dayColor = Color.Red
+                    if( weekData[0].dayText != toDay ) {
+                        // 첫 주에 이전달 데이터가 있는 경우, 당일 제외 하고 첫번째 Item은 일요일로 빨간색으로 표시
+
+                        weekData[0].dayColor = Color.Red
+                    }
 
                     // 1주일치 month 에 추가
                     monthData.add(weekData.toList())

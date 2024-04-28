@@ -10,6 +10,8 @@ import com.android.calendarapp.feature.schedule.domain.usecase.GetDayScheduleUse
 import com.android.calendarapp.feature.schedule.domain.usecase.GetDayScheduleUseCaseImpl
 import com.android.calendarapp.feature.schedule.domain.usecase.RemoveScheduleUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.RemoveScheduleUseCaseImpl
+import com.android.calendarapp.feature.schedule.domain.usecase.UpdateScheduleUseCase
+import com.android.calendarapp.feature.schedule.domain.usecase.UpdateScheduleUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -39,4 +41,8 @@ abstract class ScheduleUseCaseModule {
     @Binds
     @Singleton
     abstract fun bindGetDayScheduleUseCase(getDayScheduleUseCaseImpl: GetDayScheduleUseCaseImpl) : GetDayScheduleUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindUpdateScheduleUseCase(updateScheduleUseCaseImpl: UpdateScheduleUseCaseImpl) : UpdateScheduleUseCase
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
@@ -90,7 +91,11 @@ fun CategoryDialogContent(
                             unfocusedContainerColor = Color(colorResource(id = R.color.gray2).value),
                             unfocusedIndicatorColor = Color.Transparent, // 포커스가 없을 때 밑줄 색상을 투명하게 설정
                             focusedIndicatorColor = Color.Transparent, // 포커스가 있을 때 밑줄 색상을 투명하게 설정
-                            cursorColor = Color.Black
+                            cursorColor = Color.Black,
+                            selectionColors = TextSelectionColors(
+                                handleColor = Color(colorResource(id = R.color.naver).value), // 물방울 핸들 색상
+                                backgroundColor = Color.Black.copy(alpha = 0.5f) // 텍스트 선택 영역 색상
+                            )
                         )
                     )
                 }

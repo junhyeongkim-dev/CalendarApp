@@ -1,6 +1,7 @@
 package com.android.calendarapp.feature.category.domain.model
 
 data class CategoryGroupModel(
-    val count: Int,
-    val categoryName: String
+    val seqNo: Int = 0,
+    val count: Int = 0,
+    val categoryName: String = ""
 )

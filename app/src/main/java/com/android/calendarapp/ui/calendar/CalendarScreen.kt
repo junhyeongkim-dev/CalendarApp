@@ -58,6 +58,7 @@ import com.android.calendarapp.ui.calendar.component.error.CalendarError
 import com.android.calendarapp.ui.calendar.component.header.CalendarHeader
 import com.android.calendarapp.ui.calendar.component.month.MonthItem
 import com.android.calendarapp.ui.calendar.input.ICalendarInput
+import com.android.calendarapp.ui.calendar.output.CalendarNavigateEffect
 import com.android.calendarapp.ui.calendar.output.CalendarUiEffect
 import com.android.calendarapp.ui.common.popup.config.viewmodel.ConfigViewModel
 import com.android.calendarapp.ui.calendar.popup.SchedulePopup
@@ -65,12 +66,14 @@ import com.android.calendarapp.ui.calendar.popup.input.ISchedulePopupInput
 import com.android.calendarapp.ui.calendar.popup.viewModel.SchedulePopupViewModel
 import com.android.calendarapp.ui.calendar.viewmodel.CalendarViewModel
 import com.android.calendarapp.ui.common.component.BaseFullScreen
+import com.android.calendarapp.ui.common.navigator.type.NavMembers
 import com.android.calendarapp.ui.common.popup.category.input.ICategoryPopupInput
 import com.android.calendarapp.ui.common.popup.category.output.ICategoryPopupOutput
 import com.android.calendarapp.ui.common.popup.category.viewmodel.CategoryPopupViewModel
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 import com.android.calendarapp.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
@@ -91,6 +94,8 @@ fun CalendarScreen(
     configViewModel: ConfigViewModel = hiltViewModel(),
     onClickScope: CoroutineScope = rememberCoroutineScope()
 ) {
+
+    val currentRoute = navController.currentDestination?.route ?: ""
 
     // 페이저 초기 페이지 및 총 갯수 설정
     val pagerState = rememberPagerState(
@@ -114,13 +119,27 @@ fun CalendarScreen(
     LaunchedEffect(key1 = true) {
         calendarViewModel.init()
         schedulePopupViewModel.setRefreshDayScheduleFlow(calendarViewModel.refreshDayScheduleFlow)
-        schedulePopupViewModel.setDialogChannel(calendarViewModel.dialogChannel)
-        categoryPopupViewModel.setDialogChannel(calendarViewModel.dialogChannel)
-        configViewModel.setDialogChannel(calendarViewModel.dialogChannel)
+        schedulePopupViewModel.setDialogChannel(
+            channel = calendarViewModel.dialogChannel,
+            currentRoute = currentRoute
+        )
+        categoryPopupViewModel.setDialogChannel(
+            channel = calendarViewModel.dialogChannel,
+            currentRoute = currentRoute
+        )
+        configViewModel.setDialogChannel(
+            channel = calendarViewModel.dialogChannel,
+            currentRoute = currentRoute
+        )
         configViewModel.setUserNameState(calendarViewModel.userInfo)
     }
 
     Init(calendarViewModel.input, schedulePopupViewModel.input)
+
+    ObserveNavigation(
+        navController = navController,
+        state = calendarViewModel.configCategoryEffect
+    )
 
     // 스케줄 등록 팝업 오픈 시 뒤로가기 클릭하면 꺼지도록
     BackHandler(enabled = scheduleUiState) {
@@ -129,9 +148,14 @@ fun CalendarScreen(
 
     BaseFullScreen(
         title = stringResource(id = R.string.app_bar_calendar_title_name, calendarViewModel.userInfo.collectAsStateWithLifecycle().value.userName),
+        navController = navController,
         isShowMoreBtn = true,
         dialogUiState = calendarViewModel.defaultDialogUiState,
         configPopupUiState = configViewModel.configPopupUiState.value,
+        configCategoryOnClick = {
+            configViewModel.onChangePopupUiState()
+            calendarViewModel.navigateConfigCategory()
+        },
         configInput = configViewModel.input,
         snackBarHostState = calendarViewModel.snackBarHostState
     ) { paddingValues ->
@@ -398,6 +422,21 @@ private fun ScheduleItem(
                     contentDescription = "일정 삭제 버튼",
                     tint = Color.Black
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ObserveNavigation(
+    navController: NavHostController,
+    state: SharedFlow<CalendarNavigateEffect>
+) {
+    LaunchedEffect(key1 = true) {
+        state.collect { calendarNavigateEffect ->
+            when(calendarNavigateEffect) {
+                CalendarNavigateEffect.GoConfigCategory ->
+                    navController.navigate(NavMembers.CATEGORY.name)
             }
         }
     }

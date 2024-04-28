@@ -42,8 +42,10 @@ interface ScheduleDAO {
     )
     fun selectGroupByYearMonth(yearMonth: String): List<ScheduleGroupModel>
 
-    @Update
-    fun update(scheduleEntity: ScheduleEntity)
+    @Transaction
+    @Query("UPDATE schedule SET category_name = :changeCategoryName WHERE category_name = :currentCategoryName")
+    fun updateCategory(currentCategoryName: String, changeCategoryName: String)
+
 
     @Delete
     fun delete(scheduleEntity: ScheduleEntity)

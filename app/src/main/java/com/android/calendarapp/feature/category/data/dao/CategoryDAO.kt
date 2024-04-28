@@ -29,12 +29,16 @@ interface CategoryDAO {
 
     @Transaction
     @Query(
-        "SELECT category.category_name ,count(*) AS count " +
+        "SELECT category.category_name AS categoryName ,count(*) AS count, category.seq_no AS seqNo " +
         "FROM category " +
         "LEFT OUTER JOIN schedule ON schedule.category_name = category.category_name " +
         "GROUP BY category.category_name"
     )
     fun selectGroupByCategory() : Flow<List<CategoryGroupModel>>
+
+    @Transaction
+    @Query("UPDATE category set category_name = :categoryName WHERE seq_no = :seqNo")
+    fun updateCategory(seqNo: Int, categoryName: String)
 
     @Delete
     fun delete(categoryEntity: CategoryEntity)

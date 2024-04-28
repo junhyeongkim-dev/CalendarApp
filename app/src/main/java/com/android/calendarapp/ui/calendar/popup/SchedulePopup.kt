@@ -33,10 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
@@ -137,7 +135,7 @@ fun SchedulePopup(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     CategoryDropDown(
-                        dropDownState= categoryPopupUiState,
+                        dropDownState = categoryPopupUiState,
                         categoryItems = categoryItems,
                         selectedCategory = scheduleOutput.selectedCategory.value,
                         onChangeDropDownState = {

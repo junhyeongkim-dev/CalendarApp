@@ -10,6 +10,8 @@ import com.android.calendarapp.feature.category.domain.usecase.GetCategoryGroupL
 import com.android.calendarapp.feature.category.domain.usecase.GetCategoryListUseCase
 import com.android.calendarapp.feature.category.domain.usecase.RemoveCategoryUseCase
 import com.android.calendarapp.feature.category.domain.usecase.RemoveCategoryUseCaseImpl
+import com.android.calendarapp.feature.category.domain.usecase.UpdateCategoryUseCase
+import com.android.calendarapp.feature.category.domain.usecase.UpdateCategoryUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -35,6 +37,10 @@ abstract class CategoryUseCaseModule {
     @Binds
     @Singleton
     abstract fun bindGetCategoryGroupListUseCase(getCategoryGroupListUseCaseImpl: GetCategoryGroupListUseCaseImpl) : GetCategoryGroupListUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindUpdateCategoryUseCase(updateCategoryUseCaseImpl: UpdateCategoryUseCaseImpl) : UpdateCategoryUseCase
 
     @Binds
     @Singleton

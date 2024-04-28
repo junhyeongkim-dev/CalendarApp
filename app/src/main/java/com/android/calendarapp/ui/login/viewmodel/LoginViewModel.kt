@@ -40,7 +40,7 @@ class LoginViewModel @Inject constructor(
     private val _loginNavigateEffect = MutableSharedFlow<LoginNavigateEffect>(replay = 0)
     override val loginNavigateEffect: SharedFlow<LoginNavigateEffect> = _loginNavigateEffect
 
-    override fun login(loginType: LoginType, context: Context) {
+    override fun login(loginType: LoginType, context: Context, currentRoute: String) {
         when(loginType) {
             LoginType.GUEST -> TODO()
             LoginType.NAVER -> {
@@ -92,13 +92,18 @@ class LoginViewModel @Inject constructor(
                                     ),
                                     content = content,
                                     confirmOnClick = {
-                                        onDismissDefaultDialog()
+                                        onDismissDialog()
                                     },
                                     onDismiss = {
-                                        onDismissDefaultDialog()
+                                        onDismissDialog()
                                     }
                                 )
-                                showDialogDefault(dialogUiState = DialogUiState.Show(dialogType))
+                                showDialog(
+                                    dialogUiState = DialogUiState.Show(
+                                        route = currentRoute,
+                                        dialogType = dialogType,
+                                    )
+                                )
                             }
                         }
                     )

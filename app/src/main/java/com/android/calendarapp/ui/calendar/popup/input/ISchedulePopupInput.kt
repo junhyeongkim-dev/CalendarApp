@@ -25,7 +25,7 @@ interface ISchedulePopupInput {
         currentPage: Int,
         yearMonth: String,
         day: String,
-        categoryName: String
+        categoryName: String,
     )
 
     // 선택된 일자의 일정 조회
@@ -39,7 +39,11 @@ interface ISchedulePopupInput {
     )
 
     // 다이얼로그 상태 전달을 위한 채널
-    fun setDialogChannel(channel: Channel<DialogUiState>)
+    fun setDialogChannel(channel: Channel<DialogUiState>, currentRoute: String)
 
-    fun deleteSchedule(seqNo: Int, currentPage: Int, yearMonth: String)
+    fun deleteSchedule(
+        seqNo: Int,
+        currentPage: Int,
+        yearMonth: String
+    )
 }
