@@ -3,8 +3,6 @@ package com.android.calendarapp.feature.category.domain.usecase
 import com.android.calendarapp.feature.category.data.repository.CategoryRepository
 import com.android.calendarapp.feature.category.domain.convert.toEntity
 import com.android.calendarapp.feature.category.domain.model.CategoryGroupModel
-import com.android.calendarapp.feature.category.domain.model.CategoryModel
-import com.android.calendarapp.feature.user.domain.model.UserModel
 import javax.inject.Inject
 
 class RemoveCategoryUseCaseImpl @Inject constructor(

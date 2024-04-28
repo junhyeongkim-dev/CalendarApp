@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -15,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -39,12 +37,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.android.calendarapp.R
 import com.android.calendarapp.feature.category.domain.model.CategoryGroupModel
-import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.ui.category.input.ICategoryInput
 import com.android.calendarapp.ui.category.output.CategoryEffect
 import com.android.calendarapp.ui.category.viewmodel.CategoryViewModel
 import com.android.calendarapp.ui.common.component.BaseFullScreen
-import com.android.calendarapp.ui.common.popup.config.input.IConfigPopupInput
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map

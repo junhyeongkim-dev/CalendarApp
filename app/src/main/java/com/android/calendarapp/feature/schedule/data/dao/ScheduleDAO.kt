@@ -6,10 +6,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import androidx.room.Update
 import com.android.calendarapp.feature.schedule.data.entity.ScheduleEntity
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import kotlinx.coroutines.flow.Flow
+
 @Dao
 interface ScheduleDAO {
 

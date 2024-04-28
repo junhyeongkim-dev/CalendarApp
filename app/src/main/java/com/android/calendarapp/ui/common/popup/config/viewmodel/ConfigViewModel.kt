@@ -29,7 +29,6 @@ import javax.inject.Inject
 class ConfigViewModel @Inject constructor(
     private val applicationContext: Context,
     private val addUserUseCase: AddUserUseCase,
-    private val removeCategoryUseCase: RemoveCategoryUseCase
 ) : ViewModel(), IConfigPopupInput, IConfigPopupOutput {
 
     val input: IConfigPopupInput = this
