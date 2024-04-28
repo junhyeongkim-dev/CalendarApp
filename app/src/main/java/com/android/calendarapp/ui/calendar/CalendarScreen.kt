@@ -136,6 +136,7 @@ fun CalendarScreen(
 
     Init(calendarViewModel.input, schedulePopupViewModel.input)
 
+    // 화면이동을 위한 collect 세팅
     ObserveNavigation(
         navController = navController,
         state = calendarViewModel.configCategoryEffect
@@ -288,20 +289,20 @@ fun CalendarScreen(
                     }
                 }
             }
-
-            if(scheduleUiState) {
-                SchedulePopup(
-                    categoryItems = categoryList,
-                    page = remember{ pagerState.currentPage },
-                    categoryPopupUiState = categoryPopupViewModel.categoryPopupUiState.value,
-                    scheduleInput = schedulePopupViewModel.input,
-                    scheduleOutput = schedulePopupViewModel.output,
-                    calendarOutput = calendarViewModel.output,
-                    categoryInput = categoryPopupViewModel.input,
-                    snackBarEvent = remember { calendarViewModel::showSnackBar }
-                )
-            }
         }
+    }
+
+    if(scheduleUiState) {
+        SchedulePopup(
+            categoryItems = categoryList,
+            page = remember{ pagerState.currentPage },
+            categoryPopupUiState = categoryPopupViewModel.categoryPopupUiState.value,
+            scheduleInput = schedulePopupViewModel.input,
+            scheduleOutput = schedulePopupViewModel.output,
+            calendarOutput = calendarViewModel.output,
+            categoryInput = categoryPopupViewModel.input,
+            snackBarEvent = remember { calendarViewModel::showSnackBar }
+        )
     }
 }
 
