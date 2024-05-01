@@ -39,7 +39,7 @@ interface ISchedulePopupInput {
     )
 
     // 다이얼로그 상태 전달을 위한 채널
-    fun setDialogChannel(channel: Channel<DialogUiState>, currentRoute: String)
+    fun setDialogChannel(channel: Channel<DialogUiState>)
 
     fun deleteSchedule(
         seqNo: Int,

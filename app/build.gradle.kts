@@ -42,7 +42,7 @@ android {
             buildConfigField("String", "OAUTH_CLIENT_SECRET", "\"2SAy2HAIOo\"")
             buildConfigField("String", "OAUTH_CLIENT_NAME", "\"Simple Calander\"")
 
-            isDebuggable = true
+            isDebuggable = false
         }
     }
 

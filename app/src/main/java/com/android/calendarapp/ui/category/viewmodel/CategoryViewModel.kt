@@ -69,7 +69,7 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    override fun showCategoryDialog(route: String, seqNo: Int) {
+    override fun showCategoryDialog(seqNo: Int) {
         _dropdownState.value = CategoryEffect.Dismiss
 
         val targetCategoryGroup = _categoryGroupList.value.find{ it.seqNo == seqNo } ?: CategoryGroupModel()
@@ -78,7 +78,6 @@ class CategoryViewModel @Inject constructor(
 
         showDialog(
             DialogUiState.Show(
-                route = route,
                 dialogType = AppDialog.CategoryDialog(
                     title = ResourceUtil.getString(
                         context = applicationContext,
@@ -114,14 +113,13 @@ class CategoryViewModel @Inject constructor(
         )
     }
 
-    override fun deleteCategory(route: String, seqNo: Int) {
+    override fun deleteCategory(seqNo: Int) {
         _dropdownState.value = CategoryEffect.Dismiss
 
         val categoryGroup = categoryGroupList.value.find { it.seqNo == seqNo } ?: CategoryGroupModel()
 
         showDialog(
             DialogUiState.Show(
-                route = route,
                 dialogType = AppDialog.DefaultTwoButtonDialog(
                     title = ResourceUtil.getString(applicationContext, R.string.category_delete_dialog_title),
                     content = ResourceUtil.getString(applicationContext, R.string.category_delete_dialog_content,),

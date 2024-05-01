@@ -8,8 +8,8 @@ interface ICategoryInput {
     fun onChangeDropDownState(categoryEffect: CategoryEffect)
 
     // 카테고리 수정 또는 등록을 위한 다이얼로그 오픈
-    fun showCategoryDialog(route: String, seqNo: Int)
+    fun showCategoryDialog(seqNo: Int)
 
     // 카테고리 삭제
-    fun deleteCategory(route: String, seqNo: Int)
+    fun deleteCategory(seqNo: Int)
 }

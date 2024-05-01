@@ -178,8 +178,7 @@ fun BaseFullScreen(
     }
 
     DialogInit(
-        uiState = dialogUiState,
-        currentRoute = navController.currentDestination?.route ?: ""
+        uiState = dialogUiState
     )
 }
 

@@ -95,7 +95,7 @@ fun CategoryScreen(
                         .then(
                             remember {
                                 Modifier.clickable {
-                                    categoryViewModel::showCategoryDialog.invoke(route, 0)
+                                    categoryViewModel::showCategoryDialog.invoke(0)
                                 }
                             }
                         ),
@@ -215,7 +215,7 @@ private fun ConfigDropdown(
                     textAlign = TextAlign.Center
                 )
             }, onClick = {
-                input.showCategoryDialog(route, seqNo)
+                input.showCategoryDialog(seqNo)
             }
         )
 
@@ -230,7 +230,6 @@ private fun ConfigDropdown(
                 )
             }, onClick = {
                 input.deleteCategory(
-                    route = route,
                     seqNo = seqNo
                 )
             }

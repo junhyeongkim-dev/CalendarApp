@@ -119,18 +119,9 @@ fun CalendarScreen(
     LaunchedEffect(key1 = true) {
         calendarViewModel.init()
         schedulePopupViewModel.setRefreshDayScheduleFlow(calendarViewModel.refreshDayScheduleFlow)
-        schedulePopupViewModel.setDialogChannel(
-            channel = calendarViewModel.dialogChannel,
-            currentRoute = currentRoute
-        )
-        categoryPopupViewModel.setDialogChannel(
-            channel = calendarViewModel.dialogChannel,
-            currentRoute = currentRoute
-        )
-        configViewModel.setDialogChannel(
-            channel = calendarViewModel.dialogChannel,
-            currentRoute = currentRoute
-        )
+        schedulePopupViewModel.setDialogChannel(channel = calendarViewModel.dialogChannel)
+        categoryPopupViewModel.setDialogChannel(channel = calendarViewModel.dialogChannel)
+        configViewModel.setDialogChannel(channel = calendarViewModel.dialogChannel)
         configViewModel.setUserNameState(calendarViewModel.userInfo)
     }
 

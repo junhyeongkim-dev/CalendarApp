@@ -45,7 +45,6 @@ class ConfigViewModel @Inject constructor(
     // 현재 저장되어 있는 유저 네임
     private lateinit var savedUserModel: UserModel
 
-    private var currentRoute = ""
     private var dialogChannel: Channel<DialogUiState> = Channel()
 
     override fun onChangePopupUiState() {
@@ -65,7 +64,6 @@ class ConfigViewModel @Inject constructor(
         viewModelScope.launch {
             dialogChannel.send(
                 DialogUiState.Show(
-                    route = currentRoute,
                     dialogType = AppDialog.UserNameDialog(
                         title = ResourceUtil.getString(applicationContext, R.string.config_modify_user_name_title),
                         userName = userNameEditText,
@@ -105,8 +103,7 @@ class ConfigViewModel @Inject constructor(
         }
     }
 
-    override fun setDialogChannel(channel: Channel<DialogUiState>, currentRoute: String) {
-        this.currentRoute = currentRoute
+    override fun setDialogChannel(channel: Channel<DialogUiState>) {
         dialogChannel = channel
     }
 

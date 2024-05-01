@@ -46,7 +46,6 @@ class CategoryPopupViewModel @Inject constructor(
     private val _dropDownState: MutableState<Boolean> = mutableStateOf(false)
     override val categoryPopupUiState: State<Boolean> = _dropDownState
 
-    private var currentRoute: String = ""
     private var dialogChannel: Channel<DialogUiState> = Channel()
 
     init {
@@ -69,7 +68,6 @@ class CategoryPopupViewModel @Inject constructor(
         viewModelScope.launch {
             dialogChannel.send(
                 DialogUiState.Show(
-                    route = currentRoute,
                     dialogType = AppDialog.CategoryDialog(
                         title = ResourceUtil.getString(applicationContext, R.string.category_add_dialog_title),
                         text = categoryDialogText,
@@ -108,8 +106,7 @@ class CategoryPopupViewModel @Inject constructor(
         }
     }
 
-    override fun setDialogChannel(channel: Channel<DialogUiState>, currentRoute: String) {
-        this.currentRoute = currentRoute
+    override fun setDialogChannel(channel: Channel<DialogUiState>) {
         dialogChannel = channel
     }
 

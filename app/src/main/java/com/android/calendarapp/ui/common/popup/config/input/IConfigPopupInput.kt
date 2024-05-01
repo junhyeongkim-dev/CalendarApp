@@ -17,7 +17,7 @@ interface IConfigPopupInput {
     fun onChangeUserNameEditText(text: String)
 
     // 다이얼로그 상태 전달을 위한 채널
-    fun setDialogChannel(channel: Channel<DialogUiState>, currentRoute: String)
+    fun setDialogChannel(channel: Channel<DialogUiState>)
 
     // 유저 이름을 받기 위한 flow
     fun setUserNameState(userModel: StateFlow<UserModel>)

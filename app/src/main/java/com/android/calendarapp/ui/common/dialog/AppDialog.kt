@@ -13,8 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun DialogInit(
-    uiState: StateFlow<DialogUiState>,
-    currentRoute: String
+    uiState: StateFlow<DialogUiState>
 ) {
     val dialogState by uiState.collectAsStateWithLifecycle()
 
@@ -23,9 +22,7 @@ fun DialogInit(
 
         }
         is DialogUiState.Show -> {
-            if(currentRoute == (dialogState as DialogUiState.Show).route) {
-                DialogWrapper(appDialog = (dialogState as DialogUiState.Show).dialogType)
-            }
+            DialogWrapper(appDialog = (dialogState as DialogUiState.Show).dialogType)
         }
     }
 }
@@ -34,7 +31,6 @@ sealed class DialogUiState{
     data object Dismiss: DialogUiState()
 
     data class Show(
-        val route: String,
         val dialogType: AppDialog
     ) : DialogUiState()
 }
