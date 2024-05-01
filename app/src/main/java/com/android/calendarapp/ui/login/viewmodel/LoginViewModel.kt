@@ -6,7 +6,7 @@ import com.android.calendarapp.R
 import com.android.calendarapp.feature.category.domain.usecase.AddCategoryListUseCase
 import com.android.calendarapp.feature.category.domain.usecase.GetCategoryListUseCase
 import com.android.calendarapp.library.login.model.LoginFailResponseModel
-import com.android.calendarapp.library.login.naver.manager.NaverLoginManager
+import com.android.calendarapp.library.login.naver.manager.NaverLoginManagerImpl
 import com.android.calendarapp.library.login.naver.response.NaverLoginResponse
 import com.android.calendarapp.library.login.type.LoginType
 import com.android.calendarapp.feature.user.domain.model.UserModel
@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val naverLoginManager: NaverLoginManager,
+    private val naverLoginManager: NaverLoginManagerImpl,
     private val preferencesHelper: ISharedPreferencesHelper,
     private val applicationContext: Context,
     private val getCategoryListUseCase: GetCategoryListUseCase,
@@ -38,73 +38,98 @@ class LoginViewModel @Inject constructor(
     private val _loginNavigateEffect = MutableSharedFlow<LoginNavigateEffect>(replay = 0)
     override val loginNavigateEffect: SharedFlow<LoginNavigateEffect> = _loginNavigateEffect
 
-    override fun login(loginType: LoginType, context: Context, currentRoute: String) {
+    override fun login(loginType: LoginType, context: Context) {
         when(loginType) {
-            LoginType.GUEST -> TODO()
-            LoginType.NAVER -> {
-                viewModelScope.launch {
-                    naverLoginManager.setLoginResponse(
-                        object : NaverLoginResponse<Map<String, Any>> {
-                            override fun onSuccess(data: Map<String, Any>) {
-
-                                val userId = data["id"].toString()
-                                preferencesHelper.setUserId(userId)
-
-                                val userModel = UserModel(
-                                    userId = userId,
-                                    userName = data["name"].toString(),
-                                    if(!data["birthday"]?.toString().isNullOrBlank()) {
-                                        data["birthday"].toString()
-                                    } else {
-                                        ""
-                                    },
-                                    userType = LoginType.NAVER
-                                )
-
-                                viewModelScope.launch {
-                                    addUserUseCase(userModel)
-
-                                    checkDefaultCategoryDataAndInsert()
-
-                                    _loginNavigateEffect.emit(LoginNavigateEffect.GoMain)
-                                }
-                            }
-
-                            override fun onFail(data: LoginFailResponseModel) {
-
-                                val content =
-                                    ResourceUtil.getString(
-                                        applicationContext,
-                                        R.string.dialog_login_error_content,
-                                        LoginType.NAVER.name,
-                                        "${data.code} : (${data.description})"
-                                    )
-
-                                val dialogType = AppDialog.DefaultOneButtonDialog(
-                                    title = ResourceUtil.getString(
-                                        applicationContext,
-                                        R.string.dialog_login_error_title
-                                    ),
-                                    content = content,
-                                    confirmOnClick = {
-                                        onDismissDialog()
-                                    },
-                                    onDismiss = {
-                                        onDismissDialog()
-                                    }
-                                )
-                                showDialog(
-                                    dialogUiState = DialogUiState.Show(
-                                        dialogType = dialogType,
-                                    )
-                                )
-                            }
-                        }
-                    )
-
-                    naverLoginManager.login(context)
-                }
+            LoginType.GUEST -> {
+                guestLogin()
             }
+
+            LoginType.NAVER -> {
+                naverLogin(context)
+            }
+        }
+    }
+
+    private fun guestLogin() {
+        viewModelScope.launch {
+            preferencesHelper.setUserId(LoginType.GUEST.name)
+
+            val userModel = UserModel(
+                userId = LoginType.GUEST.name,
+                userName = "게스트",
+                userType = LoginType.GUEST
+            )
+
+            addUserUseCase(userModel)
+
+            checkDefaultCategoryDataAndInsert()
+
+            _loginNavigateEffect.emit(LoginNavigateEffect.GoMain)
+        }
+    }
+
+    private fun naverLogin(context: Context) {
+        viewModelScope.launch {
+            naverLoginManager.login(
+                context,
+                object : NaverLoginResponse<Map<String, Any>> {
+                    override fun onSuccess(data: Map<String, Any>) {
+
+                        val userId = data["id"].toString()
+                        preferencesHelper.setUserId(userId)
+
+                        val userModel = UserModel(
+                            userId = userId,
+                            userName = data["name"].toString(),
+                            userBirth =
+                            if(!data["birthday"]?.toString().isNullOrBlank()) {
+                                data["birthday"].toString()
+                            } else {
+                                ""
+                            },
+                            userType = LoginType.NAVER
+                        )
+
+                        viewModelScope.launch {
+                            addUserUseCase(userModel)
+
+                            checkDefaultCategoryDataAndInsert()
+
+                            _loginNavigateEffect.emit(LoginNavigateEffect.GoMain)
+                        }
+                    }
+
+                    override fun onFail(data: LoginFailResponseModel) {
+
+                        val content =
+                            ResourceUtil.getString(
+                                applicationContext,
+                                R.string.dialog_login_error_content,
+                                LoginType.NAVER.name,
+                                "${data.code} : (${data.description})"
+                            )
+
+                        val dialogType = AppDialog.DefaultOneButtonDialog(
+                            title = ResourceUtil.getString(
+                                applicationContext,
+                                R.string.dialog_login_error_title
+                            ),
+                            content = content,
+                            confirmOnClick = {
+                                onDismissDialog()
+                            },
+                            onDismiss = {
+                                onDismissDialog()
+                            }
+                        )
+                        showDialog(
+                            dialogUiState = DialogUiState.Show(
+                                dialogType = dialogType,
+                            )
+                        )
+                    }
+                }
+            )
         }
     }
 

@@ -70,13 +70,13 @@ fun LoginScreen(
         ) {
             NaverButton{
 
-                viewModel.login(LoginType.NAVER, context, currentRoute)
+                viewModel.login(LoginType.NAVER, context)
             }
 
             Spacer(modifier = Modifier.size(20.dp))
 
             GuestButton{
-                viewModel.login(LoginType.GUEST, context, currentRoute)
+                viewModel.login(LoginType.GUEST, context)
             }
         }
     }

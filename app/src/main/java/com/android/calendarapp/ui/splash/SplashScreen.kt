@@ -40,6 +40,6 @@ fun SplashScreen(
     }
 
     LaunchedEffect(key1 = true) {
-        viewModel.checkValidLogin()
+        viewModel.checkIsLogin()
     }
 }

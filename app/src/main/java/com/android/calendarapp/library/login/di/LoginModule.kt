@@ -1,7 +1,7 @@
 package com.android.calendarapp.library.login.di
 
-import com.android.calendarapp.library.login.naver.manager.INaverLoginManager
 import com.android.calendarapp.library.login.naver.manager.NaverLoginManager
+import com.android.calendarapp.library.login.naver.manager.NaverLoginManagerImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,5 +14,5 @@ abstract class LoginModule {
 
     @Binds
     @Singleton
-    abstract fun bindNaverLoginManager(naverLoginManager: NaverLoginManager) : INaverLoginManager
+    abstract fun bindNaverLoginManager(naverLoginManagerImpl: NaverLoginManagerImpl) : NaverLoginManager
 }
