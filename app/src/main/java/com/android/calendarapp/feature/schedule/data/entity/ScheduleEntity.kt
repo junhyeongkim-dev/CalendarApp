@@ -20,5 +20,8 @@ class ScheduleEntity(
     val scheduleContent: String,
 
     @ColumnInfo(name = "category_name")
-    val categoryName: String
+    val categoryName: String,
+
+    @ColumnInfo(name = "user_id")
+    val userId: String
 )

@@ -4,7 +4,7 @@ import android.content.Context
 import com.android.calendarapp.feature.user.domain.model.UserModel
 import com.android.calendarapp.feature.user.domain.usecase.AddUserUseCase
 import com.android.calendarapp.library.login.model.LoginResponseModel
-import com.android.calendarapp.library.login.naver.constant.NaverConstant
+import com.android.calendarapp.library.login.constant.LoginConstant
 import com.android.calendarapp.library.login.naver.manager.NaverLoginManagerImpl
 import com.android.calendarapp.library.login.naver.response.NaverLoginResponse
 import com.android.calendarapp.library.login.type.LoginType
@@ -48,8 +48,8 @@ class NaverLoginUseCaseImpl @Inject constructor(
                         addUserUseCase(userModel).also {
                             result.send(
                                 LoginResponseModel(
-                                    code = NaverConstant.SUCCESS,
-                                    description = NaverConstant.SUCCESS_DESC
+                                    code = LoginConstant.SUCCESS,
+                                    description = LoginConstant.SUCCESS_DESC
                                 )
                             )
                         }

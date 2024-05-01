@@ -9,15 +9,30 @@ import javax.inject.Inject
 class CategoryRepositoryImpl @Inject constructor(
     private val categoryDAO: CategoryDAO
 ) : CategoryRepository {
-    override suspend fun insertCategoryList(categoryEntityList: List<CategoryEntity>) = categoryDAO.insertAll(categoryEntityList)
+    override suspend fun insertCategoryList(categoryEntityList: List<CategoryEntity>) =
+        categoryDAO.insertAll(categoryEntityList)
 
-    override suspend fun insertCategory(categoryEntity: CategoryEntity) = categoryDAO.insert(categoryEntity)
+    override suspend fun insertCategory(categoryEntity: CategoryEntity) =
+        categoryDAO.insert(categoryEntity)
 
-    override suspend fun selectCategoryList(): Flow<List<CategoryEntity>> = categoryDAO.selectAll()
+    override suspend fun selectCategoryList(userId: String): Flow<List<CategoryEntity>> =
+        categoryDAO.selectAll(userId)
 
-    override suspend fun selectCategory(categoryName: String): String? = categoryDAO.selectCategory(categoryName)
-    override suspend fun selectGroupByCategory(): Flow<List<CategoryGroupModel>> = categoryDAO.selectGroupByCategory()
-    override suspend fun updateCategory(seqNo: Int, categoryName: String) = categoryDAO.updateCategory(seqNo, categoryName)
+    override suspend fun selectCategory(categoryName: String, userId: String): String? =
+        categoryDAO.selectCategory(
+            categoryName = categoryName,
+            userId = userId
+        )
 
-    override suspend fun deleteCategory(categoryEntity: CategoryEntity) = categoryDAO.delete(categoryEntity)
+    override suspend fun selectGroupByCategory(userId: String): Flow<List<CategoryGroupModel>> =
+        categoryDAO.selectGroupByCategory(userId)
+
+    override suspend fun updateCategory(seqNo: Int, categoryName: String) =
+        categoryDAO.updateCategory(
+            seqNo = seqNo,
+            categoryName = categoryName
+        )
+
+    override suspend fun deleteCategory(categoryEntity: CategoryEntity) =
+        categoryDAO.delete(categoryEntity)
 }

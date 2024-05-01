@@ -11,10 +11,11 @@ fun ScheduleEntity.toModel(): ScheduleModel = ScheduleModel(
     categoryName = this.categoryName
 )
 
-fun ScheduleModel.toEntity(): ScheduleEntity = ScheduleEntity(
+fun ScheduleModel.toEntity(userId: String): ScheduleEntity = ScheduleEntity(
     seqNo = this.seqNo,
     scheduleYearMonth = this.scheduleYearMonth,
     scheduleDay = this.scheduleDay,
     scheduleContent = this.scheduleContent,
-    categoryName = this.categoryName
+    categoryName = this.categoryName,
+    userId = userId
 )

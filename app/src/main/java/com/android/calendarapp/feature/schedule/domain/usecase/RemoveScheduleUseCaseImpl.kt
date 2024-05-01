@@ -12,6 +12,6 @@ class RemoveScheduleUseCaseImpl @Inject constructor(
 ) : RemoveScheduleUseCase {
     override suspend fun invoke(scheduleModel: ScheduleModel) =
         withContext(Dispatchers.IO) {
-            scheduleRepository.deleteSchedule(scheduleModel.toEntity())
+            scheduleRepository.deleteSchedule(scheduleModel.toEntity(""))
         }
 }

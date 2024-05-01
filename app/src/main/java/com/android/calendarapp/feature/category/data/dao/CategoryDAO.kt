@@ -20,21 +20,23 @@ interface CategoryDAO {
     fun insert(categoryEntity: CategoryEntity)
 
     @Transaction
-    @Query("SELECT * FROM category")
-    fun selectAll() : Flow<List<CategoryEntity>>
+    @Query("SELECT * FROM category WHERE user_id = :userId")
+    fun selectAll(userId: String) : Flow<List<CategoryEntity>>
 
     @Transaction
-    @Query("SELECT category_name FROM category WHERE category_name = :categoryName")
-    fun selectCategory(categoryName: String) : String?
+    @Query("SELECT category_name FROM category WHERE category_name = :categoryName AND user_id = :userId")
+    fun selectCategory(categoryName: String, userId: String) : String?
 
     @Transaction
     @Query(
         "SELECT category.category_name AS categoryName ,count(*) AS count, category.seq_no AS seqNo " +
         "FROM category " +
-        "LEFT OUTER JOIN schedule ON schedule.category_name = category.category_name " +
+        "LEFT OUTER JOIN schedule " +
+        "ON schedule.category_name = category.category_name " +
+        "AND category.user_id = :userId " +
         "GROUP BY category.category_name"
     )
-    fun selectGroupByCategory() : Flow<List<CategoryGroupModel>>
+    fun selectGroupByCategory(userId: String) : Flow<List<CategoryGroupModel>>
 
     @Transaction
     @Query("UPDATE category set category_name = :categoryName WHERE seq_no = :seqNo")

@@ -4,13 +4,11 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.android.calendarapp.R
 import com.android.calendarapp.feature.category.domain.usecase.AddCategoryListUseCase
-import com.android.calendarapp.feature.category.domain.usecase.GetCategoryListUseCase
 import com.android.calendarapp.feature.login.usecase.GuestLoginUseCase
 import com.android.calendarapp.feature.login.usecase.NaverLoginUseCase
 import com.android.calendarapp.library.login.type.LoginType
-import com.android.calendarapp.feature.user.domain.model.UserModel
 import com.android.calendarapp.library.login.model.LoginResponseModel
-import com.android.calendarapp.library.login.naver.constant.NaverConstant
+import com.android.calendarapp.library.login.constant.LoginConstant
 import com.android.calendarapp.ui.common.base.viewmodel.BaseViewModel
 import com.android.calendarapp.ui.common.dialog.AppDialog
 import com.android.calendarapp.ui.common.dialog.DialogUiState
@@ -46,7 +44,7 @@ class LoginViewModel @Inject constructor(
     private fun init() {
         viewModelScope.launch {
             resultChannel.consumeEach { result ->
-                if(result.code == NaverConstant.SUCCESS) {
+                if(result.code == LoginConstant.SUCCESS) {
                     // 로그인 성공
 
                     addCategoryListUseCase()

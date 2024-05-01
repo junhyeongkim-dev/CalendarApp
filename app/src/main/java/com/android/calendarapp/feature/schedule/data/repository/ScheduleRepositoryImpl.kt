@@ -9,20 +9,27 @@ import javax.inject.Inject
 class ScheduleRepositoryImpl @Inject constructor(
     private val scheduleDAO: ScheduleDAO
 ) : ScheduleRepository {
-    override suspend fun selectAllSchedule(): Flow<List<ScheduleEntity>> = scheduleDAO.selectAll()
-    override suspend fun selectDaySchedule(
-        yearMonth: String,
-        day: String
-    ): Flow<List<ScheduleEntity>> = scheduleDAO.selectDaySchedule(yearMonth, day)
-
     override suspend fun insertSchedule(scheduleEntity: ScheduleEntity) = scheduleDAO.insert(scheduleEntity)
 
-    override suspend fun selectGroupByYearMonth(scheduleYearMonth: String): List<ScheduleGroupModel> =
-        scheduleDAO.selectGroupByYearMonth(scheduleYearMonth)
+    override suspend fun selectAllSchedule(userId: String): Flow<List<ScheduleEntity>> = scheduleDAO.selectAll(userId)
 
-    override suspend fun updateCategory(currentCategoryName: String, changeCategoryName: String) =
-        scheduleDAO.updateCategory(currentCategoryName, changeCategoryName)
+    override suspend fun selectDaySchedule(
+        yearMonth: String,
+        day: String,
+        userId: String
+    ): Flow<List<ScheduleEntity>> =
+        scheduleDAO.selectDaySchedule(yearMonth, day, userId)
+
+    override suspend fun selectGroupByYearMonth(
+        scheduleYearMonth: String,
+        userId: String
+    ): List<ScheduleGroupModel> = scheduleDAO.selectGroupByYearMonth(scheduleYearMonth, userId)
+
+    override suspend fun updateCategory(
+        currentCategoryName: String,
+        changeCategoryName: String,
+        userId: String
+    ) = scheduleDAO.updateCategory(currentCategoryName, changeCategoryName, userId)
 
     override suspend fun deleteSchedule(scheduleEntity: ScheduleEntity) = scheduleDAO.delete(scheduleEntity)
-
 }

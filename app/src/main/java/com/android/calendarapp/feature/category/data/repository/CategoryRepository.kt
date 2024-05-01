@@ -9,11 +9,11 @@ interface CategoryRepository {
 
     suspend fun insertCategory(categoryEntity: CategoryEntity)
 
-    suspend fun selectCategoryList() : Flow<List<CategoryEntity>>
+    suspend fun selectCategoryList(userId: String) : Flow<List<CategoryEntity>>
 
-    suspend fun selectCategory(categoryName: String) : String?
+    suspend fun selectCategory(categoryName: String, userId: String) : String?
 
-    suspend fun selectGroupByCategory(): Flow<List<CategoryGroupModel>>
+    suspend fun selectGroupByCategory(userId: String): Flow<List<CategoryGroupModel>>
 
     suspend fun updateCategory(seqNo: Int, categoryName: String)
 

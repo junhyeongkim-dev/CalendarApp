@@ -1,7 +1,10 @@
 package com.android.calendarapp.feature.category.domain.usecase
 
 import android.content.Context
+import com.android.calendarapp.feature.category.data.entity.CategoryEntity
 import com.android.calendarapp.feature.category.data.repository.CategoryRepository
+import com.android.calendarapp.feature.category.domain.convert.toEntity
+import com.android.calendarapp.feature.category.domain.model.CategoryModel
 import com.android.calendarapp.library.security.preperence.PrefStorageProvider
 import com.android.calendarapp.library.security.preperence.constants.PrefStorageConstance
 import com.android.calendarapp.util.GsonUtil
@@ -16,11 +19,21 @@ class AddCategoryListUseCaseImpl @Inject constructor(
 ) : AddCategoryListUseCase {
     override suspend fun invoke() =
         withContext(Dispatchers.IO){
-            if(!prefStorageProvider.getBoolean(PrefStorageConstance.DEFAULT_CATEGORY_PREF)) {
+            val userId = prefStorageProvider.getString(PrefStorageConstance.USER_ID_PREF)
+
+            if(!prefStorageProvider.getBoolean(PrefStorageConstance.DEFAULT_CATEGORY_PREF + userId)) {
+                // 최초 기본 카테고리값을 저장한적 없을 때
+
+
                 categoryRepository.insertCategoryList(
-                    GsonUtil.readJsonData("prepare_category_info.json", context)
+
+                    // 최초 카테고리 값 저장
+                    GsonUtil.readJsonData<CategoryModel>("prepare_category_info.json", context)
+                        .map { categoryModel ->
+                            categoryModel.toEntity(userId)
+                        }
                 ).also {
-                    prefStorageProvider.setBoolean(PrefStorageConstance.DEFAULT_CATEGORY_PREF, true)
+                    prefStorageProvider.setBoolean(PrefStorageConstance.DEFAULT_CATEGORY_PREF + userId, true)
                 }
             }
         }

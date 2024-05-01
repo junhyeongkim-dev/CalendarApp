@@ -12,5 +12,8 @@ class CategoryEntity(
     val seqNo: Int = 0,
 
     @ColumnInfo("category_name")
-    val categoryName: String
+    val categoryName: String,
+
+    @ColumnInfo("user_id")
+    val userId: String
 )
