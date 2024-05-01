@@ -131,7 +131,7 @@ class SchedulePopupViewModel @Inject constructor(
             dialogChannel.send(
                 DialogUiState.Show(
                     dialogType = AppDialog.ScheduleDialog(
-                        title = ResourceUtil.getString(applicationContext, R.string.schedule_modify_dialog_title),
+                        title = ResourceUtil.getString(applicationContext, R.string.dialog_modify_schedule_title),
                         schedule = schedule,
                         scheduleInput = input,
                         scheduleOutput = output,
@@ -177,8 +177,8 @@ class SchedulePopupViewModel @Inject constructor(
             dialogChannel.send(
                 DialogUiState.Show(
                     dialogType = AppDialog.DefaultTwoButtonDialog(
-                        title = ResourceUtil.getString(applicationContext, R.string.schedule_delete_dialog_title),
-                        content = ResourceUtil.getString(applicationContext, R.string.schedule_delete_dialog_content,),
+                        title = ResourceUtil.getString(applicationContext, R.string.dialog_delete_schedule_title),
+                        content = ResourceUtil.getString(applicationContext, R.string.dialog_delete_schedule_content,),
                         confirmOnClick = {
                             deleteSchedule(schedule, currentPage, yearMonth)
                             onDismissDialog()

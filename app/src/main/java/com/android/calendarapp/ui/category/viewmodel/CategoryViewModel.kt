@@ -80,7 +80,7 @@ class CategoryViewModel @Inject constructor(
                 dialogType = AppDialog.CategoryDialog(
                     title = ResourceUtil.getString(
                         context = applicationContext,
-                        id = if(seqNo != 0) R.string.category_modify_dialog_title else R.string.category_add_dialog_title
+                        id = if(seqNo != 0) R.string.dialog_modify_category_title else R.string.dialog_add_category_title
                     ),
                     text = categoryDialogText,
                     isNotExistCategoryState = isNotExistCategoryState,
@@ -120,8 +120,8 @@ class CategoryViewModel @Inject constructor(
         showDialog(
             DialogUiState.Show(
                 dialogType = AppDialog.DefaultTwoButtonDialog(
-                    title = ResourceUtil.getString(applicationContext, R.string.category_delete_dialog_title),
-                    content = ResourceUtil.getString(applicationContext, R.string.category_delete_dialog_content,),
+                    title = ResourceUtil.getString(applicationContext, R.string.dialog_delete_category_title),
+                    content = ResourceUtil.getString(applicationContext, R.string.dialog_delete_category_content,),
                     confirmOnClick = {
                         deleteCategory(categoryGroup)
                         onDismissDialog()

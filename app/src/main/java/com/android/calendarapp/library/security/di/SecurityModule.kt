@@ -1,14 +1,11 @@
 package com.android.calendarapp.library.security.di
 
-import com.android.calendarapp.library.security.preperence.AppEncryptedSharedPreferences
-import com.android.calendarapp.library.security.preperence.helper.ISharedPreferencesHelper
-import com.android.calendarapp.library.security.preperence.helper.SharedPreferencesHelper
-import com.android.calendarapp.library.security.tink.AppTink
+import com.android.calendarapp.library.security.preperence.PrefStorageProvider
+import com.android.calendarapp.library.security.preperence.PrefStorageProviderImpl
 import com.android.calendarapp.library.security.tink.helper.ITinkHelper
 import com.android.calendarapp.library.security.tink.helper.TinkHelper
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -19,7 +16,7 @@ abstract class SecurityModule {
 
     @Binds
     @Singleton
-    abstract fun bindPreferencesHelper(preferencesHelper: SharedPreferencesHelper) : ISharedPreferencesHelper
+    abstract fun bindPreferencesHelper(prefStorageProviderImpl: PrefStorageProviderImpl) : PrefStorageProvider
 
     @Binds
     @Singleton

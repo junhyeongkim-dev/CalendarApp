@@ -2,7 +2,7 @@ package com.android.calendarapp.library.login.naver.manager
 
 import android.content.Context
 import com.android.calendarapp.BuildConfig
-import com.android.calendarapp.library.login.model.LoginFailResponseModel
+import com.android.calendarapp.library.login.model.LoginResponseModel
 import com.android.calendarapp.library.login.naver.NaverLoginSDK
 import com.android.calendarapp.library.login.naver.response.NaverLoginResponse
 import com.navercorp.nid.NaverIdLoginSDK
@@ -95,7 +95,7 @@ class NaverLoginManagerImpl @Inject constructor(
                 if(NaverIdLoginSDK.getLastErrorCode() != NidOAuthErrorCode.CLIENT_USER_CANCEL) {
                     // 사용자 취소가 아닌 에러일 때
 
-                    val responseData = LoginFailResponseModel(
+                    val responseData = LoginResponseModel(
                         NaverIdLoginSDK.getLastErrorCode().code,
                         NaverIdLoginSDK.getLastErrorDescription() ?: ""
                     )
@@ -115,7 +115,7 @@ class NaverLoginManagerImpl @Inject constructor(
         if(NaverIdLoginSDK.getLastErrorCode() != NidOAuthErrorCode.CLIENT_USER_CANCEL) {
             // 사용자 취소가 아닌 에러일 때
 
-            val responseData = LoginFailResponseModel(
+            val responseData = LoginResponseModel(
                 NaverIdLoginSDK.getLastErrorCode().code,
                 NaverIdLoginSDK.getLastErrorDescription() ?: ""
             )

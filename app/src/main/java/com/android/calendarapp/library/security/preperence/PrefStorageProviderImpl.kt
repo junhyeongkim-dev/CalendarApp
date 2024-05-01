@@ -9,9 +9,9 @@ import javax.inject.Inject
 /**
  * 암호화된 SharedPreferences
  */
-class AppEncryptedSharedPreferences @Inject constructor(
+class PrefStorageProviderImpl @Inject constructor(
     context: Context
-) {
+) : PrefStorageProvider {
     private val sharedPreferences: SharedPreferences
 
     init {
@@ -29,25 +29,25 @@ class AppEncryptedSharedPreferences @Inject constructor(
         )
     }
 
-    fun setString(key: String, value: String) {
+    override fun setString(key: String, value: String) {
         with(sharedPreferences.edit()) {
             putString(key, value)
             commit()
         }
     }
 
-    fun getString(key: String) : String {
+    override fun getString(key: String) : String {
         return sharedPreferences.getString(key, "").toString()
     }
 
-    fun setInt(key: String, value: Int) {
+    override fun setBoolean(key: String, value: Boolean) {
         with(sharedPreferences.edit()) {
-            putInt(key, value)
+            putBoolean(key, value)
             commit()
         }
     }
 
-    fun getInt(key: String) : Int {
-        return sharedPreferences.getInt(key, 0)
+    override fun getBoolean(key: String) : Boolean {
+        return sharedPreferences.getBoolean(key, false)
     }
 }

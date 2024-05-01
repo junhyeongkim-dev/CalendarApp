@@ -68,7 +68,7 @@ class CategoryPopupViewModel @Inject constructor(
             dialogChannel.send(
                 DialogUiState.Show(
                     dialogType = AppDialog.CategoryDialog(
-                        title = ResourceUtil.getString(applicationContext, R.string.category_add_dialog_title),
+                        title = ResourceUtil.getString(applicationContext, R.string.dialog_add_category_title),
                         text = categoryDialogText,
                         isNotExistCategoryState = isNotExistCategoryState,
                         onChangeText = { text ->

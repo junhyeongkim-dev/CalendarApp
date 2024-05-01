@@ -2,11 +2,12 @@ package com.android.calendarapp.ui.splash.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.android.calendarapp.feature.user.domain.usecase.GetUserUseCase
-import com.android.calendarapp.library.login.model.LoginFailResponseModel
+import com.android.calendarapp.library.login.model.LoginResponseModel
 import com.android.calendarapp.library.login.naver.manager.NaverLoginManager
 import com.android.calendarapp.library.login.naver.response.NaverLoginResponse
 import com.android.calendarapp.library.login.type.LoginType
-import com.android.calendarapp.library.security.preperence.helper.ISharedPreferencesHelper
+import com.android.calendarapp.library.security.preperence.PrefStorageProvider
+import com.android.calendarapp.library.security.preperence.constants.PrefStorageConstance
 import com.android.calendarapp.ui.common.base.viewmodel.BaseViewModel
 import com.android.calendarapp.ui.splash.input.ISplashInput
 import com.android.calendarapp.ui.splash.output.ISplashOutput
@@ -19,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val preferencesHelper: ISharedPreferencesHelper,
+    private val prefStorageProvider: PrefStorageProvider,
     private val getUserUseCase: GetUserUseCase,
     private val naverLoginManager: NaverLoginManager
 ) : BaseViewModel(), ISplashInput, ISplashOutput {
@@ -31,7 +32,7 @@ class SplashViewModel @Inject constructor(
     // 로그인 여부 확인
     override fun checkIsLogin() {
         viewModelScope.launch {
-            if(preferencesHelper.getUserId().isNotEmpty()) {
+            if(prefStorageProvider.getString(PrefStorageConstance.USER_ID_PREF).isNotEmpty()) {
 
                 getUserUseCase().collect { userModel ->
                     if(userModel.userType == LoginType.NAVER) {
@@ -45,7 +46,7 @@ class SplashViewModel @Inject constructor(
                                     }
                                 }
 
-                                override fun onFail(data: LoginFailResponseModel) {
+                                override fun onFail(data: LoginResponseModel) {
                                     viewModelScope.launch {
                                         _loginState.emit(
                                             LoginStateEffect.NotLogin(true))

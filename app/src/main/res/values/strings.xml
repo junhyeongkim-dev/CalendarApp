@@ -5,6 +5,16 @@
 
     <string name="dialog_login_error_title">로그인 에러</string>
     <string name="dialog_login_error_content">%1$s 로그인 중 에러가 발생했습니다. \n 잠시후 다시 시도해주세요. \n%2$s</string>
+    <string name="dialog_modify_user_name_title">이름 변경</string>
+    <string name="dialog_modify_schedule_title">일정 수정</string>
+    <string name="dialog_delete_schedule_title">일정 삭제</string>
+    <string name="dialog_delete_schedule_content">해당 일정을 삭제하시겠습니까?</string>
+    <string name="dialog_add_category_title">카테고리 추가</string>
+    <string name="dialog_modify_category_title">카테고리 수정</string>
+    <string name="dialog_delete_category_title">카테고리 삭제</string>
+    <string name="dialog_delete_category_content">해당 카테고리를 삭제하시겠습니까?</string>
+    <string name="dialog_logout_title">로그아웃</string>
+    <string name="dialog_logout_content">로그아웃 하시겠습니까?</string>
 
     <string name="calendar_data_parsing_error">입력받은 년,월 데이터 형식이 잘못됐습니다. \n 관리자에게 문의해주세요.</string>
     <string name="calendar_load_data_error">페이지 에러 \n (Error : %1$s)</string>
@@ -15,17 +25,8 @@
 
     <string name="category_dropdown_add_text">새로 만들기</string>
     <string name="category_default_text">카테고리 없음</string>
-    <string name="category_add_dialog_title">카테고리 추가</string>
-    <string name="category_modify_dialog_title">카테고리 수정</string>
-    <string name="category_delete_dialog_title">카테고리 삭제</string>
-    <string name="category_delete_dialog_content">해당 카테고리를 삭제하시겠습니까?</string>
     <string name="category_popup_over_max_length">카테고리의 이름이 한도를 초과했습니다.</string>
     <string name="category_popup_not_exist_name">카테고리 이름을 입력해주세요.</string>
 
-    <string name="schedule_modify_dialog_title">일정 수정</string>
-    <string name="schedule_delete_dialog_title">일정 삭제</string>
-    <string name="schedule_delete_dialog_content">해당 일정을 삭제하시겠습니까?</string>
-
-    <string name="config_modify_user_name_title">이름 변경</string>
     <string name="config_category_title">카테고리 관리</string>
 </resources>

@@ -5,21 +5,22 @@ import androidx.lifecycle.viewModelScope
 import com.android.calendarapp.R
 import com.android.calendarapp.feature.category.domain.usecase.AddCategoryListUseCase
 import com.android.calendarapp.feature.category.domain.usecase.GetCategoryListUseCase
-import com.android.calendarapp.library.login.model.LoginFailResponseModel
-import com.android.calendarapp.library.login.naver.manager.NaverLoginManagerImpl
-import com.android.calendarapp.library.login.naver.response.NaverLoginResponse
+import com.android.calendarapp.feature.login.usecase.GuestLoginUseCase
+import com.android.calendarapp.feature.login.usecase.NaverLoginUseCase
 import com.android.calendarapp.library.login.type.LoginType
 import com.android.calendarapp.feature.user.domain.model.UserModel
-import com.android.calendarapp.feature.user.domain.usecase.AddUserUseCase
-import com.android.calendarapp.library.security.preperence.helper.ISharedPreferencesHelper
+import com.android.calendarapp.library.login.model.LoginResponseModel
+import com.android.calendarapp.library.login.naver.constant.NaverConstant
+import com.android.calendarapp.ui.common.base.viewmodel.BaseViewModel
 import com.android.calendarapp.ui.common.dialog.AppDialog
 import com.android.calendarapp.ui.common.dialog.DialogUiState
-import com.android.calendarapp.ui.common.base.viewmodel.BaseViewModel
 import com.android.calendarapp.ui.login.input.ILoginInput
 import com.android.calendarapp.ui.login.output.ILoginViewModelOutput
 import com.android.calendarapp.ui.login.output.LoginNavigateEffect
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
@@ -27,118 +28,80 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val naverLoginManager: NaverLoginManagerImpl,
-    private val preferencesHelper: ISharedPreferencesHelper,
     private val applicationContext: Context,
-    private val getCategoryListUseCase: GetCategoryListUseCase,
     private val addCategoryListUseCase: AddCategoryListUseCase,
-    private val addUserUseCase: AddUserUseCase
+    private val naverLoginUseCase: NaverLoginUseCase,
+    private val guestLoginUseCase: GuestLoginUseCase
 ) : BaseViewModel(), ILoginInput, ILoginViewModelOutput {
 
     private val _loginNavigateEffect = MutableSharedFlow<LoginNavigateEffect>(replay = 0)
     override val loginNavigateEffect: SharedFlow<LoginNavigateEffect> = _loginNavigateEffect
 
-    override fun login(loginType: LoginType, context: Context) {
-        when(loginType) {
-            LoginType.GUEST -> {
-                guestLogin()
-            }
+    private val resultChannel: Channel<LoginResponseModel> = Channel()
 
-            LoginType.NAVER -> {
-                naverLogin(context)
-            }
-        }
+    init {
+        init()
     }
 
-    private fun guestLogin() {
+    private fun init() {
         viewModelScope.launch {
-            preferencesHelper.setUserId(LoginType.GUEST.name)
+            resultChannel.consumeEach { result ->
+                if(result.code == NaverConstant.SUCCESS) {
+                    // 로그인 성공
 
-            val userModel = UserModel(
-                userId = LoginType.GUEST.name,
-                userName = "게스트",
-                userType = LoginType.GUEST
-            )
+                    addCategoryListUseCase()
 
-            addUserUseCase(userModel)
+                    _loginNavigateEffect.emit(LoginNavigateEffect.GoMain)
+                }else {
+                    // 로그인 실패
 
-            checkDefaultCategoryDataAndInsert()
-
-            _loginNavigateEffect.emit(LoginNavigateEffect.GoMain)
-        }
-    }
-
-    private fun naverLogin(context: Context) {
-        viewModelScope.launch {
-            naverLoginManager.login(
-                context,
-                object : NaverLoginResponse<Map<String, Any>> {
-                    override fun onSuccess(data: Map<String, Any>) {
-
-                        val userId = data["id"].toString()
-                        preferencesHelper.setUserId(userId)
-
-                        val userModel = UserModel(
-                            userId = userId,
-                            userName = data["name"].toString(),
-                            userBirth =
-                            if(!data["birthday"]?.toString().isNullOrBlank()) {
-                                data["birthday"].toString()
-                            } else {
-                                ""
-                            },
-                            userType = LoginType.NAVER
-                        )
-
-                        viewModelScope.launch {
-                            addUserUseCase(userModel)
-
-                            checkDefaultCategoryDataAndInsert()
-
-                            _loginNavigateEffect.emit(LoginNavigateEffect.GoMain)
-                        }
-                    }
-
-                    override fun onFail(data: LoginFailResponseModel) {
-
-                        val content =
+                    val dialogType = AppDialog.DefaultOneButtonDialog(
+                        title = ResourceUtil.getString(
+                            applicationContext,
+                            R.string.dialog_login_error_title
+                        ),
+                        content =
                             ResourceUtil.getString(
                                 applicationContext,
                                 R.string.dialog_login_error_content,
                                 LoginType.NAVER.name,
-                                "${data.code} : (${data.description})"
-                            )
-
-                        val dialogType = AppDialog.DefaultOneButtonDialog(
-                            title = ResourceUtil.getString(
-                                applicationContext,
-                                R.string.dialog_login_error_title
+                                "${result.code} : (${result.description})"
                             ),
-                            content = content,
-                            confirmOnClick = {
-                                onDismissDialog()
-                            },
-                            onDismiss = {
-                                onDismissDialog()
-                            }
+                        confirmOnClick = {
+                            onDismissDialog()
+                        },
+                        onDismiss = {
+                            onDismissDialog()
+                        }
+                    )
+
+                    showDialog(
+                        dialogUiState = DialogUiState.Show(
+                            dialogType = dialogType,
                         )
-                        showDialog(
-                            dialogUiState = DialogUiState.Show(
-                                dialogType = dialogType,
-                            )
-                        )
-                    }
+                    )
                 }
-            )
+            }
         }
     }
 
-    // 기본 카테고리 세팅
-    private fun checkDefaultCategoryDataAndInsert() {
-        viewModelScope.launch {
-            getCategoryListUseCase().collect { categoryList ->
-                if(categoryList.isEmpty()) {
-                    addCategoryListUseCase()
+    override fun login(loginType: LoginType, context: Context) {
+        when(loginType) {
+            LoginType.GUEST -> {
+                viewModelScope.launch {
+                    guestLoginUseCase(
+                        result = resultChannel
+                    )
+                }
+            }
+
+            LoginType.NAVER -> {
+                viewModelScope.launch {
+
+                    naverLoginUseCase(
+                        context = context,
+                        result = resultChannel
+                    )
                 }
             }
         }

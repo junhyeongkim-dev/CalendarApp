@@ -21,4 +21,6 @@ interface IConfigPopupInput {
 
     // 유저 이름을 받기 위한 flow
     fun setUserNameState(userModel: StateFlow<UserModel>)
+
+    fun logout()
 }

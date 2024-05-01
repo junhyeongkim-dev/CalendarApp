@@ -1,4 +1,4 @@
-package com.android.calendarapp.library.login.di
+package com.android.calendarapp.library.login.naver.di
 
 import com.android.calendarapp.library.login.naver.manager.NaverLoginManager
 import com.android.calendarapp.library.login.naver.manager.NaverLoginManagerImpl
@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class LoginModule {
+abstract class NaverModule {
 
     @Binds
     @Singleton
