@@ -16,7 +16,6 @@ import com.android.calendarapp.ui.common.popup.category.input.ICategoryPopupInpu
 import com.android.calendarapp.ui.common.popup.category.output.ICategoryPopupOutput
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,7 +52,7 @@ class CategoryPopupViewModel @Inject constructor(
     }
 
     private fun init() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             getCategoryListUseCase().collect { categoryList ->
                 _categoryList.value = categoryList
             }
@@ -83,7 +82,7 @@ class CategoryPopupViewModel @Inject constructor(
 
                                 _isNotExistCategoryState.value = true
                             } else {
-                                viewModelScope.launch(Dispatchers.IO) {
+                                viewModelScope.launch {
                                     addCategoryUseCase(
                                         CategoryModel(
                                             categoryName = _categoryDialogText.value

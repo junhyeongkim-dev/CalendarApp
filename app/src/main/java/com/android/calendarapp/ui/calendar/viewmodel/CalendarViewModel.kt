@@ -3,6 +3,7 @@ package com.android.calendarapp.ui.calendar.viewmodel
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.android.calendarapp.R
+import com.android.calendarapp.feature.calendar.usecase.MakeMonthData
 import com.android.calendarapp.feature.user.domain.model.UserModel
 import com.android.calendarapp.feature.user.domain.usecase.GetUserUseCase
 import com.android.calendarapp.ui.calendar.input.ICalendarInput
@@ -15,7 +16,6 @@ import com.android.calendarapp.ui.common.base.viewmodel.BaseViewModel
 import com.android.calendarapp.util.DateUtil
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
@@ -26,13 +26,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val applicationContext: Context,
-    private val getUserUseCase: GetUserUseCase
+    private val getUserUseCase: GetUserUseCase,
+    private val makeMonthData: MakeMonthData
 ) : BaseViewModel(), ICalendarInput, ICalendarOutput {
 
     val input: ICalendarInput = this
@@ -71,11 +71,8 @@ class CalendarViewModel @Inject constructor(
 
     suspend fun init() {
         viewModelScope.launch {
-
-            withContext(Dispatchers.IO) {
-                getUserUseCase().collectLatest { userInfo ->
-                    _userInfo.value = userInfo
-                }
+            getUserUseCase().collectLatest { userInfo ->
+                _userInfo.value = userInfo
             }
         }
 
@@ -87,7 +84,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     override fun getMonthData(defaultPage: Int, page: Int) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch {
 
             if(calendarData.contains(page)) {
                 //중복 요청으로 리턴
@@ -96,7 +93,7 @@ class CalendarViewModel @Inject constructor(
             }
 
             try {
-                val monthData = DateUtil.makeMonthData(applicationContext, defaultPage, page, _userInfo.value.userBirth)
+                val monthData = makeMonthData(applicationContext, defaultPage, page, _userInfo.value.userBirth)
 
                 //현재 요청일 저장
                 if(monthData.size == 6) _calendarData[page] = monthData else _calendarErrorData[page] = ResourceUtil.getString(applicationContext, R.string.calendar_data_parsing_error)

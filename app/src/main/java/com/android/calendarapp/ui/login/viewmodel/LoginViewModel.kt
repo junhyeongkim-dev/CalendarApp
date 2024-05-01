@@ -20,11 +20,9 @@ import com.android.calendarapp.ui.login.output.ILoginViewModelOutput
 import com.android.calendarapp.ui.login.output.LoginNavigateEffect
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,12 +62,9 @@ class LoginViewModel @Inject constructor(
                                 )
 
                                 viewModelScope.launch {
-                                    withContext(Dispatchers.IO) {
+                                    addUserUseCase(userModel)
 
-                                        addUserUseCase(userModel)
-
-                                        checkDefaultCategoryDataAndInsert()
-                                    }
+                                    checkDefaultCategoryDataAndInsert()
 
                                     _loginNavigateEffect.emit(LoginNavigateEffect.GoMain)
                                 }
@@ -100,7 +95,6 @@ class LoginViewModel @Inject constructor(
                                 )
                                 showDialog(
                                     dialogUiState = DialogUiState.Show(
-                                        route = currentRoute,
                                         dialogType = dialogType,
                                     )
                                 )
@@ -116,7 +110,7 @@ class LoginViewModel @Inject constructor(
 
     // 기본 카테고리 세팅
     private fun checkDefaultCategoryDataAndInsert() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             getCategoryListUseCase().collect { categoryList ->
                 if(categoryList.isEmpty()) {
                     addCategoryListUseCase()

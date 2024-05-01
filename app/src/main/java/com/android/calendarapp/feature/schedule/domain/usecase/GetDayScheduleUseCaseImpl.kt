@@ -1,20 +1,23 @@
 package com.android.calendarapp.feature.schedule.domain.usecase
 
-import com.android.calendarapp.feature.category.data.repository.CategoryRepository
 import com.android.calendarapp.feature.schedule.data.repository.ScheduleRepository
 import com.android.calendarapp.feature.schedule.domain.convert.toModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetDayScheduleUseCaseImpl @Inject constructor(
     private val scheduleRepository: ScheduleRepository
 ) : GetDayScheduleUseCase {
     override suspend fun invoke(yearMonth: String, day: String) : Flow<List<ScheduleModel>> =
-        scheduleRepository.selectDaySchedule(yearMonth, day).map { scheduleEntityList ->
-            scheduleEntityList.map { scheduleEntity ->
-                scheduleEntity.toModel()
+        withContext(Dispatchers.IO) {
+            scheduleRepository.selectDaySchedule(yearMonth, day).map { scheduleEntityList ->
+                scheduleEntityList.map { scheduleEntity ->
+                    scheduleEntity.toModel()
+                }
             }
         }
 }

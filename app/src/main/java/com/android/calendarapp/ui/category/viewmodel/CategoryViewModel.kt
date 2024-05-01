@@ -21,7 +21,6 @@ import com.android.calendarapp.ui.common.dialog.AppDialog
 import com.android.calendarapp.ui.common.dialog.DialogUiState
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -56,7 +55,7 @@ class CategoryViewModel @Inject constructor(
     }
 
     private fun init() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             categoryGroupListUseCase().collect { categoryGroupList ->
                 _categoryGroupList.value = categoryGroupList
             }
@@ -135,13 +134,13 @@ class CategoryViewModel @Inject constructor(
     }
 
     private fun addCategory(categoryModel: CategoryModel) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             addCategoryUseCase(categoryModel)
         }
     }
 
     private fun modifyCategory(targetCategoryGroup: CategoryGroupModel) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             updateCategoryUseCase(
                 targetCategoryGroup.copy(categoryName = _categoryDialogText.value)
             )
@@ -154,7 +153,7 @@ class CategoryViewModel @Inject constructor(
     }
 
     private fun deleteCategory(categoryGroup: CategoryGroupModel) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             removeCategoryUseCase(
                 categoryGroup
             )

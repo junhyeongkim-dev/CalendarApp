@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.calendarapp.R
-import com.android.calendarapp.feature.category.domain.usecase.RemoveCategoryUseCase
 import com.android.calendarapp.feature.user.domain.model.UserModel
 import com.android.calendarapp.feature.user.domain.usecase.AddUserUseCase
 import com.android.calendarapp.ui.common.dialog.AppDialog
@@ -17,7 +16,6 @@ import com.android.calendarapp.ui.common.popup.config.output.ConfigDialog
 import com.android.calendarapp.ui.common.popup.config.output.IConfigPopupOutput
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -98,7 +96,7 @@ class ConfigViewModel @Inject constructor(
     }
 
     private fun modifyUserName(userModel: UserModel) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             addUserUseCase(userModel)
         }
     }

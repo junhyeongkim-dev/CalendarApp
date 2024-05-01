@@ -4,6 +4,8 @@ import com.android.calendarapp.feature.category.data.repository.CategoryReposito
 import com.android.calendarapp.feature.schedule.data.repository.ScheduleRepository
 import com.android.calendarapp.feature.schedule.domain.convert.toEntity
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AddScheduleUseCaseImpl @Inject constructor(
@@ -12,11 +14,14 @@ class AddScheduleUseCaseImpl @Inject constructor(
 ) : AddScheduleUseCase {
     override suspend fun invoke(scheduleModel: ScheduleModel) {
 
-        // 데이터베이서에 존재하는지 확인하여 카테고리 이름 삽입
-        categoryRepository.selectCategory(scheduleModel.categoryName)?.let {
-            scheduleRepository.insertSchedule(scheduleModel.toEntity())
-        } ?: scheduleRepository.insertSchedule(
-            scheduleModel.copy(categoryName = "").toEntity()
-        )
+        withContext(Dispatchers.IO) {
+
+            // 데이터베이서에 존재하는지 확인하여 카테고리 이름 삽입
+            categoryRepository.selectCategory(scheduleModel.categoryName)?.let {
+                scheduleRepository.insertSchedule(scheduleModel.toEntity())
+            } ?: scheduleRepository.insertSchedule(
+                scheduleModel.copy(categoryName = "").toEntity()
+            )
+        }
     }
 }

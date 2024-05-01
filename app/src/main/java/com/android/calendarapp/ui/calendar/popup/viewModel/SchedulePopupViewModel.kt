@@ -21,7 +21,6 @@ import com.android.calendarapp.ui.common.popup.category.input.ICategoryPopupInpu
 import com.android.calendarapp.ui.common.popup.category.output.ICategoryPopupOutput
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +28,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -62,7 +60,7 @@ class SchedulePopupViewModel @Inject constructor(
     private var dialogChannel: Channel<DialogUiState> = Channel()
 
     override fun getMonthScheduleData(page: Int, date: String, isForce: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             if (_scheduleData.contains(page) && !isForce) {
                 return@launch
             }
@@ -95,7 +93,7 @@ class SchedulePopupViewModel @Inject constructor(
     override fun onClickAddSchedule(currentPage: Int, yearMonth: String, day: String, categoryName: String) {
         val scheduleContent = _scheduleText.value
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             addScheduleUseCase(
                 ScheduleModel(
                     scheduleYearMonth = yearMonth,
@@ -115,10 +113,8 @@ class SchedulePopupViewModel @Inject constructor(
         viewModelScope.launch {
 
             flow.collectLatest { (yearMonth, day) ->
-                withContext(Dispatchers.IO){
-                    getDayScheduleUseCase(yearMonth, day).collectLatest { scheduleList ->
-                        _scheduleList.value = scheduleList
-                    }
+                getDayScheduleUseCase(yearMonth, day).collectLatest { scheduleList ->
+                    _scheduleList.value = scheduleList
                 }
             }
         }
@@ -200,7 +196,7 @@ class SchedulePopupViewModel @Inject constructor(
         val content = _scheduleText.value
         val category = _selectedCategory.value
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             addScheduleUseCase(
                 schedule.copy(
                     scheduleContent = content,
@@ -211,7 +207,7 @@ class SchedulePopupViewModel @Inject constructor(
     }
 
     private fun deleteSchedule(schedule: ScheduleModel, currentPage: Int, yearMonth: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             removeScheduleUseCase(schedule)
 
             getMonthScheduleData(currentPage, yearMonth, true)
