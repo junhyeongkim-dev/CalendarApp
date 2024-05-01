@@ -3,6 +3,7 @@ package com.android.calendarapp.ui.common.popup.config.input
 import com.android.calendarapp.feature.user.domain.model.UserModel
 import com.android.calendarapp.ui.common.dialog.DialogUiState
 import com.android.calendarapp.ui.common.popup.config.output.ConfigDialog
+import com.android.calendarapp.ui.common.popup.config.output.NavigateEffect
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.StateFlow
 
@@ -22,5 +23,10 @@ interface IConfigPopupInput {
     // 유저 이름을 받기 위한 flow
     fun setUserNameState(userModel: StateFlow<UserModel>)
 
+
+    // 네비게이션 이동
+    fun navigateUi(navigateEffect: NavigateEffect)
+
+    // 로그아웃
     fun logout()
 }

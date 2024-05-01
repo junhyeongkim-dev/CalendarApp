@@ -43,5 +43,17 @@ fun ConfigPopup(
                 configCategoryOnClick.invoke()
             }
         )
+
+        DropdownMenuItem(
+            text = {
+                Text(
+                    text = "로그아웃",
+                    color = Color.Black
+                )
+            },
+            onClick = {
+                configInput.logout()
+            }
+        )
     }
 }

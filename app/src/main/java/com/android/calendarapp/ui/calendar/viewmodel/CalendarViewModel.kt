@@ -8,20 +8,17 @@ import com.android.calendarapp.feature.user.domain.model.UserModel
 import com.android.calendarapp.feature.user.domain.usecase.GetUserUseCase
 import com.android.calendarapp.ui.calendar.input.ICalendarInput
 import com.android.calendarapp.ui.calendar.model.DayItemModel
-import com.android.calendarapp.ui.calendar.output.CalendarNavigateEffect
 import com.android.calendarapp.ui.calendar.output.CalendarUiEffect
 import com.android.calendarapp.ui.calendar.output.ICalendarOutput
-import com.android.calendarapp.ui.common.dialog.DialogUiState
 import com.android.calendarapp.ui.common.base.viewmodel.BaseViewModel
+import com.android.calendarapp.ui.common.dialog.DialogUiState
 import com.android.calendarapp.util.DateUtil
 import com.android.calendarapp.util.ResourceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -65,9 +62,6 @@ class CalendarViewModel @Inject constructor(
                 }
 
     override val dialogChannel: Channel<DialogUiState> = Channel()
-
-    private val _configCategoryEffect: MutableSharedFlow<CalendarNavigateEffect> = MutableSharedFlow(replay = 0)
-    override val configCategoryEffect: SharedFlow<CalendarNavigateEffect> = _configCategoryEffect
 
     suspend fun init() {
         viewModelScope.launch {
@@ -115,11 +109,5 @@ class CalendarViewModel @Inject constructor(
 
     override fun onClickDayItem(day: String) {
         _selectedDay.value = day
-    }
-
-    override fun navigateConfigCategory() {
-        viewModelScope.launch {
-            _configCategoryEffect.emit(CalendarNavigateEffect.GoConfigCategory)
-        }
     }
 }

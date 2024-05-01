@@ -15,6 +15,8 @@
     <string name="dialog_delete_category_content">해당 카테고리를 삭제하시겠습니까?</string>
     <string name="dialog_logout_title">로그아웃</string>
     <string name="dialog_logout_content">로그아웃 하시겠습니까?</string>
+    <string name="dialog_logout_error_title">로그아웃 에러</string>
+    <string name="dialog_logout_error_content">로그아웃 시도 중 에러가 발생했습니다. \n 잠시후 다시 시도해주세요.</string>
 
     <string name="calendar_data_parsing_error">입력받은 년,월 데이터 형식이 잘못됐습니다. \n 관리자에게 문의해주세요.</string>
     <string name="calendar_load_data_error">페이지 에러 \n (Error : %1$s)</string>

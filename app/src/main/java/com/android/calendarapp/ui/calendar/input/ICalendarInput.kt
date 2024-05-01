@@ -11,7 +11,4 @@ interface ICalendarInput {
 
     // 일자 클릭 시 선택 보더 변경
     fun onClickDayItem(day: String)
-
-    // 네비게이션 이동
-    fun navigateConfigCategory()
 }

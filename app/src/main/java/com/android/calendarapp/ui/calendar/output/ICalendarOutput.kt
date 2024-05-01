@@ -37,15 +37,11 @@ interface ICalendarOutput {
     // 다른 뷰모델로 부터 다이얼로그 오픈 요청을 받기위한 채널
     val dialogChannel: Channel<DialogUiState>
 
-    val configCategoryEffect: SharedFlow<CalendarNavigateEffect>
+
 }
 
 // 초기 데이터 저장 완료 Effect
 sealed class CalendarUiEffect {
     data object Loading : CalendarUiEffect()
     data object Complete: CalendarUiEffect()
-}
-
-sealed class CalendarNavigateEffect {
-    data object GoConfigCategory : CalendarNavigateEffect()
 }

@@ -58,7 +58,6 @@ import com.android.calendarapp.ui.calendar.component.error.CalendarError
 import com.android.calendarapp.ui.calendar.component.header.CalendarHeader
 import com.android.calendarapp.ui.calendar.component.month.MonthItem
 import com.android.calendarapp.ui.calendar.input.ICalendarInput
-import com.android.calendarapp.ui.calendar.output.CalendarNavigateEffect
 import com.android.calendarapp.ui.calendar.output.CalendarUiEffect
 import com.android.calendarapp.ui.common.popup.config.viewmodel.ConfigViewModel
 import com.android.calendarapp.ui.calendar.popup.SchedulePopup
@@ -70,6 +69,7 @@ import com.android.calendarapp.ui.common.navigator.type.NavMembers
 import com.android.calendarapp.ui.common.popup.category.input.ICategoryPopupInput
 import com.android.calendarapp.ui.common.popup.category.output.ICategoryPopupOutput
 import com.android.calendarapp.ui.common.popup.category.viewmodel.CategoryPopupViewModel
+import com.android.calendarapp.ui.common.popup.config.output.NavigateEffect
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 import com.android.calendarapp.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
@@ -130,7 +130,7 @@ fun CalendarScreen(
     // 화면이동을 위한 collect 세팅
     ObserveNavigation(
         navController = navController,
-        state = calendarViewModel.configCategoryEffect
+        state = configViewModel.navigationState
     )
 
     // 스케줄 등록 팝업 오픈 시 뒤로가기 클릭하면 꺼지도록
@@ -146,7 +146,7 @@ fun CalendarScreen(
         configPopupUiState = configViewModel.configPopupUiState.value,
         configCategoryOnClick = {
             configViewModel.onChangePopupUiState()
-            calendarViewModel.navigateConfigCategory()
+            configViewModel.navigateUi(NavigateEffect.GoConfigCategory)
         },
         configInput = configViewModel.input,
         snackBarHostState = calendarViewModel.snackBarHostState
@@ -422,13 +422,20 @@ private fun ScheduleItem(
 @Composable
 private fun ObserveNavigation(
     navController: NavHostController,
-    state: SharedFlow<CalendarNavigateEffect>
+    state: SharedFlow<NavigateEffect>
 ) {
     LaunchedEffect(key1 = true) {
-        state.collect { calendarNavigateEffect ->
-            when(calendarNavigateEffect) {
-                CalendarNavigateEffect.GoConfigCategory ->
+        state.collect { navigateEffect ->
+            when(navigateEffect) {
+                NavigateEffect.GoConfigCategory ->
                     navController.navigate(NavMembers.CATEGORY.name)
+
+                NavigateEffect.GoLogin ->
+                    navController.navigate(NavMembers.LOGIN.name) {
+                        popUpTo(navController.currentDestination?.route!!) {
+                            inclusive = true
+                        }
+                    }
             }
         }
     }
