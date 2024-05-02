@@ -6,6 +6,8 @@ import com.android.calendarapp.feature.schedule.domain.usecase.GetScheduleGroupL
 import com.android.calendarapp.feature.schedule.domain.usecase.GetScheduleGroupListUseCaseImpl
 import com.android.calendarapp.feature.schedule.domain.usecase.GetAllScheduleUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.GetAllScheduleUseCaseImpl
+import com.android.calendarapp.feature.schedule.domain.usecase.GetCurrentScheduleGroupUseCase
+import com.android.calendarapp.feature.schedule.domain.usecase.GetCurrentScheduleGroupUseCaseImpl
 import com.android.calendarapp.feature.schedule.domain.usecase.GetDayScheduleUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.GetDayScheduleUseCaseImpl
 import com.android.calendarapp.feature.schedule.domain.usecase.RemoveScheduleUseCase
@@ -37,6 +39,10 @@ abstract class ScheduleUseCaseModule {
     @Binds
     @Singleton
     abstract fun bindGetScheduleGroupUseCase(getScheduleGroupListUseCaseImpl: GetScheduleGroupListUseCaseImpl) : GetScheduleGroupListUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindGetCurrentScheduleGroupUseCase(getCurrentScheduleGroupUseCaseImpl: GetCurrentScheduleGroupUseCaseImpl) : GetCurrentScheduleGroupUseCase
 
     @Binds
     @Singleton

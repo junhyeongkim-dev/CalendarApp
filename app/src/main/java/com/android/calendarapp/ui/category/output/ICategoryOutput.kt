@@ -10,7 +10,7 @@ interface ICategoryOutput {
     val categoryGroupList: StateFlow<List<CategoryGroupModel>>
 
     // 수정 또는 삭제 드랍다운 노출 상태값
-    val dropdownState: StateFlow<CategoryEffect>
+    val categoryDropdownUiState: StateFlow<CategoryEffect>
 
     // 카테고리 다이얼로그 텍스트필드
     val categoryDialogText: State<String>

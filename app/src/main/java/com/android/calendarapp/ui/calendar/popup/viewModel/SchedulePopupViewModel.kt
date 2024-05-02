@@ -10,6 +10,7 @@ import com.android.calendarapp.R
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleModel
 import com.android.calendarapp.feature.schedule.domain.usecase.AddScheduleUseCase
+import com.android.calendarapp.feature.schedule.domain.usecase.GetCurrentScheduleGroupUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.GetDayScheduleUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.GetScheduleGroupListUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.RemoveScheduleUseCase
@@ -26,7 +27,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,15 +35,16 @@ class SchedulePopupViewModel @Inject constructor(
     private val applicationContext: Context,
     private val addScheduleUseCase: AddScheduleUseCase,
     private val getScheduleGroupListUseCase: GetScheduleGroupListUseCase,
+    private val getCurrentScheduleGroupUseCase: GetCurrentScheduleGroupUseCase,
     private val getDayScheduleUseCase: GetDayScheduleUseCase,
-    private val removeScheduleUseCase: RemoveScheduleUseCase
+    private val removeScheduleUseCase: RemoveScheduleUseCase,
 ) : ViewModel(), ISchedulePopupInput, ISchedulePopupOutput {
 
     val input: ISchedulePopupInput = this
     val output: ISchedulePopupOutput = this
 
-    private val _scheduleData: MutableMap<Int, Flow<List<ScheduleGroupModel>>> = mutableMapOf()
-    override val scheduleData: Map<Int, Flow<List<ScheduleGroupModel>>> = _scheduleData
+    private val _scheduleGroupData: MutableMap<Int, List<ScheduleGroupModel>> = mutableMapOf()
+    override val scheduleGroupData: Map<Int, List<ScheduleGroupModel>> = _scheduleGroupData
 
     private val _scheduleUiState: MutableState<Boolean> = mutableStateOf(false)
     override val scheduleUiState: State<Boolean> = _scheduleUiState
@@ -57,16 +58,29 @@ class SchedulePopupViewModel @Inject constructor(
     private val _scheduleList: MutableStateFlow<List<ScheduleModel>> = MutableStateFlow(emptyList())
     override var scheduleList: StateFlow<List<ScheduleModel>> = _scheduleList
 
+    private var _currentScheduleGroupData: MutableStateFlow<List<ScheduleGroupModel>> = MutableStateFlow(emptyList())
+    override val currentScheduleGroupData: StateFlow<List<ScheduleGroupModel>> = _currentScheduleGroupData
+
     private var dialogChannel: Channel<DialogUiState> = Channel()
+
+    fun setCurrentYearMonth(yearMonthState: StateFlow<String>) {
+        viewModelScope.launch {
+            yearMonthState.collectLatest { yearMonth ->
+                getCurrentScheduleGroupUseCase(yearMonth).collect { currentScheduleList ->
+                    _currentScheduleGroupData.value = currentScheduleList
+                }
+            }
+        }
+    }
 
     override fun getMonthScheduleData(page: Int, date: String, isForce: Boolean) {
         viewModelScope.launch {
-            if (_scheduleData.contains(page) && !isForce) {
+            if (_scheduleGroupData.contains(page) && !isForce) {
                 return@launch
             }
 
             val data = getScheduleGroupListUseCase(date)
-            _scheduleData[page] = flow { emit(data) }
+            _scheduleGroupData[page] = data
         }
     }
 

@@ -34,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -74,7 +75,6 @@ import com.android.calendarapp.ui.theme.CalendarAppTheme
 import com.android.calendarapp.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 // 초기 페이지
@@ -83,6 +83,7 @@ private const val DEFAULT_PAGE = 500
 // 마지막 페이지
 private const val MAX_PAGE = 1000
 
+private var pagerIsScroll = false
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -102,6 +103,13 @@ fun CalendarScreen(
         MAX_PAGE
     }
 
+    // 스크롤 상태 여부 확인을 위한 flow
+    LaunchedEffect(true) {
+        snapshotFlow { pagerState.isScrollInProgress }.collect { isScrolling ->
+            pagerIsScroll = isScrolling
+        }
+    }
+
     // 페이저에 화면 노출을 위한 데이터 준비 상태
     val pagerUiState by calendarViewModel.calendarUiState.collectAsStateWithLifecycle()
 
@@ -118,6 +126,7 @@ fun CalendarScreen(
         calendarViewModel.init()
         schedulePopupViewModel.setRefreshDayScheduleFlow(calendarViewModel.refreshDayScheduleFlow)
         schedulePopupViewModel.setDialogChannel(channel = calendarViewModel.dialogChannel)
+        schedulePopupViewModel.setCurrentYearMonth(calendarViewModel.selectedYearMonth)
         categoryPopupViewModel.setDialogChannel(channel = calendarViewModel.dialogChannel)
         configViewModel.setDialogChannel(channel = calendarViewModel.dialogChannel)
         configViewModel.setUserNameState(calendarViewModel.userInfo)
@@ -202,11 +211,23 @@ fun CalendarScreen(
                             MonthItem(
                                 monthData = calendarViewModel.calendarData[page] ?: listOf(),
                                 selectedDay = calendarViewModel.selectedDay.collectAsStateWithLifecycle(initialValue = "").value,
-                                scheduleData = schedulePopupViewModel.scheduleData[page] ?: emptyFlow(),
+                                scheduleData =
+                                if(pagerState.currentPage == page && !pagerIsScroll) {
+                                    schedulePopupViewModel.currentScheduleGroupData.collectAsStateWithLifecycle().value
+                                }
+                                else schedulePopupViewModel.scheduleGroupData[page] ?: emptyList(),
                                 dayItemOnclick = { day ->
                                     calendarViewModel.onClickDayItem(day)
                                 }
                             )
+                            /*MonthItem(
+                                monthData = calendarViewModel.calendarData[page] ?: listOf(),
+                                selectedDay = calendarViewModel.selectedDay.collectAsStateWithLifecycle(initialValue = "").value,
+                                scheduleData = schedulePopupViewModel.scheduleGroupData[page] ?: emptyList(),
+                                dayItemOnclick = { day ->
+                                    calendarViewModel.onClickDayItem(day)
+                                }
+                            )*/
                         }
                     }
                 }

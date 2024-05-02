@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,29 +28,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.calendarapp.R
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import com.android.calendarapp.ui.calendar.model.DayItemModel
 import com.android.calendarapp.ui.theme.CalendarAppTheme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 @Composable
 fun RowScope.DayItem(
     data: DayItemModel,
     height: Dp,
     selectedDay: String,
-    scheduleData: Flow<List<ScheduleGroupModel>>,
+    scheduleData: List<ScheduleGroupModel>,
     dayItemOnclick: (String) -> Unit
 ) {
     val dayPadding = 4.dp
 
-    val scheduleDataState by scheduleData.collectAsStateWithLifecycle(initialValue = emptyList())
-
-    val dayScheduleData = scheduleDataState.filter{ scheduleGroupModel ->
-        scheduleGroupModel.day == data.dayText
-    }
+    val dayScheduleData =
+        scheduleData.find{ scheduleGroupModelList ->
+            scheduleGroupModelList.day == data.dayText
+        }
 
     val borderStroke = if(selectedDay == data.dayText && data.isDayInCurrentMonth){
         BorderStroke(
@@ -105,10 +100,10 @@ fun RowScope.DayItem(
                 .fillMaxSize(),
             contentAlignment = Alignment.CenterStart
         ){
-            if(dayScheduleData.isNotEmpty() && data.isDayInCurrentMonth) {
+            if(null != dayScheduleData && data.isDayInCurrentMonth) {
                 Text(
                     modifier = Modifier.padding(start = 4.dp),
-                    text = "+${dayScheduleData[0].count}",
+                    text = "+${dayScheduleData.count}",
                     color = colorResource(id = R.color.naver),
                     fontSize = dimensionResource(id = R.dimen.dimen_calendar_day_schedule_text).value.sp,
                 )
@@ -195,33 +190,25 @@ fun DayItemPreview() {
             val data = DayItemModel(
                 dayText = "1"
             )
-            DayItem(data, 80.dp, "1", flow {
-                    emit(
-                        listOf(
-                            ScheduleGroupModel(
-                                count = 3,
-                                yearMonth = "2024-02",
-                                day = "1"
-                            )
-                        )
-                    )
-            }, {})
+            DayItem(data, 80.dp, "1", listOf(
+                ScheduleGroupModel(
+                    count = 3,
+                    yearMonth = "2024-02",
+                    day = "1"
+                )
+            ), {})
 
             val borderData = DayItemModel(
                 dayText = "1",
                 needBorder = true
             )
-            DayItem(borderData, 80.dp, "1", flow {
-                emit(
-                    listOf(
-                        ScheduleGroupModel(
-                            count = 3,
-                            yearMonth = "2024-02",
-                            day = "1"
-                        )
-                    )
+            DayItem(borderData, 80.dp, "1", listOf(
+                ScheduleGroupModel(
+                    count = 3,
+                    yearMonth = "2024-02",
+                    day = "1"
                 )
-            }, {})
+            ), {})
         }
     }
 }

@@ -31,6 +31,19 @@ interface ScheduleDAO {
     @Transaction
     @Query(
         "SELECT " +
+                "schedule_day AS day, " +
+                "COUNT(schedule_day) AS count," +
+                "schedule_year_month AS yearMonth " +
+                "FROM schedule " +
+                "WHERE schedule_year_month = :yearMonth " +
+                "AND user_id = :userId " +
+                "GROUP BY schedule_day"
+    )
+    fun selectCurrent(yearMonth: String, userId: String): Flow<List<ScheduleGroupModel>>
+
+    @Transaction
+    @Query(
+        "SELECT " +
             "schedule_day AS day, " +
             "COUNT(schedule_day) AS count," +
             "schedule_year_month AS yearMonth " +

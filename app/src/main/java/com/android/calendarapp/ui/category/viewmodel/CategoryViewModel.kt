@@ -41,8 +41,8 @@ class CategoryViewModel @Inject constructor(
     private val _categoryGroupList: MutableStateFlow<List<CategoryGroupModel>> = MutableStateFlow( emptyList() )
     override val categoryGroupList: StateFlow<List<CategoryGroupModel>> = _categoryGroupList
 
-    private val _dropdownState: MutableStateFlow<CategoryEffect> = MutableStateFlow(CategoryEffect.Dismiss)
-    override val dropdownState: StateFlow<CategoryEffect> = _dropdownState
+    private val _categoryDropdownUiState: MutableStateFlow<CategoryEffect> = MutableStateFlow(CategoryEffect.Dismiss)
+    override val categoryDropdownUiState: StateFlow<CategoryEffect> = _categoryDropdownUiState
 
     private val _categoryDialogText: MutableState<String> = mutableStateOf("")
     override val categoryDialogText: State<String> = _categoryDialogText
@@ -64,12 +64,12 @@ class CategoryViewModel @Inject constructor(
 
     override fun onChangeDropDownState(categoryEffect: CategoryEffect) {
         viewModelScope.launch {
-            _dropdownState.emit(categoryEffect)
+            _categoryDropdownUiState.emit(categoryEffect)
         }
     }
 
     override fun showCategoryDialog(seqNo: Int) {
-        _dropdownState.value = CategoryEffect.Dismiss
+        _categoryDropdownUiState.value = CategoryEffect.Dismiss
 
         val targetCategoryGroup = _categoryGroupList.value.find{ it.seqNo == seqNo } ?: CategoryGroupModel()
 
@@ -113,7 +113,7 @@ class CategoryViewModel @Inject constructor(
     }
 
     override fun deleteCategory(seqNo: Int) {
-        _dropdownState.value = CategoryEffect.Dismiss
+        _categoryDropdownUiState.value = CategoryEffect.Dismiss
 
         val categoryGroup = categoryGroupList.value.find { it.seqNo == seqNo } ?: CategoryGroupModel()
 

@@ -50,7 +50,6 @@ fun CategoryScreen(
     navController: NavHostController,
     categoryViewModel: CategoryViewModel = hiltViewModel(),
 ) {
-    val route = navController.currentDestination?.route ?: ""
 
     BaseFullScreen(
         title = stringResource(id = R.string.config_category_title),
@@ -78,9 +77,8 @@ fun CategoryScreen(
                 }
             ) { index ->
                 CategoryItem(
-                    route = route,
                     categoryItem = categoryGroupList[index],
-                    dropdownState = categoryViewModel.dropdownState,
+                    dropdownState = categoryViewModel.categoryDropdownUiState,
                     input = categoryViewModel.input
                 )
             }
@@ -120,7 +118,6 @@ fun CategoryScreen(
 
 @Composable
 fun CategoryItem(
-    route: String,
     categoryItem: CategoryGroupModel,
     dropdownState: StateFlow<CategoryEffect>,
     input: ICategoryInput
@@ -175,7 +172,6 @@ fun CategoryItem(
 
             ConfigDropdown(
                 seqNo = categoryItem.seqNo,
-                route = route,
                 state = dropdownState,
                 input = input
             )
@@ -186,7 +182,6 @@ fun CategoryItem(
 @Composable
 private fun ConfigDropdown(
     seqNo: Int,
-    route: String,
     state: StateFlow<CategoryEffect>,
     input: ICategoryInput
 ) {

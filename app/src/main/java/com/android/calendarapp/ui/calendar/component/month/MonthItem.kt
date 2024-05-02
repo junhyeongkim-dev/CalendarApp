@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,13 +14,12 @@ import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import com.android.calendarapp.ui.calendar.component.week.WeekItem
 import com.android.calendarapp.ui.calendar.model.DayItemModel
 import com.android.calendarapp.ui.theme.CalendarAppTheme
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun MonthItem(
     monthData: List<List<DayItemModel>>,
     selectedDay: String,
-    scheduleData: Flow<List<ScheduleGroupModel>>,
+    scheduleData: List<ScheduleGroupModel>,
     dayItemOnclick: (String) -> Unit
 ) {
     val height = 70.dp

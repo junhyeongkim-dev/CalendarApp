@@ -42,8 +42,8 @@ class CategoryPopupViewModel @Inject constructor(
     private val _isNotExistCategoryState: MutableState<Boolean> = mutableStateOf(false)
     override val isNotExistCategoryState: State<Boolean> = _isNotExistCategoryState
 
-    private val _dropDownState: MutableState<Boolean> = mutableStateOf(false)
-    override val categoryPopupUiState: State<Boolean> = _dropDownState
+    private val _categoryPopupUiState: MutableState<Boolean> = mutableStateOf(false)
+    override val categoryPopupUiState: State<Boolean> = _categoryPopupUiState
 
     private var dialogChannel: Channel<DialogUiState> = Channel()
 
@@ -60,7 +60,7 @@ class CategoryPopupViewModel @Inject constructor(
     }
 
     override fun onChangeCategoryUiState() {
-        _dropDownState.value = !_dropDownState.value
+        _categoryPopupUiState.value = !_categoryPopupUiState.value
     }
 
     override fun showCategoryDialog() {

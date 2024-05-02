@@ -20,6 +20,13 @@ class ScheduleRepositoryImpl @Inject constructor(
     ): Flow<List<ScheduleEntity>> =
         scheduleDAO.selectDaySchedule(yearMonth, day, userId)
 
+    override suspend fun currentGroupByYearMonth(
+        currentYearMonth: String,
+        userId: String
+    ): Flow<List<ScheduleGroupModel>> {
+        return scheduleDAO.selectCurrent(currentYearMonth, userId)
+    }
+
     override suspend fun selectGroupByYearMonth(
         scheduleYearMonth: String,
         userId: String

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,12 +16,11 @@ import androidx.compose.ui.unit.dp
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import com.android.calendarapp.ui.calendar.component.day.DayItem
 import com.android.calendarapp.ui.calendar.model.DayItemModel
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun WeekItem(
     weekData: List<DayItemModel>,
-    scheduleData: Flow<List<ScheduleGroupModel>>,
+    scheduleData: List<ScheduleGroupModel>,
     height: Dp,
     selectedDay: String,
     dayItemOnclick: (String) -> Unit
