@@ -20,7 +20,7 @@ interface CategoryDAO {
     fun insert(categoryEntity: CategoryEntity)
 
     @Transaction
-    @Query("SELECT * FROM category WHERE user_id = :userId")
+    @Query("SELECT * FROM category WHERE user_id = :userId ORDER BY seq_no ASC")
     fun selectAll(userId: String) : Flow<List<CategoryEntity>>
 
     @Transaction
@@ -29,12 +29,14 @@ interface CategoryDAO {
 
     @Transaction
     @Query(
-        "SELECT category.category_name AS categoryName ,count(*) AS count, category.seq_no AS seqNo " +
+        "SELECT category.category_name AS categoryName, count(schedule.category_name) AS count, category.seq_no AS seqNo " +
         "FROM category " +
         "LEFT OUTER JOIN schedule " +
         "ON schedule.category_name = category.category_name " +
-        "AND category.user_id = :userId " +
-        "GROUP BY category.category_name"
+        "AND schedule.user_id = :userId " +
+        "WHERE category.user_id = :userId " +
+        "GROUP BY category.category_name " +
+        "ORDER BY seqNo ASC"
     )
     fun selectGroupByCategory(userId: String) : Flow<List<CategoryGroupModel>>
 

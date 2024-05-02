@@ -3,6 +3,8 @@
     <string name="app_bar_sign_in_title_name">로그인</string>
     <string name="app_bar_calendar_title_name">%1$s의 캘린더</string>
 
+    <string name="login_explain_content">일정관리를 위한 캘린더입니다. \n 로그인 방식을 선택해주세요.</string>
+
     <string name="dialog_login_error_title">로그인 에러</string>
     <string name="dialog_login_error_content">%1$s 로그인 중 에러가 발생했습니다. \n 잠시후 다시 시도해주세요. \n%2$s</string>
     <string name="dialog_modify_user_name_title">이름 변경</string>

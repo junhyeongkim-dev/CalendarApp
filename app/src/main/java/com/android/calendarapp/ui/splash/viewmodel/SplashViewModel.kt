@@ -11,7 +11,7 @@ import com.android.calendarapp.library.security.preperence.constants.PrefStorage
 import com.android.calendarapp.ui.common.base.viewmodel.BaseViewModel
 import com.android.calendarapp.ui.splash.input.ISplashInput
 import com.android.calendarapp.ui.splash.output.ISplashOutput
-import com.android.calendarapp.ui.splash.output.LoginStateEffect
+import com.android.calendarapp.ui.splash.output.SplashNavigateEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -28,8 +28,8 @@ class SplashViewModel @Inject constructor(
 ) : BaseViewModel(), ISplashInput, ISplashOutput {
 
     // 화면 이동을 위한 로그인 상태값
-    private val _loginState: MutableSharedFlow<LoginStateEffect> = MutableSharedFlow(replay = 0)
-    override val loginState: SharedFlow<LoginStateEffect> = _loginState
+    private val _loginState: MutableSharedFlow<SplashNavigateEffect> = MutableSharedFlow(replay = 0)
+    override val loginState: SharedFlow<SplashNavigateEffect> = _loginState
 
     private val resultChannel: Channel<LoginResponseModel> = Channel()
 
@@ -72,13 +72,13 @@ class SplashViewModel @Inject constructor(
 
     private fun login() {
         viewModelScope.launch {
-            _loginState.emit(LoginStateEffect.Login)
+            _loginState.emit(SplashNavigateEffect.Login)
         }
     }
 
     private fun notLogin(isFail: Boolean) {
         viewModelScope.launch {
-            _loginState.emit(LoginStateEffect.NotLogin(isFail))
+            _loginState.emit(SplashNavigateEffect.NotLogin(isFail))
         }
     }
 }

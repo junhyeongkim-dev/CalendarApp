@@ -5,7 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.android.calendarapp.ui.common.navigator.type.NavMembers
-import com.android.calendarapp.ui.splash.output.LoginStateEffect
+import com.android.calendarapp.ui.splash.output.SplashNavigateEffect
 import com.android.calendarapp.ui.splash.viewmodel.SplashViewModel
 
 
@@ -17,7 +17,7 @@ fun SplashScreen(
     LaunchedEffect(key1 = true) {
         viewModel.loginState.collect { loginStateEffect ->
             when(loginStateEffect) {
-                LoginStateEffect.Login -> {
+                SplashNavigateEffect.Login -> {
 
                     navController.navigate(NavMembers.CALENDAR.name) {
                         popUpTo(navController.currentDestination?.route!!) {
@@ -25,7 +25,7 @@ fun SplashScreen(
                         }
                     }
                 }
-                is LoginStateEffect.NotLogin -> {
+                is SplashNavigateEffect.NotLogin -> {
 
                     navController.navigate(NavMembers.LOGIN.name) {
                         popUpTo(navController.currentDestination?.route!!) {
@@ -34,7 +34,7 @@ fun SplashScreen(
                     }
                 }
 
-                LoginStateEffect.Wait -> {}
+                SplashNavigateEffect.Wait -> {}
             }
         }
     }

@@ -58,6 +58,7 @@ class ConfigViewModel @Inject constructor(
                 if(logoutResponseModel.code == LoginConstant.SUCCESS) {
                     // 로그아웃 성공
 
+                    onDismissDialog()
                     navigateUi(NavigateEffect.GoLogin)
                 }else {
                     dialogChannel.send(
@@ -109,6 +110,8 @@ class ConfigViewModel @Inject constructor(
     }
 
     override fun logout() {
+        onChangePopupUiState()
+
         viewModelScope.launch {
             dialogChannel.send(
                 DialogUiState.Show(
@@ -157,7 +160,7 @@ class ConfigViewModel @Inject constructor(
 
     private fun onDismissDialog() {
         viewModelScope.launch {
-            logoutUseCase(logoutChannel)
+            dialogChannel.send(DialogUiState.Dismiss)
         }
     }
 

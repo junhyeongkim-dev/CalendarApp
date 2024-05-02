@@ -31,7 +31,7 @@ import com.android.calendarapp.ui.login.component.button.NaverButton
 import com.android.calendarapp.ui.login.output.LoginNavigateEffect
 import com.android.calendarapp.ui.login.viewmodel.LoginViewModel
 import com.android.calendarapp.ui.theme.CalendarAppTheme
-import com.android.calendarapp.util.ResourceUtil.Companion.getString
+import com.android.calendarapp.util.ResourceUtil.getString
 
 @Composable
 fun LoginScreen(
@@ -40,7 +40,6 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val currentRoute = navController.currentDestination?.route ?: ""
 
     BaseFullScreen(
         title = stringResource(id = R.string.app_bar_sign_in_title_name),
@@ -56,7 +55,7 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "환영합니다! \n 간단한 캘린더입니다. \n 로그인 방식을 선택해주세요",
+                text = stringResource(id = R.string.login_explain_content),
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 color = Color.Black
