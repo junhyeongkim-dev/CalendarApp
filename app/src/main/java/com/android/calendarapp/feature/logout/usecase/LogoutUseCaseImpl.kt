@@ -44,9 +44,9 @@ class LogoutUseCaseImpl @Inject constructor(
                                 }
                             }
 
-                            override fun onFail(data: LoginResponseModel) {
+                            override fun onFail(errorData: LoginResponseModel) {
                                 scope.launch {
-                                    result.send(data)
+                                    result.send(errorData)
                                 }
                             }
                         }

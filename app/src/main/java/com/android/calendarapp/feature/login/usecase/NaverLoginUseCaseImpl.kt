@@ -22,7 +22,7 @@ class NaverLoginUseCaseImpl @Inject constructor(
     private val addUserUseCase: AddUserUseCase
 ) : NaverLoginUseCase {
     override suspend fun invoke(context: Context, result: Channel<LoginResponseModel>) {
-        val scope = CoroutineScope(Dispatchers.IO)
+        val scope = CoroutineScope(Dispatchers.Main)
 
         naverLoginManager.login(
             context,
@@ -56,9 +56,9 @@ class NaverLoginUseCaseImpl @Inject constructor(
                     }
                 }
 
-                override fun onFail(data: LoginResponseModel) {
+                override fun onFail(errorData: LoginResponseModel) {
                     scope.launch {
-                        result.send(data)
+                        result.send(errorData)
                     }
                 }
             }

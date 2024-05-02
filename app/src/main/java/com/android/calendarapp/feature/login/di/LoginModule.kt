@@ -4,6 +4,8 @@ import com.android.calendarapp.feature.login.usecase.GuestLoginUseCase
 import com.android.calendarapp.feature.login.usecase.GuestLoginUseCaseImpl
 import com.android.calendarapp.feature.login.usecase.NaverLoginUseCase
 import com.android.calendarapp.feature.login.usecase.NaverLoginUseCaseImpl
+import com.android.calendarapp.feature.login.usecase.NaverRefreshUseCase
+import com.android.calendarapp.feature.login.usecase.NaverRefreshUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -21,4 +23,8 @@ abstract class LoginModule {
     @Binds
     @Singleton
     abstract fun bindGuestLoginUseCase(guestLoginUseCaseImpl: GuestLoginUseCaseImpl) : GuestLoginUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindNaverRefreshUseCase(refreshUseCaseImpl: NaverRefreshUseCaseImpl) : NaverRefreshUseCase
 }

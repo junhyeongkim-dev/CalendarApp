@@ -4,5 +4,5 @@ import com.android.calendarapp.library.login.model.LoginResponseModel
 
 interface NaverLoginResponse<T> {
     fun onSuccess(data: T)
-    fun onFail(data: LoginResponseModel)
+    fun onFail(errorData: LoginResponseModel)
 }

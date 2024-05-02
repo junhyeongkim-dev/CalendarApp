@@ -1,10 +1,5 @@
 package com.android.calendarapp.util
 
-import android.content.Context
-import androidx.compose.ui.graphics.Color
-import com.android.calendarapp.R
-import com.android.calendarapp.ui.calendar.model.DayItemModel
-import com.android.calendarapp.ui.calendar.type.DayOfWeekType
 import java.time.LocalDate
 
 
