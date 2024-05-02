@@ -5,24 +5,22 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.nio.charset.Charset
 
-class GsonUtil {
+object GsonUtil {
 
-    companion object {
-        inline fun<reified T> readJsonData (fileName: String, context: Context): List<T> {
-            return try {
-                val inputStream = context.assets.open(fileName)
-                val size = inputStream.available()
-                val buffer = ByteArray(size)
-                inputStream.read(buffer)
-                inputStream.close()
-                val json = String(buffer, Charset.forName("UTF-8"))
+    inline fun<reified T> readJsonData (fileName: String, context: Context): List<T> {
+        return try {
+            val inputStream = context.assets.open(fileName)
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            val json = String(buffer, Charset.forName("UTF-8"))
 
-                val gson = Gson()
-                val listType = object : TypeToken<List<T>>() {}.type
-                gson.fromJson(json, listType)
-            }catch (e: Exception) {
-                emptyList()
-            }
+            val gson = Gson()
+            val listType = object : TypeToken<List<T>>() {}.type
+            gson.fromJson(json, listType)
+        }catch (e: Exception) {
+            emptyList()
         }
     }
 }
