@@ -95,8 +95,6 @@ fun CalendarScreen(
     onClickScope: CoroutineScope = rememberCoroutineScope()
 ) {
 
-    val currentRoute = navController.currentDestination?.route ?: ""
-
     // 페이저 초기 페이지 및 총 갯수 설정
     val pagerState = rememberPagerState(
         initialPage = DEFAULT_PAGE

@@ -15,7 +15,6 @@ import com.android.calendarapp.library.login.model.LoginResponseModel
 import com.android.calendarapp.ui.common.dialog.AppDialog
 import com.android.calendarapp.ui.common.dialog.DialogUiState
 import com.android.calendarapp.ui.common.popup.config.input.IConfigPopupInput
-import com.android.calendarapp.ui.common.popup.config.output.ConfigDialog
 import com.android.calendarapp.ui.common.popup.config.output.IConfigPopupOutput
 import com.android.calendarapp.ui.common.popup.config.output.NavigateEffect
 import com.android.calendarapp.util.ResourceUtil
@@ -23,7 +22,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -41,9 +39,6 @@ class ConfigViewModel @Inject constructor(
 
     private val _configPopupUiState: MutableState<Boolean> = mutableStateOf(false)
     override val configPopupUiState: State<Boolean> = _configPopupUiState
-
-    private val _configDialogUiState: MutableStateFlow<ConfigDialog> = MutableStateFlow(ConfigDialog.Dismiss)
-    override val configDialogUiState: StateFlow<ConfigDialog> = _configDialogUiState
 
     private val _userNameEditText: MutableState<String> = mutableStateOf("")
     override val userNameEditText: State<String> = _userNameEditText
@@ -82,13 +77,6 @@ class ConfigViewModel @Inject constructor(
 
     override fun onChangePopupUiState() {
         _configPopupUiState.value = !_configPopupUiState.value
-    }
-
-    override fun onChangeConfigDialogUiState(dialogType: ConfigDialog) {
-        when(dialogType) {
-            ConfigDialog.UserName -> showUserNameDialog()
-            ConfigDialog.Dismiss -> {}
-        }
     }
 
     override fun onChangeUserNameEditText(text: String) {
@@ -140,7 +128,7 @@ class ConfigViewModel @Inject constructor(
         }
     }
 
-    private fun showUserNameDialog() {
+     override fun showUserNameDialog() {
         onChangePopupUiState()
 
         viewModelScope.launch {

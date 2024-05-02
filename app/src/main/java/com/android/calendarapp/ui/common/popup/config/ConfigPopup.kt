@@ -6,7 +6,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.android.calendarapp.ui.common.popup.config.input.IConfigPopupInput
-import com.android.calendarapp.ui.common.popup.config.output.ConfigDialog
 
 @Composable
 fun ConfigPopup(
@@ -26,9 +25,7 @@ fun ConfigPopup(
                 )
             },
             onClick = {
-                configInput.onChangeConfigDialogUiState(
-                    dialogType = ConfigDialog.UserName
-                )
+                configInput.showUserNameDialog()
             }
         )
 
