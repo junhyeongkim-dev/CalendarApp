@@ -10,17 +10,19 @@ import com.android.calendarapp.ui.login.LoginScreen
 import com.android.calendarapp.ui.calendar.CalendarScreen
 import com.android.calendarapp.ui.category.CategoryScreen
 import com.android.calendarapp.ui.common.navigator.type.NavMembers
+import com.android.calendarapp.ui.schedule.ScheduleScreen
 import com.android.calendarapp.ui.splash.SplashScreen
 
 
 @Composable
-fun AppNavigator(
+fun AppNavGraph(
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(navController = navController, startDestination = NavMembers.SPLASH.name) {
         addSplash(navController)
         addLogin(navController)
-        addMain(navController)
+        addSchedule(navController)
+        addCalendar(navController)
         addCategory(navController)
     }
 }
@@ -37,7 +39,13 @@ fun NavGraphBuilder.addLogin(navController: NavHostController) {
     }
 }
 
-fun NavGraphBuilder.addMain(navController: NavHostController) {
+fun NavGraphBuilder.addSchedule(navController: NavHostController) {
+    composable(route = NavMembers.SCHEDULE.name) {
+        ScheduleScreen(navController = navController)
+    }
+}
+
+fun NavGraphBuilder.addCalendar(navController: NavHostController) {
     composable(route = NavMembers.CALENDAR.name) {
         CalendarScreen(navController = navController)
     }

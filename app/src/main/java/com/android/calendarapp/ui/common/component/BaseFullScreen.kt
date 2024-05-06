@@ -12,29 +12,38 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.android.calendarapp.R
-import com.android.calendarapp.ui.common.popup.config.ConfigPopup
 import com.android.calendarapp.ui.common.dialog.DialogInit
 import com.android.calendarapp.ui.common.dialog.DialogUiState
+import com.android.calendarapp.ui.common.navigator.type.NavMembers
+import com.android.calendarapp.ui.common.popup.config.ConfigPopup
 import com.android.calendarapp.ui.common.popup.config.input.IConfigPopupInput
 import com.android.calendarapp.ui.theme.CalendarAppTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,6 +64,8 @@ fun BaseFullScreen(
     snackBarHostState: SnackbarHostState,
     content: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
+    val currentRoute by navController.currentBackStackEntryAsState()
+
     Scaffold(
         modifier = Modifier,
         topBar = {
@@ -170,6 +181,65 @@ fun BaseFullScreen(
                     )
                 }
             )
+        },
+        bottomBar = {
+            NavigationBar(
+                modifier = Modifier.height(60.dp)
+            ) {
+                NavigationBarItem(
+                    selected = (currentRoute?.destination?.route ?: "") == NavMembers.SCHEDULE.name,
+                    onClick = {
+                        navController.navigate(NavMembers.SCHEDULE.name) {
+                            popUpTo(currentRoute?.destination?.route!!) {
+                                saveState = true
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            imageVector = Icons.Filled.List,
+                            contentDescription = "일정 화면",
+                            tint =
+                            if( (currentRoute?.destination?.route ?: "") == NavMembers.SCHEDULE.name ) colorResource(id = R.color.naver)
+                            else Color.Gray
+                        )
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        indicatorColor = Color.White
+                    )
+                )
+
+                NavigationBarItem(
+                    selected = (currentRoute?.destination?.route ?: "") == NavMembers.CALENDAR.name,
+                    onClick = {
+                        navController.navigate(NavMembers.CALENDAR.name) {
+                            popUpTo(currentRoute?.destination?.route!!) {
+                                saveState = true
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            imageVector = Icons.Filled.DateRange,
+                            contentDescription = "캘린더 화면",
+                            tint =
+                                if( (currentRoute?.destination?.route ?: "") == NavMembers.CALENDAR.name ) colorResource(id = R.color.naver)
+                                else Color.Gray
+                        )
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        indicatorColor = Color.White
+                    )
+                )
+            }
         }
     ) {
         content.invoke(it)

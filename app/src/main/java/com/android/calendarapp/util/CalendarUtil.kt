@@ -5,6 +5,7 @@ import java.time.LocalDate
 
 object DateUtil {
 
+    // 현재 년,월 조회
     fun getCurrentYearMonth() : String {
         val currentDate = LocalDate.now()
 

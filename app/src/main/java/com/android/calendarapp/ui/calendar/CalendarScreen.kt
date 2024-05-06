@@ -162,7 +162,8 @@ fun CalendarScreen(
             Column(
                 modifier = Modifier
                     .padding(
-                        top = paddingValues.calculateTopPadding()
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = paddingValues.calculateBottomPadding()
                     )
             ) {
 
@@ -321,7 +322,7 @@ private fun AddScheduleButton(onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(end = 30.dp, bottom = 30.dp),
+            .padding(end = 30.dp, bottom = 20.dp),
         contentAlignment = Alignment.BottomEnd
     ){
         IconButton(

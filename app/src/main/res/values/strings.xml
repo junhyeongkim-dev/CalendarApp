@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CalendarApp</string>
-    <string name="app_bar_sign_in_title_name">로그인</string>
+    <string name="top_bar_login_title">로그인</string>
+    <string name="top_bar_schedule_title">일정 관리</string>
     <string name="app_bar_calendar_title_name">%1$s의 캘린더</string>
 
     <string name="login_explain_content">일정관리를 위한 캘린더입니다. \n 로그인 방식을 선택해주세요.</string>

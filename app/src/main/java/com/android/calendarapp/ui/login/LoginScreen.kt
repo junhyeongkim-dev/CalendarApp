@@ -42,7 +42,7 @@ fun LoginScreen(
     val context = LocalContext.current
 
     BaseFullScreen(
-        title = stringResource(id = R.string.app_bar_sign_in_title_name),
+        title = stringResource(id = R.string.top_bar_login_title),
         navController = navController,
         isShowBottomLine = true,
         dialogUiState = viewModel.defaultDialogUiState,
