@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -47,7 +47,7 @@ fun ScheduleDialogContent(
     Column(
         modifier = Modifier
             .width(350.dp)
-            .height(140.dp)
+            .wrapContentHeight()
             .padding(15.dp)
     ) {
         val categoryItems = categoryOutput.categoryList.collectAsStateWithLifecycle().value
@@ -86,8 +86,7 @@ fun ScheduleDialogContent(
                     handleColor = Color(colorResource(id = R.color.naver).value), // 물방울 핸들 색상
                     backgroundColor = Color.Black.copy(alpha = 0.5f) // 텍스트 선택 영역 색상
                 )
-            ),
-            maxLines = 1
+            )
         )
 
         Row(
