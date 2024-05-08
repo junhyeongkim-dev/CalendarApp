@@ -97,6 +97,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
 
     // naver login
     implementation(libs.com.navercorp.nid.oauth)
@@ -116,4 +117,7 @@ dependencies {
 
     // runtime-compose
     implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // paging-compose
+    implementation(libs.androidx.paging.compose)
 }

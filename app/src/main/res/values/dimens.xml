@@ -16,6 +16,7 @@
     <dimen name="dimen_category_dropdown_item_text">14sp</dimen>
     <dimen name="dimen_category_dialog_text">16sp</dimen>
 
+    <dimen name="dimen_schedule_date_header">18sp</dimen>
     <dimen name="dimen_schedule_item_content">14sp</dimen>
     <dimen name="dimen_schedule_item_category">12sp</dimen>
     <dimen name="dimen_schedule_empty_text">16sp</dimen>

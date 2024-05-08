@@ -146,7 +146,7 @@ fun CalendarScreen(
     }
 
     BaseFullScreen(
-        title = stringResource(id = R.string.app_bar_calendar_title_name, calendarViewModel.userInfo.collectAsStateWithLifecycle().value.userName),
+        title = stringResource(id = R.string.app_bar_calendar_title, calendarViewModel.userInfo.collectAsStateWithLifecycle().value.userName),
         navController = navController,
         isShowMoreBtn = true,
         dialogUiState = calendarViewModel.defaultDialogUiState,
@@ -407,7 +407,7 @@ private fun ScheduleItem(
                     .width(0.dp)
                     .weight(1f)
                     .padding(start = 10.dp),
-                text = scheduleItem.scheduleContent,
+                text = scheduleItem.content,
                 fontSize = dimensionResource(id = R.dimen.dimen_schedule_item_content).value.sp,
                 color = Color.Black,
                 maxLines = 1,

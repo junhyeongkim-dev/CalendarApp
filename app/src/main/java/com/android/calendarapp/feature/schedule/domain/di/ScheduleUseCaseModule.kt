@@ -4,8 +4,8 @@ import com.android.calendarapp.feature.schedule.domain.usecase.AddScheduleUseCas
 import com.android.calendarapp.feature.schedule.domain.usecase.AddScheduleUseCaseImpl
 import com.android.calendarapp.feature.schedule.domain.usecase.GetScheduleGroupListUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.GetScheduleGroupListUseCaseImpl
-import com.android.calendarapp.feature.schedule.domain.usecase.GetAllScheduleUseCase
-import com.android.calendarapp.feature.schedule.domain.usecase.GetAllScheduleUseCaseImpl
+import com.android.calendarapp.feature.schedule.domain.usecase.GetSchedulePagingUseCase
+import com.android.calendarapp.feature.schedule.domain.usecase.GetSchedulePagingUseCaseImpl
 import com.android.calendarapp.feature.schedule.domain.usecase.GetCurrentScheduleGroupUseCase
 import com.android.calendarapp.feature.schedule.domain.usecase.GetCurrentScheduleGroupUseCaseImpl
 import com.android.calendarapp.feature.schedule.domain.usecase.GetDayScheduleUseCase
@@ -30,7 +30,7 @@ abstract class ScheduleUseCaseModule {
 
     @Binds
     @Singleton
-    abstract fun bindGetScheduleUseCase(getScheduleListUseCaseImpl: GetAllScheduleUseCaseImpl) : GetAllScheduleUseCase
+    abstract fun bindGetSchedulePagingUseCase(getSchedulePagingUseCaseImpl: GetSchedulePagingUseCaseImpl) : GetSchedulePagingUseCase
 
     @Binds
     @Singleton

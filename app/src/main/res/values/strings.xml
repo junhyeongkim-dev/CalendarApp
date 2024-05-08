@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">CalendarApp</string>
     <string name="top_bar_login_title">로그인</string>
-    <string name="top_bar_schedule_title">일정 관리</string>
-    <string name="app_bar_calendar_title_name">%1$s의 캘린더</string>
+    <string name="top_bar_schedule_title">%1$s의 일정</string>
+    <string name="app_bar_calendar_title">%1$s의 캘린더</string>
 
     <string name="login_explain_content">일정관리를 위한 캘린더입니다. \n 로그인 방식을 선택해주세요.</string>
 
@@ -29,9 +29,13 @@
     <string name="snackbar_not_schedule_content">스케줄 내용을 입력해주세요.</string>
 
     <string name="category_dropdown_add_text">새로 만들기</string>
-    <string name="category_default_text">카테고리 없음</string>
+    <string name="category_default_selected_text">카테고리 없음</string>
+    <string name="category_item_not_exist_text">없음</string>
+    <string name="category_item_all_text">모두</string>
     <string name="category_popup_over_max_length">카테고리의 이름이 한도를 초과했습니다.</string>
     <string name="category_popup_not_exist_name">카테고리 이름을 입력해주세요.</string>
 
     <string name="config_category_title">카테고리 관리</string>
+
+    <string name="schedule_empty_content">일정이 없습니다. \n 캘린더에서 일정을 추가해보세요.</string>
 </resources>

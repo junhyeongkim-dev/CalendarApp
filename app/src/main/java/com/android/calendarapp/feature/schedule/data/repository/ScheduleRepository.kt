@@ -1,5 +1,6 @@
 package com.android.calendarapp.feature.schedule.data.repository
 
+import androidx.paging.PagingData
 import com.android.calendarapp.feature.schedule.data.entity.ScheduleEntity
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
 import kotlinx.coroutines.flow.Flow
@@ -7,7 +8,10 @@ import kotlinx.coroutines.flow.Flow
 interface ScheduleRepository {
     suspend fun insertSchedule(scheduleEntity: ScheduleEntity)
 
-    suspend fun selectAllSchedule(userId: String) : Flow<List<ScheduleEntity>>
+    suspend fun selectPagingSchedule(
+        userId: String,
+        categoryName: String?
+    ) : Flow<PagingData<ScheduleEntity>>
 
     suspend fun selectDaySchedule(yearMonth: String, day: String, userId: String) : Flow<List<ScheduleEntity>>
 

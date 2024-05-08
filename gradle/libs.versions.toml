@@ -17,6 +17,7 @@ googleTinkVersion = "1.13.0"
 accompanistPagerVersion = "0.34.0"
 retrofitViersion = "2.9.0"
 runtimeComposeVersion = "2.7.0"
+pagingComposeVersion = "3.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +44,7 @@ androidx-hilt-compose = { group = "androidx.hilt", name = "hilt-navigation-compo
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime" , version.ref = "roomVersion"}
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler" , version.ref = "roomVersion"}
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx" , version.ref = "roomVersion"}
+androidx-room-paging = { group = "androidx.room", name = "room-paging" , version.ref = "roomVersion"}
 
 com-navercorp-nid-oauth = { group = "com.navercorp.nid", name = "oauth" , version.ref = "naverOauthVersion"}
 
@@ -56,6 +58,8 @@ com-squareup-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", v
 com-squareup-retrofit-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofitViersion" }
 
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "runtimeComposeVersion" }
+
+androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "pagingComposeVersion" }
 
 
 [plugins]

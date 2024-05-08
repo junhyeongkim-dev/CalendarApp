@@ -1,15 +1,13 @@
 package com.android.calendarapp.feature.schedule.domain.model
 
-import androidx.room.ColumnInfo
-
 data class ScheduleModel(
     val seqNo: Int = 0,
 
-    val scheduleYearMonth: String,
+    val yearMonth: String,
 
-    val scheduleDay: String,
+    val day: String,
 
-    val scheduleContent: String,
+    val content: String,
 
     val categoryName: String
 )

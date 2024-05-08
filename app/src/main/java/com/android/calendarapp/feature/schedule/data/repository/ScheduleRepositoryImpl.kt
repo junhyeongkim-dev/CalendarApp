@@ -1,5 +1,8 @@
 package com.android.calendarapp.feature.schedule.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.android.calendarapp.feature.schedule.data.dao.ScheduleDAO
 import com.android.calendarapp.feature.schedule.data.entity.ScheduleEntity
 import com.android.calendarapp.feature.schedule.domain.model.ScheduleGroupModel
@@ -9,9 +12,31 @@ import javax.inject.Inject
 class ScheduleRepositoryImpl @Inject constructor(
     private val scheduleDAO: ScheduleDAO
 ) : ScheduleRepository {
+
+    companion object {
+        const val PAGING_SIZE = 20
+    }
+
     override suspend fun insertSchedule(scheduleEntity: ScheduleEntity) = scheduleDAO.insert(scheduleEntity)
 
-    override suspend fun selectAllSchedule(userId: String): Flow<List<ScheduleEntity>> = scheduleDAO.selectAll(userId)
+    override suspend fun selectPagingSchedule(
+        userId: String,
+        categoryName: String?
+    ): Flow<PagingData<ScheduleEntity>> =
+        Pager(
+            config = PagingConfig(
+                initialLoadSize = PAGING_SIZE*2,
+                pageSize = PAGING_SIZE, // 페이지 당 로드할 아이템 수
+                prefetchDistance = PAGING_SIZE*3,
+                enablePlaceholders = false // 플레이스홀더 사용 여부
+            ),
+            pagingSourceFactory = {
+                scheduleDAO.selectAll(
+                    userId = userId,
+                    categoryName = categoryName
+                )
+            }
+        ).flow
 
     override suspend fun selectDaySchedule(
         yearMonth: String,

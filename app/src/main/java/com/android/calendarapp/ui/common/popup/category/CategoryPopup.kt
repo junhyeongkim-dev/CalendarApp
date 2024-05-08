@@ -43,7 +43,7 @@ fun CategoryDropDown(
                 ),
             text = {
                 Text(
-                    text = "없음",
+                    text = stringResource(id = R.string.category_item_not_exist_text),
                     fontSize = dimensionResource(id = R.dimen.dimen_category_dropdown_item_text).value.sp,
                     color = Color.Gray
                 )

@@ -1,5 +1,6 @@
 package com.android.calendarapp.feature.schedule.data.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -17,8 +18,17 @@ interface ScheduleDAO {
     fun insert(scheduleEntity: ScheduleEntity)
 
     @Transaction
-    @Query("SELECT * FROM schedule WHERE user_id = :userId")
-    fun selectAll(userId: String) : Flow<List<ScheduleEntity>>
+    @Query(
+        "SELECT * " +
+        "FROM schedule " +
+        "WHERE user_id = :userId " +
+        "AND (:categoryName IS NULL OR category_name = :categoryName)" +
+        "ORDER BY schedule_year_month DESC, schedule_year_month + \"-\" +schedule_day DESC"
+    )
+    fun selectAll(
+        userId: String,
+        categoryName: String?
+    ) : PagingSource<Int, ScheduleEntity>
 
     @Transaction
     @Query(

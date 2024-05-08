@@ -54,7 +54,7 @@ fun ScheduleDialogContent(
 
         LaunchedEffect(key1 = true) {
             // 수정할 일정 정보 세팅
-            scheduleInput.onChangeScheduleEditText(scheduleModel.scheduleContent)
+            scheduleInput.onChangeScheduleEditText(scheduleModel.content)
             scheduleInput.onChangeCategory(scheduleModel.categoryName)
         }
 

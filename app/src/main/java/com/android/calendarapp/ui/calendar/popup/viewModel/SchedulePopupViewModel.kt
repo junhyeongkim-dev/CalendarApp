@@ -52,7 +52,7 @@ class SchedulePopupViewModel @Inject constructor(
     private val _scheduleText: MutableState<String> = mutableStateOf("")
     override val scheduleText: State<String> = _scheduleText
 
-    private val _selectedCategory: MutableState<String> = mutableStateOf(ResourceUtil.getString(applicationContext, R.string.category_default_text))
+    private val _selectedCategory: MutableState<String> = mutableStateOf(ResourceUtil.getString(applicationContext, R.string.category_default_selected_text))
     override val selectedCategory: State<String> = _selectedCategory
 
     private val _scheduleList: MutableStateFlow<List<ScheduleModel>> = MutableStateFlow(emptyList())
@@ -89,7 +89,7 @@ class SchedulePopupViewModel @Inject constructor(
             // 팝업 닫기 요청 일 때
 
             _scheduleText.value = ""
-            _selectedCategory.value = ResourceUtil.getString(applicationContext, R.string.category_default_text)
+            _selectedCategory.value = ResourceUtil.getString(applicationContext, R.string.category_default_selected_text)
         }
 
         _scheduleUiState.value = !_scheduleUiState.value
@@ -100,7 +100,7 @@ class SchedulePopupViewModel @Inject constructor(
     }
 
     override fun onChangeCategory(category: String) {
-        if(category.isEmpty()) _selectedCategory.value = ResourceUtil.getString(applicationContext, R.string.category_default_text)
+        if(category.isEmpty()) _selectedCategory.value = ResourceUtil.getString(applicationContext, R.string.category_default_selected_text)
         else _selectedCategory.value = category
     }
 
@@ -110,9 +110,9 @@ class SchedulePopupViewModel @Inject constructor(
         viewModelScope.launch {
             addScheduleUseCase(
                 ScheduleModel(
-                    scheduleYearMonth = yearMonth,
-                    scheduleDay = day,
-                    scheduleContent = scheduleContent,
+                    yearMonth = yearMonth,
+                    day = day,
+                    content = scheduleContent,
                     categoryName = categoryName
                 )
             )
@@ -213,7 +213,7 @@ class SchedulePopupViewModel @Inject constructor(
         viewModelScope.launch {
             addScheduleUseCase(
                 schedule.copy(
-                    scheduleContent = content,
+                    content = content,
                     categoryName = category
                 )
             )
